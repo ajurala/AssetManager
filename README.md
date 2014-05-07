@@ -1,6 +1,6 @@
 AssetManager
 ====================
-After writing a desktop application based on QT for managing my assets, thought that the best next step for tracking and managing about any kind of assets is via web.
+After writing a desktop application based on QT for managing my assets, thought that the next best step for tracking and managing about any kind of assets is via web.
 
 
 Using bootstrap, angularjs and codeigniter, AssetManager should end up a beautiful web app to track all of your assets ( any asset that you can think of and put a value to such asset )
