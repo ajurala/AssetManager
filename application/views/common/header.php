@@ -12,13 +12,9 @@
     <meta name="author" content="">
  
     <!-- Le styles -->
-    <link href="<?php echo base_url(); ?>css/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="<?php echo base_url(); ?>css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>css/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>images/favicon.ico" rel="shortcut icon"/>
  
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
