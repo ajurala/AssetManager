@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="AssetManager">
   <head>
     <meta charset="utf-8">
     <?php if(isset($header) && isset($header['title'])): ?>
