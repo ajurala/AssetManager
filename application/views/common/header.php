@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
   <head>
     <meta charset="utf-8">
     <?php if(isset($header) && isset($header['title'])): ?>
@@ -12,9 +12,9 @@
     <meta name="author" content="">
  
     <!-- Le styles -->
-    <link href="<?php echo base_url(); ?>css/bootstrap/bootstrap.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>css/style.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>images/favicon.ico" rel="shortcut icon"/>
+    <link href="<?php echo base_url(); ?>ui/css/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>ui/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>ui/images/favicon.ico" rel="shortcut icon"/>
  
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

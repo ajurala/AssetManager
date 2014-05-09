@@ -565,6 +565,7 @@ AddCharset utf-8 .atom .css .js .json .rss .vtt .xml
     #request to index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond $1 !^(ui)
     RewriteRule ^(.*)$ index.php?/$1 [L]
 </IfModule>
 
