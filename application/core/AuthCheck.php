@@ -1,13 +1,10 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
- 
-class Home extends AuthCheck
+
+class AuthCheck extends CI_Controller
 {
     public function __construct() {
         parent::__construct();
-    }
- 
-    // this is the home page
-    public function index() {
-    	
+        //Check for the login details before anything
+        redirect('');
     }
 }
