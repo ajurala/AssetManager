@@ -19,12 +19,11 @@ class Login extends CI_Controller
     public function index() {
     }
 
-    public function registerUser() {
+    public function initialConfiguration() {
 
         /* If already configured then ignore this request */
         if(!is_configured()) {
             
-        
         }
     }
 }

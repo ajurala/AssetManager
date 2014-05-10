@@ -20,7 +20,8 @@ if ( ! function_exists('is_configured'))
         $configured = $CI->session->userdata('configured');
         if($configured === FALSE) {
             # Get the value from database and set it into the session for later use
-            $query = $CI->db->query('SELECT configured FROM assetmanager');
+            $CI->db->select('configured');
+            $query = $CI->db->get('assetmanager');
             $row = $query->row();
             $configured = $row->configured;
 
