@@ -10,3 +10,23 @@ if ( ! function_exists('is_logged_in'))
         return $loggedin;
     }
 }
+
+if ( ! function_exists('is_configured'))
+{
+    function is_configured()
+    {
+        // Get current CodeIgniter instance
+        $CI =& get_instance();
+        $configured = $CI->session->userdata('configured');
+        if($configured === FALSE) {
+            # Get the value from database and set it into the session for later use
+            $query = $CI->db->query('SELECT configured FROM assetmanager');
+            $row = $query->row();
+            $configured = $row->configured;
+
+            $CI->session->set_userdata('configured', $configured);
+        }
+
+        return ($configured !== "0");
+    }
+}

@@ -6,7 +6,10 @@ class Welcome extends CI_Controller {
         $this->load->view('welcome');
 
         //Pass the logged in information if logged in, else send not logged in
-        if(is_logged_in()) {
+        if(!is_configured()){
+
+        }
+        else if(is_logged_in()) {
             
         } else {
             //Set the header as 412 to indicate that user not logged in
