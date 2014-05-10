@@ -3,17 +3,17 @@
 class Welcome extends CI_Controller {
 	public function index()
 	{
-        $this->load->view('welcome');
 
         //Pass the logged in information if logged in, else send not logged in
-        if(!is_configured()){
+        $data['header']['configured'] = get_configured_status();
 
-        }
-        else if(is_logged_in()) {
+        if(is_logged_in()) {
             
         } else {
-            //Set the header as 412 to indicate that user not logged in
+            //Set the header as 401 to indicate that user not logged in
         }
+
+        $this->load->view('base', $data);
 	}
 }
 

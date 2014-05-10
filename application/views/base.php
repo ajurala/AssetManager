@@ -9,7 +9,7 @@ if (isset($header) && is_array($header)) {
 <?php $this->load->view('common/menu'); ?>
  
 <div class="container" ng-view>
-<h1>Welcome to your Asset Manager</h1>
+
 </div> <!-- /container -->
  
 <?php

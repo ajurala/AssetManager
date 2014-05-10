@@ -361,5 +361,20 @@ $root = "http://".$_SERVER['HTTP_HOST'];
 $root .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 $config['base_url'] = $root;
 
+/*
+ |--------------------------------------------------------------------------
+ | Auto Load own controller classes
+ |--------------------------------------------------------------------------
+*/
+function __autoload($class)
+{
+    if (substr($class,0,3) !== 'CI_')
+    {
+        if (file_exists($file = APPPATH . 'core/' . $class . EXT))
+        {
+            include $file;
+        }
+    }
+}
 /* End of file config.php */
 /* Location: ./application/config/config.php */

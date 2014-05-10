@@ -16,7 +16,8 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/bootstrap/bootstrap.js"></script>
 
     <!-- Angularjs related scripts -->
-    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_app.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular/angular.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular/angular-route.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_app.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_controller.js"></script>
     

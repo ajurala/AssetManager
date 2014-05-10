@@ -1,0 +1,47 @@
+<div class="col-md-6 col-md-offset-3">
+
+    <!-- PAGE TITLE -->
+    <div class="page-header">
+        <h1><span class="glyphicon glyphicon-tower"></span> <span ng-show="register">Register User</span> <span ng-show="!register && !setPassword">Change Password</span> <span ng-show="setPassword">Set Password</span></h1>
+    </div>
+
+    <!-- SHOW ERROR/SUCCESS MESSAGES -->
+    <div id="messages" class="well" ng-show="message">{{ message }}</div>
+
+    <!-- FORM -->
+    <form ng-submit="processForm()">
+        <!-- NAME -->
+        <div id="name-group" class="form-group" ng-class="{ 'has-error' : errorName }" ng-show="showUser">
+            <label>User Name</label>
+            <input type="text" name="name" class="form-control" placeholder="User Name" ng-model="formData.name" ng-disabled="disableUser">
+            <span class="help-block" ng-show="errorName">{{ errorName }}</span>
+
+            <label>User Name</label>
+            <input type="text" name="displayname" class="form-control" placeholder="Display Name" ng-model="formData.displayname" ng-disabled="disableUser">
+            <span class="help-block" ng-show="errorDisplayName">{{ errorDisplayName }}</span>
+        </div>
+
+        <div id="current-password-group" class="form-group" ng-class="{ 'has-error' : errorCurrentPassword }" ng-show="showCurrentPassword">
+            <label>Current Password</label>
+            <input type="password" name="currentpassword" class="form-control" placeholder="Current Password" ng-model="formData.currentpassword">
+            <span class="help-block" ng-show="errorCurrentPassword">{{ errorCurrentPassword }}</span>
+        </div>
+
+        <div id="password-group" class="form-group" ng-class="{ 'has-error' : errorPassword }">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Password" ng-model="formData.password">
+            <span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
+        </div>
+
+        <div id="password-group2" class="form-group" ng-class="{ 'has-error' : errorPassword2 }">
+            <label>Type Password Again</label>
+            <input type="password" name="password2" class="form-control" placeholder="Type Password Again" ng-model="formData.password2">
+            <span class="help-block" ng-show="errorPassword2">{{ errorPassword2 }}</span>
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="btn btn-lg btn-block" ng-class="{'btn-info': register, 'btn-danger': !register}">
+        <span class="glyphicon glyphicon-flash"></span> <span ng-show="register">Register!</span> <span ng-show="!register && !setPassword">Change Password!</span> <span ng-show="setPassword">Set Password!</span>
+        </button>
+    </form>
+</div>

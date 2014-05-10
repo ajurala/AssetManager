@@ -17,6 +17,18 @@ if ( ! function_exists('is_configured'))
     {
         // Get current CodeIgniter instance
         $CI =& get_instance();
+        $configured = get_configured_status();
+        
+        return ($configured !== "0");
+    }
+}
+
+if ( ! function_exists('get_configured_status'))
+{
+    function get_configured_status()
+    {
+        // Get current CodeIgniter instance
+        $CI =& get_instance();
         $configured = $CI->session->userdata('configured');
         if($configured === FALSE) {
             # Get the value from database and set it into the session for later use
@@ -28,6 +40,6 @@ if ( ! function_exists('is_configured'))
             $CI->session->set_userdata('configured', $configured);
         }
 
-        return ($configured !== "0");
+        return $configured;
     }
 }

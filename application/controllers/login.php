@@ -8,8 +8,8 @@ class Login extends CI_Controller
  
     // this is the Login page
     public function index() {
-    	//$data['header']['title'] = 'login';
-        //$this->load->view('login');
+    	$data['header']['configured'] = get_configured_status();
+        $this->load->view('base', $data);
     }
 
     public function loginUser() {

@@ -12,7 +12,7 @@
     <meta name="author" content="">
  
     <!-- Le styles -->
-    <link href="<?php echo base_url(); ?>ui/css/bootstrap/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>ui/css/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>ui/css/style.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>ui/images/favicon.ico" rel="shortcut icon"/>
  
@@ -20,6 +20,14 @@
     <!--[if lt IE 9]>
       <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
     <![endif]-->
+
+    <base href="<?php echo base_url() ?>" /> 
   </head>
  
-  <body>
+  <body ng-controller="MainCtrl" init-data="inputdata.configured=
+        <?php if(isset($header) && isset($header['configured'])): ?> 
+            <?php echo $header['configured']; ?>
+        <?php else: ?>
+            0
+        <?php endif; ?> 
+    ; inputdata.test='as';" >
