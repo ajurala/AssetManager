@@ -6,3 +6,7 @@ http://www.amitavroy.com/justread/content/articles/single-page-app-angular-js-ht
 http://www.codefactorycr.com/login-with-codeigniter-php.html
 http://translate.googleusercontent.com/translate_c?depth=1&hl=en&prev=/search%3Fq%3Dangularjs%2Bacl%2Bcodeigniter%26client%3Dfirefox-a%26hs%3DwbI%26rls%3Dorg.mozilla:en-US:official%26channel%3Dsb%26biw%3D1920%26bih%3D930&rurl=translate.google.fi&sl=es&u=http://uno-de-piera.com/login-de-usuarios-con-angularjs-y-codeigniter/&usg=ALkJrhh8_1nFfc-6aYJlVk506auDjlc6_Q
 http://stackoverflow.com/questions/20539019/angularjs-php-authentication
+
+
+--- Factory for session data ---
+http://stackoverflow.com/questions/14957450/maintaining-session-through-angular-js
