@@ -1,4 +1,4 @@
-function check_configured($q, $location, $http) {
+function check_login($q, $location, $http) {
     var deferred = $q.defer(); 
 
     /* 
@@ -11,13 +11,29 @@ function check_configured($q, $location, $http) {
         url : 'login/get_login_info',
     })
     .success(function(data) {
+        console.log(data);
         if(!data['configured']) {
             //Set the configured state in own session
-
-            deferred.reject();
-            $location.path('/user')
+            if($location.path() === '/user') {
+                deferred.resolve(true);
+            } else {
+                deferred.reject();
+                $location.path('/user');
+            }
         } else {
-
+            if($location.path() === '/user') {
+                deferred.reject();
+                $location.path('/');
+            } else if($location.path() === '/'){
+                if(data['loggedin']) {
+                    deferred.resolve(true);
+                } else {
+                    deferred.reject();
+                    $location.path('/login');
+                }
+            } else {
+                deferred.resolve(true);
+            }
         }
     })
     .error(function(data) {
@@ -38,7 +54,7 @@ app.controller("loginController", function($scope){
 })
 
 app.controller("userController", function($scope, $http){
-    console.log('registerController here');
+    console.log('userController here');
 
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
@@ -88,18 +104,19 @@ app.controller("userController", function($scope, $http){
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
             })
             .success(function(data) {
-                console.log(data.success);
-                
-                if (!data.success) {
-                    // if not successful, bind errors to error variables
-                    $scope.errorName = data.errors.name;
-                    $scope.errorPassword = data.errors.password;
-                    $scope.alertMessage = data.errors.message
-                    $scope.alertError = true;
-                } else {
-                    // if successful, bind success message to message
-                    $scope.alertMessage = data.message;
-                    $scope.alertError = false;
+                //console.log(data.success);
+                if(data) {
+                    if (!data.success) {
+                        // if not successful, bind errors to error variables
+                        $scope.errorName = data.errors.name;
+                        $scope.errorPassword = data.errors.password;
+                        $scope.alertMessage = data.errors.message
+                        $scope.alertError = true;
+                    } else {
+                        // if successful, bind success message to message
+                        $scope.alertMessage = data.message;
+                        $scope.alertError = false;
+                    }
                 }
             });
         }

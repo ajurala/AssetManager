@@ -6,18 +6,21 @@ app.config(function($routeProvider, $locationProvider){
         controller : "loginController",
         templateUrl : "ui/partials/login.html",
         resolve: {
-            toLoginOrNot: check_configured
+            toLoginOrNot: check_login
         }
     })
     .when("/user", {
         controller : "userController",
-        templateUrl : "ui/partials/user.html"
+        templateUrl : "ui/partials/user.html",
+        resolve: {
+            toLoginOrNot: check_login
+        }
     })
     .when("/", {
         controller: "welcomeController",
         templateUrl: "ui/partials/welcome.html",
         resolve: {
-            toLoginOrNot: check_configured
+            toLoginOrNot: check_login
         }
     })
     .otherwise({redirectTo: '/'});

@@ -20,15 +20,6 @@ class User extends AssetManager
             $errors         = array();      // array to hold validation errors
             $data           = array();      // array to pass back data
 
-            // validate the variables ======================================================
-            //if ($this->input->post('name') == false)
-            //    $errors['name'] = 'Name is required';
-
-            //if ($this->input->post('password') == false)
-            //    $errors['password'] = 'Password is required';
-
-            // return a response ===========================================================
-
             $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
             $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
             if($this->form_validation->run() == false){
@@ -36,8 +27,9 @@ class User extends AssetManager
                 $errors['name'] = form_error('name', ' ', ' ');
             }else{
                  $this->load->model("user_model");
+                 $user = $this->input->post("name");
                  $password = $this->input->post("password");
-                 $updateadmin = $this->user_model->updateadmin($password);
+                 $updateadmin = $this->user_model->updateadmin($user, $password);
                  if($updateadmin === false){
                     $errors['message'] = "Could not update admin password. Try again.";
                  }
