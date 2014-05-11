@@ -60,7 +60,7 @@ app.controller("registerController", function($scope, $http){
 
     $scope.showUser = true;
     $scope.register = false;
-    $scope.setPassword = true
+    $scope.setPassword = true;
 
     $scope.message = 'Provide password for admin';
 
@@ -74,9 +74,10 @@ app.controller("registerController", function($scope, $http){
      *  Change of display name
      */
 
-    $scope.setPassword = $scope.setPassword & (!$scope.register); // when register is true, it will always override setPassword! When false it need not override
+    $scope.setPassword = $scope.setPassword && (!$scope.register); // when register is true, it will always override setPassword! When false it need not override
+    $scope.showUpdateSettings = !$scope.register && !$scope.setPassword;
     $scope.disableUser = !$scope.register;
-    $scope.showCurrentPassword = !$scope.register && !$scope.setPassword;
+    $scope.disableDisplayName = !($scope.showUpdateSettings || $scope.register)
     
     // process the form
     $scope.processForm = function() {
