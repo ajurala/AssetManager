@@ -7,6 +7,10 @@
 
     <!-- SHOW ERROR/SUCCESS MESSAGES -->
     <div id="messages" class="well" ng-show="message">{{ message }}</div>
+    <div class="alert" ng-class="{'alert-danger' : alertError, 'alert-success' : !alertError}" ng-show="alertMessage">  
+        <!-- <a class="close" data-dismiss="alert">×</a>  -->
+        <strong>{{ alertMessage }}</strong> 
+    </div>  
 
     <!-- FORM -->
     <form ng-submit="processForm()">

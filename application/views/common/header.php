@@ -24,10 +24,4 @@
     <base href="<?php echo base_url() ?>" /> 
   </head>
  
-  <body ng-controller="MainCtrl" init-data="inputdata.configured=
-        <?php if(isset($header) && isset($header['configured'])): ?> 
-            <?php echo $header['configured']; ?>
-        <?php else: ?>
-            0
-        <?php endif; ?> 
-    ; inputdata.test='as';" >
+  <body>

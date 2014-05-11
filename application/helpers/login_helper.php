@@ -11,6 +11,20 @@ if ( ! function_exists('is_logged_in'))
     }
 }
 
+if ( ! function_exists('get_user_info'))
+{
+    function get_user_info()
+    {
+        // Get current CodeIgniter instance
+        $CI =& get_instance();
+
+        $user_info['userid'] = $CI->session->userdata('userid');
+        $user_info['username'] = $CI->session->userdata('username');
+        $user_info['displayname'] = $CI->session->userdata('displayname');
+        return $loggedin;
+    }
+}
+
 if ( ! function_exists('is_configured'))
 {
     function is_configured()

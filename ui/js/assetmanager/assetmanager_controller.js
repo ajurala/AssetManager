@@ -1,37 +1,30 @@
-// create angular controller and pass in $scope and $http
-function formController($scope, $http) {
+function check_configured($q, $location, $http) {
+    var deferred = $q.defer(); 
 
-    // create a blank object to hold our form information
-    // $scope will allow this to pass between controller and view
-    $scope.formData = {};
+    /* 
+     *  If login details not present then, get the login details 
+     *  and then check if need to move to login page or need to configure
+     */
 
-    // process the form
-    $scope.processForm = function() {
-        $http({
-            method : 'POST',
-            url : 'login/loginUser',
-            data : $.param($scope.formData), // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
-        })
-        .success(function(data) {
-            console.log(data);
-            
-            if (!data.success) {
-                // if not successful, bind errors to error variables
-                $scope.errorName = data.errors.name;
-                $scope.errorPassword = data.errors.password;
-            } else {
-                // if successful, bind success message to message
-                $scope.message = data.message;
-            }
-        });
+    $http({
+        method : 'POST',
+        url : 'login/get_login_info',
+    })
+    .success(function(data) {
+        if(!data['configured']) {
+            //Set the configured state in own session
 
-    };
-}
+            deferred.reject();
+            $location.path('/user')
+        } else {
 
-function MainCtrl($scope, $rootScope) {
-    //should be defined
-    $scope.inputdata = {configured: "0", test: "woah"};
+        }
+    })
+    .error(function(data) {
+        //Set the configured state as true and allow whatever to happen ... happen
+        deferred.resolve(true);
+    });
+    return deferred.promise;
 }
 
 app.controller("welcomeController", function($scope, $location, $rootScope, $log){
@@ -44,7 +37,7 @@ app.controller("loginController", function($scope){
     console.log('loginController here');
 })
 
-app.controller("registerController", function($scope, $http){
+app.controller("userController", function($scope, $http){
     console.log('registerController here');
 
     // create a blank object to hold our form information
@@ -81,13 +74,16 @@ app.controller("registerController", function($scope, $http){
     
     // process the form
     $scope.processForm = function() {
+        $scope.errorName = "";
+        $scope.errorPassword = "";
         $scope.errorPassword2 = "";
+        $scope.alertMessage = "";
         if($scope.formData.password !== $scope.formData.password2) {
             $scope.errorPassword2 = "Passwords do not match. Please try again";
         } else {
             $http({
                 method : 'POST',
-                url : 'register/initialConfiguration',
+                url : 'user/update',
                 data : $.param($scope.formData), // pass in data as strings
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
             })
@@ -98,9 +94,12 @@ app.controller("registerController", function($scope, $http){
                     // if not successful, bind errors to error variables
                     $scope.errorName = data.errors.name;
                     $scope.errorPassword = data.errors.password;
+                    $scope.alertMessage = data.errors.message
+                    $scope.alertError = true;
                 } else {
                     // if successful, bind success message to message
-                    $scope.message = data.message;
+                    $scope.alertMessage = data.message;
+                    $scope.alertError = false;
                 }
             });
         }

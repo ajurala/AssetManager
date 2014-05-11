@@ -4,32 +4,20 @@ var app = angular.module('AssetManager', ['ngRoute']);
 app.config(function($routeProvider, $locationProvider){
     $routeProvider.when("/login", {
         controller : "loginController",
-        templateUrl : "ui/partials/login.html"
+        templateUrl : "ui/partials/login.html",
+        resolve: {
+            toLoginOrNot: check_configured
+        }
     })
-    .when("/register", {
-        controller : "registerController",
-        templateUrl : "ui/partials/register.html"
+    .when("/user", {
+        controller : "userController",
+        templateUrl : "ui/partials/user.html"
     })
     .when("/", {
         controller: "welcomeController",
         templateUrl: "ui/partials/welcome.html",
         resolve: {
-            toLoginOrNot: function($q, $location) {
-                var deferred = $q.defer(); 
-
-                /* 
-                 *  If login details not present then, get the login details 
-                 *  and then check if need to move to login page or need to configure
-                 */
-                if(1) {
-                    deferred.reject();
-                    $location.path('/register');
-                }
-                else {
-                    deferred.resolve(true);
-                }
-                return deferred.promise;
-            }
+            toLoginOrNot: check_configured
         }
     })
     .otherwise({redirectTo: '/'});
@@ -37,6 +25,15 @@ app.config(function($routeProvider, $locationProvider){
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
 });
+
+
+
+
+
+
+
+
+/*************************************************************************************************/
 
 /*app.run(function ($rootScope, $location) {    
     // register listener to watch for route changes
