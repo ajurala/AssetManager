@@ -7,52 +7,64 @@ class User extends AssetManager
 
     }
 
-    public function register() {
-        if(is_configured()) {
-            
+    public function register($request='') {
+        if($request === "new") {
+            if(is_configured()) {
+                
+            }
+        } else {
+            $this->load->view('base');
         }
     }
     
-    public function update() {
-        if(is_configured() && $this->input->is_ajax_request()) {
-            
+    public function update($request='') {
+        if($request === "all") {
+            if(is_configured()) {
+                
+            }
+        } else {
+            $this->load->view('base');
         }
     }
-    public function firstrun() {
 
-        /* If already configured then ignore this request */
-        if(!is_configured() && $this->input->is_ajax_request()) {
-            $errors         = array();      // array to hold validation errors
-            $data           = array();      // array to pass back data
+    public function firstrun($request='') {
+        if($request === "configure") {
+            /* If already configured then ignore this request */
+            if(!is_configured()) {
+                $errors         = array();      // array to hold validation errors
+                $data           = array();      // array to pass back data
 
-            $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
-            $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
-            if($this->form_validation->run() == false){
-                $errors['password'] = form_error('password', ' ', ' ');
-                $errors['name'] = form_error('name', ' ', ' ');
-            }else{
-                 $this->load->model("user_model");
-                 $user = $this->input->post("name");
-                 $password = $this->input->post("password");
-                 $updateadmin = $this->user_model->updateadmin($user, $password);
-                 if($updateadmin === false){
-                    $errors['message'] = "Could not update admin password. Try again.";
-                 }
+                $this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
+                $this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
+                if($this->form_validation->run() == false){
+                    $errors['password'] = form_error('password', ' ', ' ');
+                    $errors['name'] = form_error('name', ' ', ' ');
+                }else{
+                     $this->load->model("user_model");
+                     $user = $this->input->post("name");
+                     $password = $this->input->post("password");
+                     $updateadmin = $this->user_model->updateadmin($user, $password);
+                     if($updateadmin === false){
+                        $errors['message'] = "Could not update admin password. Try again.";
+                     }
+                }
+
+                // response if there are errors
+                if (!empty($errors)) {
+                    // if there are items in our errors array, return those errors
+                    $data['success'] = false;
+                    $data['errors']  = $errors;
+                } else {
+                    // if there are no errors, return a message
+                    $data['success'] = true;
+                    $data['message'] = 'Successfully changed password!';
+                }
+
+                // return all our data to an AJAX call
+                echo json_encode($data);
             }
-
-            // response if there are errors
-            if (!empty($errors)) {
-                // if there are items in our errors array, return those errors
-                $data['success'] = false;
-                $data['errors']  = $errors;
-            } else {
-                // if there are no errors, return a message
-                $data['success'] = true;
-                $data['message'] = 'Successfully changed password!';
-            }
-
-            // return all our data to an AJAX call
-            echo json_encode($data);
+        } else {
+            $this->load->view('base');
         }
     }
 }

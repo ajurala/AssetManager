@@ -4,7 +4,7 @@
 
     <!-- This should not be used as moving to angular js. But there are few cases where it is simpler to user jquery
          like converting form data properly from angular format to form data format using .params() -->
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/bootstrap/jquery-1.11.1.min.js"></script>
     
     <?php if (isset($scripts)) { ?>
     <?php foreach ($scripts as $filename => $folder): ?>

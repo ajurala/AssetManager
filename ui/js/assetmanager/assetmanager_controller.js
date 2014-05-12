@@ -43,10 +43,11 @@ function check_login($q, $location, $http, Session) {
     return deferred.promise;
 }
 
-function navbarController($scope, $http, $location, $window, Session) {
+function navbarController($scope, $http, $location, $window, $rootScope, Session) {
     $scope.$watch( function () { return Session.data; }, function ( data ) {
-        $scope.loggedin = data['loggedin']
-        $scope.username = data['userinfo']['displayname'];
+        $rootScope.loggedin = data['loggedin']
+        $rootScope.username = data['userinfo']['username'];
+        $rootScope.displayname = data['userinfo']['displayname'];
     });
     
     $scope.logout = function() {
@@ -59,6 +60,11 @@ function navbarController($scope, $http, $location, $window, Session) {
             $window.location.href = '';
         });
     } 
+}
+function userprofileController($scope, $location) {
+    $scope.editUserProfile = function() {
+        $location.path('/user/update');
+    }
 }
 
 app.controller("welcomeController", function($scope, $location){
@@ -139,7 +145,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
 
         $scope.message = 'Provide password for admin';
         
-        urlapi = 'user/firstrun';
+        urlapi = 'user/firstrun/configure';
     } else {
         //Cant come here without the check of access role in check_login, so show the register page or change settings page depending on the route
         if($routeParams['type'] === 'register') {

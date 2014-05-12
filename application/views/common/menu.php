@@ -15,7 +15,7 @@
         <ul class="nav navbar-nav navbar-right" ng-controller="navbarController">
         <li class="dropdown" ng-show="loggedin">
           <a href="" class="dropdown-toggle" data-toggle="dropdown">
-            {{username}}
+            {{displayname}}
             <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
