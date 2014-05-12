@@ -7,13 +7,18 @@ class User extends AssetManager
 
     }
 
-    public function update() {
-        if(!is_configured()) {
-            $this->initial();
-        } else {
+    public function register() {
+        if(is_configured()) {
+            
         }
     }
-    private function initial() {
+    
+    public function update() {
+        if(is_configured()) {
+            
+        }
+    }
+    private function firstrun() {
 
         /* If already configured then ignore this request */
         if(!is_configured()) {

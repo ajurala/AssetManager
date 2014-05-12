@@ -4,25 +4,32 @@ function checkStatus($q, $location, $http, Session) {
 
 function check_login($q, $location, $http, Session) {
     var deferred = $q.defer();
-
     /* 
      *  If login details not present then, get the login details 
      *  and then check if need to move to login page or need to configure
      */
     data = Session.data;
-    console.log(data);
+    //console.log(data);
     console.log(data['configured']);
     if(!data['configured']) {
         //Set the configured state in own session
-        if($location.path() === '/user') {
+        if($location.path() === '/user/firstrun') {
             deferred.resolve();
         } else {
             deferred.reject();
-            $location.path('/user');
+            $location.path('/user/firstrun');
         }
     } else {
-        if($location.path() === '/login') {
-            deferred.resolve();
+        if($location.path() === '/user/firstrun'){
+            deferred.reject();
+            $location.path('/');
+        } else if($location.path() === '/login') {
+            if(data['loggedin']) {
+                deferred.reject();
+                $location.path('/');
+            } else {
+                deferred.resolve();
+            }
         } else {
             if(data['loggedin']) {
                 deferred.resolve();
@@ -42,11 +49,45 @@ app.controller("welcomeController", function($scope, $location, $rootScope, $log
     //$location.path('login')
 })
 
-app.controller("loginController", function($scope){
+app.controller("loginController", function($scope, $http, $location, Session){
     console.log('loginController here');
+    
+    // create a blank object to hold our form information
+    // $scope will allow this to pass between controller and view
+    $scope.formData = {};
+    $scope.formData.name = '';
+    $scope.formData.password = '';
+    
+    $scope.processForm = function() {
+        $scope.errorName = "";
+        $scope.errorPassword = "";
+        $http({
+            method : 'POST',
+            url : 'login/loginUser',
+            data : $.param($scope.formData), // pass in data as strings
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
+        })
+        .success(function(data) {
+            //console.log(data.success);
+            if(data) {
+                // Update the session as, server might have reset some information, like configured !!!
+                Session.updateSession();
+                
+                if (!data.success) {
+                    // if not successful, bind errors to error variables
+                    $scope.errorName = data.errors.name;
+                    $scope.errorPassword = data.errors.password;
+                    $scope.message = data.errors.message
+                } else {
+                    // if successful, go to welcome screen
+                    $location.path('/');
+                }    
+            }
+        });
+    };
 })
 
-app.controller("userController", function($scope, $http, $rootScope, $timeout, $location, Session){
+app.controller("userController", function($scope, $http, $rootScope, $timeout, $location, Session, $routeParams){
     console.log('userController here');
 
     function redirectToWelcome() {
@@ -79,21 +120,28 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
         $scope.setPassword = true;
 
         $scope.message = 'Provide password for admin';
+        
+        urlapi = 'user/firstrun';
     } else {
         //Cant come here without the check of access role in check_login, so show the register page or change settings page depending on the route
-        
-        $scope.formData.name = '';
-        $scope.formData.displayname = '';
+        if($routeParams['type'] === 'register') {
+            $scope.formData.name = '';
+            $scope.formData.displayname = '';
 
-        $scope.register = true;
-        $scope.setPassword = false;
-        
-        // User Settings scenario
-        $scope.formData.name = Session.data['userinfo']['username'];
-        $scope.formData.displayname = Session.data['userinfo']['displayname'];
+            $scope.register = true;
+            $scope.setPassword = false;
+            
+            urlapi = 'user/register'
+        } else if($routeParams['type'] === 'update') {
+            // User Settings scenario
+            $scope.formData.name = Session.data['userinfo']['username'];
+            $scope.formData.displayname = Session.data['userinfo']['displayname'];
 
-        $scope.register = false;
-        $scope.setPassword = false;
+            $scope.register = false;
+            $scope.setPassword = false;
+            
+            urlapi = 'user/update';
+        }
     }
 
     /* 
@@ -122,7 +170,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
         } else {
             $http({
                 method : 'POST',
-                url : 'user/update',
+                url : urlapi,
                 data : $.param($scope.formData), // pass in data as strings
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
             })

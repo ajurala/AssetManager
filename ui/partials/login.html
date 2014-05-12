@@ -6,7 +6,7 @@
     </div>
 
     <!-- SHOW ERROR/SUCCESS MESSAGES -->
-    <div id="messages" class="well" ng-show="message">{{ message }}</div>
+    <div id="messages" class="alert alert-danger" ng-show="message"><strong>{{ message }}</strong></div>
 
     <!-- FORM -->
     <form ng-submit="processForm()">

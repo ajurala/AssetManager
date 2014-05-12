@@ -23,21 +23,28 @@ app.config(function($routeProvider, $locationProvider){
         controller : "loginController",
         templateUrl : "ui/partials/login.html",
         resolve: {
-            toLoginOrNot: checkStatus
+            toAllowOrNot: checkStatus
         }
     })
-    .when("/user", {
+    .when("/user/:type", {
         controller : "userController",
         templateUrl : "ui/partials/user.html",
         resolve: {
-            toLoginOrNot: checkStatus
+            toAllowOrNot: checkStatus
+        }
+    })
+    .when("/user", {
+        //controller : "userProfileController",
+        templateUrl : "ui/partials/userprofile.html",
+        resolve: {
+            toAllowOrNot: checkStatus
         }
     })
     .when("/", {
         controller: "welcomeController",
         templateUrl: "ui/partials/welcome.html",
         resolve: {
-            toLoginOrNot: checkStatus
+            toAllowOrNot: checkStatus
         }
     })
     .otherwise({redirectTo: '/'});
