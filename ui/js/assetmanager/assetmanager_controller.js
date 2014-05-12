@@ -11,7 +11,7 @@ function check_login($q, $location, $http) {
         url : 'login/get_login_info',
     })
     .success(function(data) {
-        console.log(data);
+        console.log(data['configured']);
         if(!data['configured']) {
             //Set the configured state in own session
             if($location.path() === '/user') {
@@ -53,9 +53,21 @@ app.controller("loginController", function($scope){
     console.log('loginController here');
 })
 
-app.controller("userController", function($scope, $http){
+app.controller("userController", function($scope, $http, $rootScope, $timeout, $location){
     console.log('userController here');
 
+    function redirectToWelcome() {
+        $rootScope.timeCount--;
+        if($rootScope.timeCount > 0) {
+            $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds";
+            $timeout(redirectToWelcome, 1000);
+        } else {
+            //console.log('Redirecting now ... ');
+            $rootScope.alertInfo = "";
+            $location.path("/");
+        }
+    }
+    
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
     $scope.formData = {};
@@ -116,6 +128,11 @@ app.controller("userController", function($scope, $http){
                         // if successful, bind success message to message
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
+                        
+                        $rootScope.timeCount = 10;
+                        $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
+                        
+                        $timeout(redirectToWelcome, 1000);
                     }
                 }
             });

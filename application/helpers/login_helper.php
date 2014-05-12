@@ -44,7 +44,7 @@ if ( ! function_exists('get_configured_status'))
         // Get current CodeIgniter instance
         $CI =& get_instance();
         $configured = $CI->session->userdata('configured');
-        /*if($configured === FALSE) {
+        if($configured === FALSE) {
             # Get the value from database and set it into the session for later use
             $CI->db->select('configured');
             $query = $CI->db->get('assetmanager');
@@ -52,7 +52,7 @@ if ( ! function_exists('get_configured_status'))
             $configured = $row->configured;
 
             $CI->session->set_userdata('configured', $configured);
-        }*/
+        }
 
         return $configured;
     }
