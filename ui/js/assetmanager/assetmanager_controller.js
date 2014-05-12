@@ -10,7 +10,7 @@ function check_login($q, $location, $http, Session) {
      */
     data = Session.data;
     //console.log(data);
-    console.log(data['configured']);
+    //console.log(data['configured']);
     if(!data['configured']) {
         //Set the configured state in own session
         if($location.path() === '/user/firstrun') {
@@ -43,14 +43,32 @@ function check_login($q, $location, $http, Session) {
     return deferred.promise;
 }
 
-app.controller("welcomeController", function($scope, $location, $rootScope, $log){
-    console.log('welcomeController here');
+function navbarController($scope, $http, $location, $window, Session) {
+    $scope.$watch( function () { return Session.data; }, function ( data ) {
+        $scope.loggedin = data['loggedin']
+        $scope.username = data['userinfo']['displayname'];
+    });
+    
+    $scope.logout = function() {
+        $http({
+            method : 'POST',
+            url : 'login/logoutUser'
+        })
+        .success(function() {
+            Session.updateSession();
+            $window.location.href = '';
+        });
+    } 
+}
+
+app.controller("welcomeController", function($scope, $location){
+    //console.log('welcomeController here');
 
     //$location.path('login')
 })
 
 app.controller("loginController", function($scope, $http, $location, Session){
-    console.log('loginController here');
+    //console.log('loginController here');
     
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
@@ -88,7 +106,7 @@ app.controller("loginController", function($scope, $http, $location, Session){
 })
 
 app.controller("userController", function($scope, $http, $rootScope, $timeout, $location, Session, $routeParams){
-    console.log('userController here');
+    //console.log('userController here');
 
     function redirectToWelcome() {
         $rootScope.timeCount--;

@@ -14,14 +14,14 @@ class User extends AssetManager
     }
     
     public function update() {
-        if(is_configured()) {
+        if(is_configured() && $this->input->is_ajax_request()) {
             
         }
     }
-    private function firstrun() {
+    public function firstrun() {
 
         /* If already configured then ignore this request */
-        if(!is_configured()) {
+        if(!is_configured() && $this->input->is_ajax_request()) {
             $errors         = array();      // array to hold validation errors
             $data           = array();      // array to pass back data
 

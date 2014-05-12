@@ -4,7 +4,11 @@ var app = angular.module('AssetManager', ['ngRoute']);
 app.factory('Session', function($http, $q) {
   var Session = {
     data: {'configured' : true,
-           'loggedin': false
+           'loggedin': false,
+           'userinfo': {'userid': '-1',
+                        'username': 'unknown',
+                        'displayname': 'Unknown'
+                       }
           },
     defferred: $q.defer(),
     updateSession: function() {
