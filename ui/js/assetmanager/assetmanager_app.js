@@ -1,26 +1,43 @@
 // define angular module/app
 var app = angular.module('AssetManager', ['ngRoute']);
 
+app.factory('Session', function($http, $q) {
+  var Session = {
+    data: {'configured' : true,
+           'loggedin': false
+          },
+    defferred: $q.defer(),
+    updateSession: function() {
+      Session.defferred = $q.defer();
+      
+      /* load data from db */
+      $http.post('login/get_login_info').then(function(r) {Session.defferred.resolve(); Session.data = r.data;}, function(r) {Session.defferred.resolve();});
+    }
+  };
+  Session.updateSession();
+  return Session; 
+});
+
 app.config(function($routeProvider, $locationProvider){
     $routeProvider.when("/login", {
         controller : "loginController",
         templateUrl : "ui/partials/login.html",
         resolve: {
-            toLoginOrNot: check_login
+            toLoginOrNot: checkStatus
         }
     })
     .when("/user", {
         controller : "userController",
         templateUrl : "ui/partials/user.html",
         resolve: {
-            toLoginOrNot: check_login
+            toLoginOrNot: checkStatus
         }
     })
     .when("/", {
         controller: "welcomeController",
         templateUrl: "ui/partials/welcome.html",
         resolve: {
-            toLoginOrNot: check_login
+            toLoginOrNot: checkStatus
         }
     })
     .otherwise({redirectTo: '/'});
@@ -28,8 +45,6 @@ app.config(function($routeProvider, $locationProvider){
     // use the HTML5 History API
     $locationProvider.html5Mode(true);
 });
-
-
 
 
 

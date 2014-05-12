@@ -1,45 +1,38 @@
-function check_login($q, $location, $http) {
-    var deferred = $q.defer(); 
+function checkStatus($q, $location, $http, Session) {
+    return Session.defferred.promise.then(function(response){return check_login($q, $location, $http, Session)});
+}
+
+function check_login($q, $location, $http, Session) {
+    var deferred = $q.defer();
 
     /* 
      *  If login details not present then, get the login details 
      *  and then check if need to move to login page or need to configure
      */
-
-    $http({
-        method : 'POST',
-        url : 'login/get_login_info',
-    })
-    .success(function(data) {
-        console.log(data['configured']);
-        if(!data['configured']) {
-            //Set the configured state in own session
-            if($location.path() === '/user') {
-                deferred.resolve(true);
-            } else {
-                deferred.reject();
-                $location.path('/user');
-            }
+    data = Session.data;
+    console.log(data);
+    console.log(data['configured']);
+    if(!data['configured']) {
+        //Set the configured state in own session
+        if($location.path() === '/user') {
+            deferred.resolve();
         } else {
-            if($location.path() === '/user') {
-                deferred.reject();
-                $location.path('/');
-            } else if($location.path() === '/'){
-                if(data['loggedin']) {
-                    deferred.resolve(true);
-                } else {
-                    deferred.reject();
-                    $location.path('/login');
-                }
+            deferred.reject();
+            $location.path('/user');
+        }
+    } else {
+        if($location.path() === '/login') {
+            deferred.resolve();
+        } else {
+            if(data['loggedin']) {
+                deferred.resolve();
             } else {
-                deferred.resolve(true);
+                deferred.reject();
+                $location.path('/login');
             }
         }
-    })
-    .error(function(data) {
-        //Set the configured state as true and allow whatever to happen ... happen
-        deferred.resolve(true);
-    });
+    }
+    
     return deferred.promise;
 }
 
@@ -53,7 +46,7 @@ app.controller("loginController", function($scope){
     console.log('loginController here');
 })
 
-app.controller("userController", function($scope, $http, $rootScope, $timeout, $location){
+app.controller("userController", function($scope, $http, $rootScope, $timeout, $location, Session){
     console.log('userController here');
 
     function redirectToWelcome() {
@@ -75,15 +68,33 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
     /*
      *  Modify these set of variables, depending on the scenario
      */
-
-    $scope.formData.name = 'admin';
-    $scope.formData.displayname = 'Admin';
-
+    
     $scope.showUser = true;
-    $scope.register = false;
-    $scope.setPassword = true;
+    
+    if(!Session.data['configured']) {
+        $scope.formData.name = 'admin';
+        $scope.formData.displayname = 'Admin';
+        
+        $scope.register = false;
+        $scope.setPassword = true;
 
-    $scope.message = 'Provide password for admin';
+        $scope.message = 'Provide password for admin';
+    } else {
+        //Cant come here without the check of access role in check_login, so show the register page or change settings page depending on the route
+        
+        $scope.formData.name = '';
+        $scope.formData.displayname = '';
+
+        $scope.register = true;
+        $scope.setPassword = false;
+        
+        // User Settings scenario
+        $scope.formData.name = Session.data['userinfo']['username'];
+        $scope.formData.displayname = Session.data['userinfo']['displayname'];
+
+        $scope.register = false;
+        $scope.setPassword = false;
+    }
 
     /* 
      *  No need to change the below expressions as it caters for:
@@ -129,10 +140,14 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
                         
-                        $rootScope.timeCount = 10;
-                        $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
-                        
-                        $timeout(redirectToWelcome, 1000);
+                        if(!Session.data['configured']) {
+                            $rootScope.timeCount = 10;
+                            $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
+                            
+                            $timeout(redirectToWelcome, 1000);
+                            
+                            Session.updateSession();
+                        }
                     }
                 }
             });
