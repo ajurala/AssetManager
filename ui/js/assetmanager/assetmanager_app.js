@@ -12,7 +12,6 @@ app.factory('Session', function($http, $q) {
           },
     defferred: $q.defer(),
     updateSession: function() {
-        console.log('someone called updateSession');
       Session.defferred = $q.defer();
 
       /* load data from db */

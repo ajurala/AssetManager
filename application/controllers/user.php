@@ -111,7 +111,7 @@ class User extends AssetManager
                         $errors['message'] = $message;
                      }
                 }
-                $this->senddata($data, $errors, "Update profile successfully");
+                $this->senddata($data, $errors, "Updated profile successfully");
             }
         } else if($request === "displayname") {
             if(is_configured() && is_logged_in()) {

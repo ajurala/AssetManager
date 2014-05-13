@@ -128,7 +128,11 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
         }
     }
 
+    $scope.updatePassword = false;
+
     $scope.$watch('updatePassword', function ( data ) {
+        console.log('watch updatePassword');
+        console.log(data);
         if(!data) {
             console.log('clearing password');
             $scope.formData.password = '';
@@ -236,6 +240,11 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         // if successful, bind success message to message
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
+
+                        $scope.formData.admin = 'false';
+                        $scope.formData.password = '';
+                        $scope.formData.password2 = '';
+                        $scope.formData.currentpassword = '';
 
                         Session.updateSession();
 

@@ -149,7 +149,6 @@ class User_model extends CI_Model{
         $count = $query->num_rows();
 
         // If no such user exists then register a new user
-        $rows = $query->result_array();
 
         if($count === 0) {
 
@@ -157,10 +156,16 @@ class User_model extends CI_Model{
 
             $hashpass = $this->bcrypt->hash_password($password);
 
+            $this->db->select_max('id');
+            $query = $this->db->get('users');
+            $row = $query->row();
+            $id = $row->id + 1;
+
             $data = array(
-               'username' => $user ,
-               'userpassword' => $hashpass,
-               'displayname' => $displayname
+                'id'           => $id,
+                'username'      => $user,
+                'userpassword'  => $hashpass,
+                'displayname'   => $displayname
             );
 
             $this->db->insert('users', $data);
