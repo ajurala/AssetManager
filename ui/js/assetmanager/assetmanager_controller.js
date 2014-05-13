@@ -130,6 +130,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
 
     $scope.$watch('updatePassword', function ( data ) {
         if(!data) {
+            console.log('clearing password');
             $scope.formData.password = '';
             $scope.formData.password2 = '';
             $scope.formData.currentpassword = '';
@@ -165,7 +166,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             $scope.register = true;
             $scope.setPassword = false;
 
-            baseurlapi = 'user/register/now'
+            baseurlapi = 'user/register/new'
         } else if($routeParams['type'] === 'update') {
             // User Settings scenario
             $scope.formData.name = Session.data['userinfo']['username'];
@@ -200,7 +201,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
         $scope.errorPassword = "";
         $scope.errorPassword2 = "";
         $scope.alertMessage = "";
-        if($scope.updatePassword && $scope.formData.password !== $scope.formData.password2) {
+        if(($scope.updatePassword || $scope.register) && $scope.formData.password !== $scope.formData.password2) {
             $scope.errorPassword2 = "Passwords do not match. Please try again";
         } else {
                 urlapi = baseurlapi;
@@ -212,6 +213,8 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                     urlapi = urlapi + '/displayname';
                 }
             }
+
+            console.log($scope.formData.password);
 
             $http({
                 method : 'POST',

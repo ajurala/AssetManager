@@ -12,14 +12,15 @@ app.factory('Session', function($http, $q) {
           },
     defferred: $q.defer(),
     updateSession: function() {
+        console.log('someone called updateSession');
       Session.defferred = $q.defer();
-      
+
       /* load data from db */
       $http.post('login/get_login_info').then(function(r) {Session.defferred.resolve(); Session.data = r.data;}, function(r) {Session.defferred.resolve();});
     }
   };
   Session.updateSession();
-  return Session; 
+  return Session;
 });
 
 app.config(function($routeProvider, $locationProvider){
@@ -64,7 +65,7 @@ app.config(function($routeProvider, $locationProvider){
 
 /*************************************************************************************************/
 
-/*app.run(function ($rootScope, $location) {    
+/*app.run(function ($rootScope, $location) {
     // register listener to watch for route changes
     // this event will fire every time the route changes
     $rootScope.$on("$locationChangeStart", function (event, next, current) {

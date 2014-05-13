@@ -45,7 +45,7 @@ class User_model extends CI_Model{
 
             $this->db->insert('users', $data);
             $this->addAdminAccess(0);
-            
+
         }
 
         // Update configured state in db and session
@@ -60,7 +60,7 @@ class User_model extends CI_Model{
 
         // Check if user is already present, if so update the password, else problem
         $this->db->select('id, username');
-        $query = $this->db->get('users', array('username' => $user));
+        $query = $this->db->get_where('users', array('username' => $user));
         $count = $query->num_rows();
 
         if($count === 1) {
@@ -100,7 +100,7 @@ class User_model extends CI_Model{
                     // Check if current password is right
 
                     $this->db->select('userpassword');
-                    $query = $this->db->get('users', array('username' => $user));
+                    $query = $this->db->get_where('users', array('username' => $user));
                     $count = $query->num_rows();
 
                     //Double sure before updating password
@@ -108,7 +108,7 @@ class User_model extends CI_Model{
                         $row = $query->row();
                         $storedhash = $row->userpassword;
 
-                        /* 
+                        /*
                          *  If $currentpassword is null, then some admin is forcing password change
                          *  and we are already checking for access role, so fine to change password
                          */
@@ -145,12 +145,14 @@ class User_model extends CI_Model{
 
         // Check if user is already present, if so return error
         $this->db->select('id, username');
-        $query = $this->db->get('users', array('username' => $user));
+        $query = $this->db->get_where('users', array('username' => $user));
         $count = $query->num_rows();
 
         // If no such user exists then register a new user
+        $rows = $query->result_array();
+
         if($count === 0) {
-            
+
             // Check for the access role, if invalid then set the $message- TODO
 
             $hashpass = $this->bcrypt->hash_password($password);
@@ -162,14 +164,16 @@ class User_model extends CI_Model{
             );
 
             $this->db->insert('users', $data);
-            
+
             $this->db->select('id');
-            $query = $this->db->get('users', array('username' => $user));
+            $query = $this->db->get_where('users', array('username' => $user));
+            $count = $query->num_rows();
+
             if($count === 1) {
                 // If user is created as admin, then add all the roles
                 $row = $query->row();
                 $userid = $row->id;
-                
+
                 if($access) {
                     $this->addAdminAccess($userid);
                 } else {
@@ -182,8 +186,6 @@ class User_model extends CI_Model{
             } else {
                 $message = 'User was not registered';
                 return false;
-            }
-       
             }
 
         } else {

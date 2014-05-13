@@ -52,6 +52,7 @@ class User extends AssetManager
             if(is_configured() && is_logged_in()) {
                 $errors         = array();      // array to hold validation errors
                 $data           = array();      // array to pass back data
+                $displayname    = "";
 
                 $this->form_validation->set_rules($this->pass['formdata'], $this->pass['name'], $this->pass['rules']);
                 $this->form_validation->set_rules($this->username['formdata'], $this->username['name'], $this->username['rules']);
@@ -66,15 +67,15 @@ class User extends AssetManager
                      $user = $this->input->post($this->username['formdata']);
                      $password = $this->input->post($this->pass['formdata']);
                      $displayname = $this->input->post($this->displayname['formdata']);
-                     $access = $this->input->post('admin');
+                     $access = $this->input->post('admin') === "true";
                      $message = "";
 
-                     $update = $this->user_model->registerUser($user, $password, $displayname, $message, $access);
+                     $update = $this->user_model->registerUser($user, $password, $displayname, $access, $message);
                      if($update === false){
                         $errors['message'] = $message;
                      }
                 }
-                $this->senddata($data, $errors, "Update profile successfully");
+                $this->senddata($data, $errors, "User ".$displayname." was successfully added");
             }
         } else {
             $this->load->view('base');

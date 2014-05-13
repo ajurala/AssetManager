@@ -6,15 +6,11 @@ class Login_model extends CI_Model{
 
     // Update the admin password
     public function login($user, $password) {
-        if($user !== 'admin') {
-            return false;
-        }
-
-
-        // Check if admin is already present, if so update the password, else create one
+        // Check if user is already present, if so allow login
         $this->db->select('id, username, userpassword, displayname');
-        $query = $this->db->get('users', array('username' => $user));
+        $query = $this->db->get_where('users', array('username' => $user));
         $count = $query->num_rows();
+
         if($count === 1) {
             $row = $query->row();
 
