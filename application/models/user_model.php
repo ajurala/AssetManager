@@ -4,6 +4,21 @@ class User_model extends CI_Model{
         parent::__construct();
     }
 
+    private function addAdminAccess($userid) {
+        // Get the access roles available
+        $this->db->select('accessid');
+        $query = $this->db->get('accessrole');
+
+        foreach ($query->result() as $row)
+        {
+            $data = array(
+                    'userid' => $userid,
+                    'accessid' => $row->accessid
+                );
+            $this->db->insert('userroles', $data);
+        }
+    }
+
     // Update the admin password
     public function updateadmin($user, $password) {
         if($user !== 'admin') {
@@ -29,19 +44,8 @@ class User_model extends CI_Model{
             );
 
             $this->db->insert('users', $data);
-
-            // Get the access roles available
-            $this->db->select('accessid');
-            $query = $this->db->get('accessrole');
-
-            foreach ($query->result() as $row)
-            {
-                $data = array(
-                        'userid' => 0,
-                        'accessid' => $row->accessid
-                    );
-                $this->db->insert('userroles', $data);
-            }
+            $this->addAdminAccess(0);
+            
         }
 
         // Update configured state in db and session
@@ -55,7 +59,7 @@ class User_model extends CI_Model{
     public function updateUser($user, $password, $currentpassword, $displayname, &$message) {
 
         // Check if user is already present, if so update the password, else problem
-        $this->db->select('username');
+        $this->db->select('id, username');
         $query = $this->db->get('users', array('username' => $user));
         $count = $query->num_rows();
 
@@ -65,15 +69,22 @@ class User_model extends CI_Model{
             $userinfo = get_user_info();
             $update = false;
             $username = $row->username;
+            $userid = $row->id;
 
             if($userinfo['username'] === $username)
             {
                 $update = true;
             } else {
                 // Check for the access role, if invalid then set the $message
+                // Only administrator can change user profile of administrator
+                if($userid != 0){
 
-                $message = 'You do not have sufficient permission to update profile';
-                return false
+                }
+
+                if(!$update) {
+                    $message = 'You do not have sufficient permission to update profile';
+                    return false;
+                }
             }
 
             if($update) {
@@ -97,9 +108,14 @@ class User_model extends CI_Model{
                         $row = $query->row();
                         $storedhash = $row->userpassword;
 
-                        if($this->bcrypt->check_password($currentpassword, $hash)) {
+                        /* 
+                         *  If $currentpassword is null, then some admin is forcing password change
+                         *  and we are already checking for access role, so fine to change password
+                         */
+
+                        if($currentpassword ===NULL || $this->bcrypt->check_password($currentpassword, $storedhash)) {
                             $hashpass = $this->bcrypt->hash_password($password);
-                            $this->db->update('users', array('userpassword' => $hash, 'displayname' => $displayname), array('username' => $user));
+                            $this->db->update('users', array('userpassword' => $hashpass, 'displayname' => $displayname), array('username' => $user));
 
                             if($userinfo['username'] === $username)
                             {
@@ -107,7 +123,7 @@ class User_model extends CI_Model{
                             }
                         } else {
                             $message = 'Invalid current password';
-                        return false;
+                            return false;
                         }
                     } else {
                         $message = 'No such user to update profile';
@@ -122,9 +138,58 @@ class User_model extends CI_Model{
             return false;
         }
 
-        // Update configured state in db and session
-        $this->db->update('assetmanager', array('configured' => 1));
-        $this->session->set_userdata('configured', '1');
+        return true;
+    }
+
+    public function registerUser($user, $password, $displayname, $access, &$message) {
+
+        // Check if user is already present, if so return error
+        $this->db->select('id, username');
+        $query = $this->db->get('users', array('username' => $user));
+        $count = $query->num_rows();
+
+        // If no such user exists then register a new user
+        if($count === 0) {
+            
+            // Check for the access role, if invalid then set the $message- TODO
+
+            $hashpass = $this->bcrypt->hash_password($password);
+
+            $data = array(
+               'username' => $user ,
+               'userpassword' => $hashpass,
+               'displayname' => $displayname
+            );
+
+            $this->db->insert('users', $data);
+            
+            $this->db->select('id');
+            $query = $this->db->get('users', array('username' => $user));
+            if($count === 1) {
+                // If user is created as admin, then add all the roles
+                $row = $query->row();
+                $userid = $row->id;
+                
+                if($access) {
+                    $this->addAdminAccess($userid);
+                } else {
+                    $data = array(
+                            'userid' => $userid,
+                            'accessid' => 1
+                        );
+                    $this->db->insert('userroles', $data);
+                }
+            } else {
+                $message = 'User was not registered';
+                return false;
+            }
+       
+            }
+
+        } else {
+            $message = 'User already exists';
+            return false;
+        }
 
         return true;
     }

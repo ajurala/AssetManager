@@ -48,6 +48,8 @@ function navbarController($scope, $http, $location, $window, $rootScope, Session
         $rootScope.loggedin = data['loggedin']
         $rootScope.username = data['userinfo']['username'];
         $rootScope.displayname = data['userinfo']['displayname'];
+
+        $rootScope.admin = $rootScope.username == 'admin';
     });
 
     $scope.logout = function() {
@@ -126,6 +128,14 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
         }
     }
 
+    $scope.$watch('updatePassword', function ( data ) {
+        if(!data) {
+            $scope.formData.password = '';
+            $scope.formData.password2 = '';
+            $scope.formData.currentpassword = '';
+        }
+    });
+
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
     $scope.formData = {};
@@ -155,7 +165,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             $scope.register = true;
             $scope.setPassword = false;
 
-            baseurlapi = 'user/register'
+            baseurlapi = 'user/register/now'
         } else if($routeParams['type'] === 'update') {
             // User Settings scenario
             $scope.formData.name = Session.data['userinfo']['username'];
@@ -186,13 +196,23 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
     // process the form
     $scope.processForm = function() {
         $scope.errorName = "";
+        $scope.errorCurrentPassword = "";
         $scope.errorPassword = "";
         $scope.errorPassword2 = "";
         $scope.alertMessage = "";
         if($scope.updatePassword && $scope.formData.password !== $scope.formData.password2) {
             $scope.errorPassword2 = "Passwords do not match. Please try again";
         } else {
-            if
+                urlapi = baseurlapi;
+
+            if($routeParams['type'] === 'update') {
+                if($scope.updatePassword) {
+                    urlapi = urlapi + '/all';
+                } else {
+                    urlapi = urlapi + '/displayname';
+                }
+            }
+
             $http({
                 method : 'POST',
                 url : urlapi,
@@ -206,6 +226,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         // if not successful, bind errors to error variables
                         $scope.errorName = data.errors.name;
                         $scope.errorPassword = data.errors.password;
+                        $scope.errorCurrentPassword = data.errors.currentpassword;
                         $scope.alertMessage = data.errors.message
                         $scope.alertError = true;
                     } else {
@@ -213,13 +234,13 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
 
+                        Session.updateSession();
+
                         if(!Session.data['configured']) {
                             $rootScope.timeCount = 10;
                             $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
 
                             $timeout(redirectToWelcome, 1000);
-
-                            Session.updateSession();
                         }
                     }
                 }

@@ -9,9 +9,9 @@ class User extends AssetManager
             );
 
     private $currentpassword = array(
-                'formdata' => 'password',
-                'name'=> 'Password',
-                'rules'=> 'xss_clean',
+                'formdata' => 'currentpassword',
+                'name'=> 'Current password',
+                'rules'=> 'required|xss_clean',
             );
 
     private $username = array(
@@ -49,8 +49,32 @@ class User extends AssetManager
 
     public function register($request='') {
         if($request === "new") {
-            if(is_configured()) {
+            if(is_configured() && is_logged_in()) {
+                $errors         = array();      // array to hold validation errors
+                $data           = array();      // array to pass back data
 
+                $this->form_validation->set_rules($this->pass['formdata'], $this->pass['name'], $this->pass['rules']);
+                $this->form_validation->set_rules($this->username['formdata'], $this->username['name'], $this->username['rules']);
+                $this->form_validation->set_rules($this->displayname['formdata'], $this->displayname['name'], $this->displayname['rules']);
+
+                if($this->form_validation->run() === false){
+                    $errors[$this->pass['formdata']] = form_error($this->pass['formdata'], ' ', ' ');
+                    $errors[$this->username['formdata']] = form_error($this->username['formdata'], ' ', ' ');
+                    $errors[$this->displayname['formdata']] = form_error($this->displayname['formdata'], ' ', ' ');
+                }else{
+                     $this->load->model("user_model");
+                     $user = $this->input->post($this->username['formdata']);
+                     $password = $this->input->post($this->pass['formdata']);
+                     $displayname = $this->input->post($this->displayname['formdata']);
+                     $access = $this->input->post('admin');
+                     $message = "";
+
+                     $update = $this->user_model->registerUser($user, $password, $displayname, $message, $access);
+                     if($update === false){
+                        $errors['message'] = $message;
+                     }
+                }
+                $this->senddata($data, $errors, "Update profile successfully");
             }
         } else {
             $this->load->view('base');
@@ -88,7 +112,7 @@ class User extends AssetManager
                 }
                 $this->senddata($data, $errors, "Update profile successfully");
             }
-        } if($request === "displayname") {
+        } else if($request === "displayname") {
             if(is_configured() && is_logged_in()) {
                 $errors         = array();      // array to hold validation errors
                 $data           = array();      // array to pass back data
