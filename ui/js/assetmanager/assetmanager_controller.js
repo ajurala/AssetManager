@@ -4,8 +4,8 @@ function checkStatus($q, $location, $http, Session) {
 
 function check_login($q, $location, $http, Session) {
     var deferred = $q.defer();
-    /* 
-     *  If login details not present then, get the login details 
+    /*
+     *  If login details not present then, get the login details
      *  and then check if need to move to login page or need to configure
      */
     data = Session.data;
@@ -39,7 +39,7 @@ function check_login($q, $location, $http, Session) {
             }
         }
     }
-    
+
     return deferred.promise;
 }
 
@@ -49,7 +49,7 @@ function navbarController($scope, $http, $location, $window, $rootScope, Session
         $rootScope.username = data['userinfo']['username'];
         $rootScope.displayname = data['userinfo']['displayname'];
     });
-    
+
     $scope.logout = function() {
         $http({
             method : 'POST',
@@ -59,7 +59,7 @@ function navbarController($scope, $http, $location, $window, $rootScope, Session
             Session.updateSession();
             $window.location.href = '';
         });
-    } 
+    }
 }
 function userprofileController($scope, $location) {
     $scope.editUserProfile = function() {
@@ -75,13 +75,13 @@ app.controller("welcomeController", function($scope, $location){
 
 app.controller("loginController", function($scope, $http, $location, Session){
     //console.log('loginController here');
-    
+
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
     $scope.formData = {};
     $scope.formData.name = '';
     $scope.formData.password = '';
-    
+
     $scope.processForm = function() {
         $scope.errorName = "";
         $scope.errorPassword = "";
@@ -96,7 +96,7 @@ app.controller("loginController", function($scope, $http, $location, Session){
             if(data) {
                 // Update the session as, server might have reset some information, like configured !!!
                 Session.updateSession();
-                
+
                 if (!data.success) {
                     // if not successful, bind errors to error variables
                     $scope.errorName = data.errors.name;
@@ -105,7 +105,7 @@ app.controller("loginController", function($scope, $http, $location, Session){
                 } else {
                     // if successful, go to welcome screen
                     $location.path('/');
-                }    
+                }
             }
         });
     };
@@ -125,7 +125,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             $location.path("/");
         }
     }
-    
+
     // create a blank object to hold our form information
     // $scope will allow this to pass between controller and view
     $scope.formData = {};
@@ -133,19 +133,19 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
     /*
      *  Modify these set of variables, depending on the scenario
      */
-    
+
     $scope.showUser = true;
-    
+
     if(!Session.data['configured']) {
         $scope.formData.name = 'admin';
         $scope.formData.displayname = 'Admin';
-        
+
         $scope.register = false;
         $scope.setPassword = true;
 
         $scope.message = 'Provide password for admin';
-        
-        urlapi = 'user/firstrun/configure';
+
+        baseurlapi = 'user/firstrun/configure';
     } else {
         //Cant come here without the check of access role in check_login, so show the register page or change settings page depending on the route
         if($routeParams['type'] === 'register') {
@@ -154,8 +154,8 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
 
             $scope.register = true;
             $scope.setPassword = false;
-            
-            urlapi = 'user/register'
+
+            baseurlapi = 'user/register'
         } else if($routeParams['type'] === 'update') {
             // User Settings scenario
             $scope.formData.name = Session.data['userinfo']['username'];
@@ -163,17 +163,17 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
 
             $scope.register = false;
             $scope.setPassword = false;
-            
-            urlapi = 'user/update';
+
+            baseurlapi = 'user/update';
         }
     }
 
-    /* 
+    /*
      *  No need to change the below expressions as it caters for:
      *  Registration
      *  Change Password
      *  Set Password of admin in initial configuration
-     *  
+     *
      *  Does not cater (Might need extra boolean variable:
      *  Change of display name
      */
@@ -182,16 +182,17 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
     $scope.showUpdateSettings = !$scope.register && !$scope.setPassword;
     $scope.disableUser = !$scope.register;
     $scope.disableDisplayName = !($scope.showUpdateSettings || $scope.register)
-    
+
     // process the form
     $scope.processForm = function() {
         $scope.errorName = "";
         $scope.errorPassword = "";
         $scope.errorPassword2 = "";
         $scope.alertMessage = "";
-        if($scope.formData.password !== $scope.formData.password2) {
+        if($scope.updatePassword && $scope.formData.password !== $scope.formData.password2) {
             $scope.errorPassword2 = "Passwords do not match. Please try again";
         } else {
+            if
             $http({
                 method : 'POST',
                 url : urlapi,
@@ -211,13 +212,13 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         // if successful, bind success message to message
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
-                        
+
                         if(!Session.data['configured']) {
                             $rootScope.timeCount = 10;
                             $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
-                            
+
                             $timeout(redirectToWelcome, 1000);
-                            
+
                             Session.updateSession();
                         }
                     }
