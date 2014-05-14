@@ -23,6 +23,26 @@ class Login_model extends CI_Model{
                 $this->session->set_userdata('username', $row->username);
                 $this->session->set_userdata('displayname', $row->displayname);
 
+                $this->db->select('accessid');
+                $query = $this->db->get_where('userroles', array('userid' => $row->id));
+
+                $count = $query->num_rows();
+
+                $accessroleids = array();
+                $accessroles = array();
+                foreach ($query->result() as $row)
+                {
+                    $accessroleids[] = $row->accessid;
+
+                    //get the access name
+                    $this->db->select('accessname');
+                    $query = $this->db->get_where('accessrole', array('accessid' => $row->accessid));
+                    $accessroles[] = $query->row()->accessname;
+                }
+
+                $this->session->set_userdata('accessroles', $accessroles);
+                $this->session->set_userdata('accessroleids', $accessroleids);
+
                 return true;
             } else {
                 return false;

@@ -77,8 +77,8 @@ class User_model extends CI_Model{
             } else {
                 // Check for the access role, if invalid then set the $message
                 // Only administrator can change user profile of administrator
-                if($userid != 0){
-
+                if($userid != 0 && access_allowed('otheruserupdate')){
+                    $update = true;
                 }
 
                 if(!$update) {
@@ -152,7 +152,11 @@ class User_model extends CI_Model{
 
         if($count === 0) {
 
-            // Check for the access role, if invalid then set the $message- TODO
+            /* Check for the access role, if invalid then set the $message- TODO */
+            /*
+             *  This should be handled at the constructer level it,
+             *  where if the uri is not allowed, redirect the user
+             */
 
             $hashpass = $this->bcrypt->hash_password($password);
 

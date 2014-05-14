@@ -2,10 +2,10 @@
 -- version 4.1.7
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: May 13, 2014 at 06:21 PM
--- Server version: 5.6.15
--- PHP Version: 5.3.27
+-- Host: localhost
+-- Generation Time: May 14, 2014 at 06:51 AM
+-- Server version: 5.6.16
+-- PHP Version: 5.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -92,11 +92,17 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 
 INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('home', 1),
-('login', 1),
+('login', 999),
 ('user', 1),
+('user/firstrun', 999),
+('user/firstrun/configure', 999),
 ('user/register', 0),
+('user/register/new', 0),
 ('user/update', 1),
-('welcome', 1);
+('user/update/all', 1),
+('user/update/displayname', 1),
+('otheruserupdate', 0),
+('welcome', 999);
 
 -- --------------------------------------------------------
 

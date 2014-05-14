@@ -49,7 +49,10 @@ function navbarController($scope, $http, $location, $window, $rootScope, Session
         $rootScope.username = data['userinfo']['username'];
         $rootScope.displayname = data['userinfo']['displayname'];
 
-        $rootScope.admin = $rootScope.username == 'admin';
+        accessroles = data['userinfo']['accessroles'];
+
+        /* NOTE: Currently checking with respect to accessrolename, might have to go for id */
+        $rootScope.admin = accessroles.indexOf('admin') != -1;
     });
 
     $scope.logout = function() {

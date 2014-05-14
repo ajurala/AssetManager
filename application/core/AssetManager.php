@@ -4,6 +4,12 @@ class AssetManager extends CI_Controller
 {
     public function __construct() {
         parent::__construct();
+        /* Check for access roles and then redirect if not allowed */
+
+        if(!access_allowed(uri_string())) {
+            //echo 'what???';
+            redirect('');
+        }
     }
 
     public function index() {
