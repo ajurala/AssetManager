@@ -26,13 +26,16 @@ class Login_model extends CI_Model{
                 $this->db->select('accessid');
                 $query = $this->db->get_where('userroles', array('userid' => $row->id));
 
-                $count = $query->num_rows();
-
                 $accessroleids = array();
                 $accessroles = array();
+                $admin = false;
                 foreach ($query->result() as $row)
                 {
                     $accessroleids[] = $row->accessid;
+
+                    if($row->accessid == 0) {
+                        $admin = true;
+                    }
 
                     //get the access name
                     $this->db->select('accessname');
@@ -42,6 +45,7 @@ class Login_model extends CI_Model{
 
                 $this->session->set_userdata('accessroles', $accessroles);
                 $this->session->set_userdata('accessroleids', $accessroleids);
+                $this->session->set_userdata('admin', $admin);
 
                 return true;
             } else {

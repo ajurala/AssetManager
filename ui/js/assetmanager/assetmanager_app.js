@@ -10,13 +10,25 @@ app.factory('Session', function($http, $q) {
                         'displayname': 'Unknown',
                         'accessroles': [-1],
                        }
-          },
+    },
+    currentuser: {
+        'username': 'unknown',
+        'displayname': 'unknown',
+        'admin': false
+    },
     defferred: $q.defer(),
     updateSession: function() {
       Session.defferred = $q.defer();
 
       /* load data from db */
-      $http.post('login/get_login_info').then(function(r) {Session.defferred.resolve(); Session.data = r.data;}, function(r) {Session.defferred.resolve();});
+      $http.post('login/get_login_info').then(function(r) {
+            Session.defferred.resolve(); 
+            Session.data = r.data; 
+            Session.currentuser['username'] = Session.data['userinfo']['username'];
+            Session.currentuser['displayname'] = Session.data['userinfo']['displayname'];
+            Session.currentuser['admin'] = Session.data['userinfo']['admin'];
+
+        }, function(r) {Session.defferred.resolve();});
     }
   };
   Session.updateSession();

@@ -14,7 +14,7 @@ function check_login($q, $location, $http, Session) {
     if(!data['configured']) {
         //Set the configured state in own session
         if($location.path() === '/user/firstrun') {
-            deferred.resolve();
+            resolve_deferred(deferred);
         } else {
             deferred.reject();
             $location.path('/user/firstrun');
@@ -28,16 +28,26 @@ function check_login($q, $location, $http, Session) {
                 deferred.reject();
                 $location.path('/');
             } else {
-                deferred.resolve();
+                resolve_deferred(deferred);
             }
         } else {
             if(data['loggedin']) {
-                deferred.resolve();
+                resolve_deferred(deferred);
             } else {
                 deferred.reject();
                 $location.path('/login');
             }
         }
+    }
+
+    function resolve_deferred(deferred) {
+        if($location.path() !== '/user/update'
+            && Session.data['userinfo']['username'] != Session.currentuser['username']) {
+            //reset the current username displayname
+            Session.currentuser['username'] = Session.data['userinfo']['username'];
+            Session.currentuser['displayname'] = Session.data['userinfo']['displayname'];
+        }
+        deferred.resolve();
     }
 
     return deferred.promise;
@@ -48,11 +58,7 @@ function navbarController($scope, $http, $location, $window, $rootScope, Session
         $rootScope.loggedin = data['loggedin']
         $rootScope.username = data['userinfo']['username'];
         $rootScope.displayname = data['userinfo']['displayname'];
-
-        accessroles = data['userinfo']['accessroles'];
-
-        /* NOTE: Currently checking with respect to accessrolename, might have to go for id */
-        $rootScope.admin = accessroles.indexOf('admin') != -1;
+        $rootScope.admin = data['userinfo']['admin'];
     });
 
     $scope.logout = function() {
@@ -72,17 +78,30 @@ function userprofileController($scope, $location) {
     }
 }
 
-function usersController($scope, $http, $location) {
-    $http({
-        method : 'POST',
-        url : 'user/users/all'
-    })
-    .success(function(data) {
-        //console.log(data.success);
-        if(data) {
-            $scope.users = data;
-        }
-    });
+function usersController($scope, $http, $location, Session) {
+    $scope.getUsersInfo = function() {
+        $http({
+            method : 'POST',
+            url : 'user/users/all'
+        })
+        .success(function(data) {
+            //console.log(data);
+            if(data) {
+                $scope.users = data;
+            }
+        });
+    }
+
+    $scope.editUserProfile = function(username, displayname, admin) {
+        //console.log(username);
+        Session.currentuser['username'] = username;
+        Session.currentuser['displayname'] = displayname;
+        Session.currentuser['admin'] = admin;
+
+        $location.path('/user/update');
+    }
+
+    $scope.getUsersInfo();
 }
 
 app.controller("welcomeController", function($scope, $location){
@@ -166,6 +185,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
      */
 
     $scope.showUser = true;
+    $scope.currentpassword = true;
 
     if(!Session.data['configured']) {
         $scope.formData.name = 'admin';
@@ -189,11 +209,15 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             baseurlapi = 'user/register/new'
         } else if($routeParams['type'] === 'update') {
             // User Settings scenario
-            $scope.formData.name = Session.data['userinfo']['username'];
-            $scope.formData.displayname = Session.data['userinfo']['displayname'];
+            $scope.formData.name = Session.currentuser['username'];
+            $scope.formData.displayname = Session.currentuser['displayname'];
+            $scope.formData.admin = Session.currentuser['admin'];
 
             $scope.register = false;
             $scope.setPassword = false;
+
+            /* Updating other user info, so no need of current password */
+            $scope.currentPassword = Session.data['userinfo']['username'] == Session.currentuser['username'];
 
             baseurlapi = 'user/update';
         }
@@ -245,6 +269,8 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             .success(function(data) {
                 //console.log(data.success);
                 if(data) {
+                    //console.log('mine');
+                    //console.log(data);
                     if (!data.success) {
                         // if not successful, bind errors to error variables
                         $scope.errorName = data.errors.name;
@@ -257,7 +283,8 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
 
-                        $scope.formData.admin = 'false';
+                        if($scope.currentPassword)
+                            $scope.formData.admin = 'false';
                         $scope.formData.password = '';
                         $scope.formData.password2 = '';
                         $scope.formData.currentpassword = '';

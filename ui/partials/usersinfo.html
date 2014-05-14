@@ -13,14 +13,16 @@
             <tr>
                 <th class='text-center'>Name</th>
                 <th class='text-center'>User Name</th>
+                <th class='text-center'>Admin</th>
                 <th class='text-center'>Net Assets</th>
                 <th class='text-center'></th>
             </tr>
             <tr ng-repeat="user in users">
                 <td class='text-center'><a href='user/view/{{user.username}}'>{{user.displayname}}</a></td>
                 <td class='text-center'>{{user.username}}</td>
+                <td class='text-center'><input type="checkbox" ng-model='user.admin' ng-disabled='true'></td>
                 <td class='text-center'>{{user.netassets}}</td>
-                <td class='text-right'><button type="button" class="btn btn-success btn-sm" ng-click="">Edit Profile</button></td>
+                <td class='text-right'><button type="button" class="btn btn-success btn-sm" ng-click="editUserProfile(user.username, user.displayname, user.admin)">Edit Profile</button></td>
             </tr>
         </table>
     </div>

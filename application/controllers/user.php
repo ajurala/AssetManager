@@ -8,10 +8,11 @@ class User extends AssetManager
                 'rules'=> 'required|xss_clean',
             );
 
+    // TODO - can current password be made "required"
     private $currentpassword = array(
                 'formdata' => 'currentpassword',
                 'name'=> 'Current password',
-                'rules'=> 'required|xss_clean',
+                'rules'=> 'xss_clean',
             );
 
     private $username = array(

@@ -2,10 +2,10 @@
 -- version 4.1.7
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: May 14, 2014 at 06:51 AM
--- Server version: 5.6.16
--- PHP Version: 5.3.28
+-- Host: 127.0.0.1
+-- Generation Time: May 14, 2014 at 03:46 PM
+-- Server version: 5.6.15
+-- PHP Version: 5.3.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -102,6 +102,7 @@ INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('user/update', 1),
 ('user/update/all', 1),
 ('user/update/displayname', 1),
+('user/users', 0),
 ('user/users/all', 0),
 ('welcome', 999);
 
@@ -113,15 +114,16 @@ INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 
 CREATE TABLE IF NOT EXISTS `specialperm` (
   `uri` varchar(40) NOT NULL,
-  PRIMARY KEY (`uri`)
+  `accessrole` int(11) NOT NULL,
+  PRIMARY KEY (`uri`,`accessrole`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `specialperm`
 --
 
-INSERT INTO `specialperm` (`uri`) VALUES
-('user/view/');
+INSERT INTO `specialperm` (`uri`, `accessrole`) VALUES
+('user/view/', 0);
 
 -- --------------------------------------------------------
 

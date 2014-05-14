@@ -26,19 +26,19 @@
             <span class="help-block" ng-show="errorDisplayName">{{ errorDisplayName }}</span>
         </div>
 
+        <div id="admin-checkbox" class="form-group" ng-show="register || !currentPassword">
+            <label class="checkbox-inline">
+                <input type="checkbox" name="admin" ng-model="formData.admin"> Admin access
+            </label>
+        </div>
+
         <div id="update-password-checkbox" class="form-group" ng-show="showUpdateSettings">
             <label class="checkbox-inline">
                 <input type="checkbox" name="updatePassword" ng-model="updatePassword"> Update Password
             </label>
         </div>
 
-        <div id="update-password-checkbox" class="form-group" ng-show="register">
-            <label class="checkbox-inline">
-                <input type="checkbox" name="admin" ng-model="formData.admin"> Admin access
-            </label>
-        </div>
-
-        <div id="current-password-group" class="form-group" ng-class="{ 'has-error' : errorCurrentPassword }" ng-show="updatePassword">
+        <div id="current-password-group" class="form-group" ng-class="{ 'has-error' : errorCurrentPassword }" ng-show="updatePassword && currentPassword">
             <label>Current Password</label>
             <input type="password" name="currentpassword" class="form-control" placeholder="Current Password" ng-model="formData.currentpassword">
             <span class="help-block" ng-show="errorCurrentPassword">{{ errorCurrentPassword }}</span>

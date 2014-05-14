@@ -77,7 +77,9 @@ class User_model extends CI_Model{
             } else {
                 // Check for the access role, if invalid then set the $message
                 // Only administrator can change user profile of administrator
+                // Else update any user password
                 if($userid != 0 && access_allowed('otheruserupdate')){
+                    $currentpassword = NULL;
                     $update = true;
                 }
 
@@ -109,11 +111,11 @@ class User_model extends CI_Model{
                         $storedhash = $row->userpassword;
 
                         /*
-                         *  If $currentpassword is null, then some admin is forcing password change
+                         *  If $currentpassword is NULL, then some admin is forcing password change
                          *  and we are already checking for access role, so fine to change password
                          */
 
-                        if($currentpassword ===NULL || $this->bcrypt->check_password($currentpassword, $storedhash)) {
+                        if($currentpassword === NULL || $this->bcrypt->check_password($currentpassword, $storedhash)) {
                             $hashpass = $this->bcrypt->hash_password($password);
                             $this->db->update('users', array('userpassword' => $hashpass, 'displayname' => $displayname), array('username' => $user));
 
@@ -208,15 +210,21 @@ class User_model extends CI_Model{
     public function getAllUsersInfo() {
         // Get the users and their net assets
         // Get usernames
-        $this->db->select('username, displayname');
+        $this->db->select('id, username, displayname');
         $query = $this->db->get('users');
         $usersInfo = array();
 
         foreach ($query->result() as $row)
         {
-            if($row->username !== 'admin') {
+            if($row->username !== 'admin' && $row->username !== $this->session->userdata('username')) {
                 $userInfo['username'] = $row->username;
                 $userInfo['displayname'] = $row->displayname;
+
+                $this->db->select('accessid');
+                $this->db->where(array('userid' => $row->id, 'accessid' => 0));
+                $count = $this->db->count_all_results('userroles');
+
+                $userInfo['admin'] = $count == 1;
 
                 // TODO - Get the netassets from db;
 

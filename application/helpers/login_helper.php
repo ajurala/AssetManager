@@ -23,6 +23,7 @@ if ( ! function_exists('get_user_info'))
         $user_info['displayname'] = $CI->session->userdata('displayname');
         $user_info['accessroles'] = $CI->session->userdata('accessroles');
         $user_info['accessroleids'] = $CI->session->userdata('accessroleids');
+        $user_info['admin'] = $CI->session->userdata('admin');
         return $user_info;
     }
 }
