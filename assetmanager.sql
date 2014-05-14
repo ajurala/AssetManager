@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2014 at 03:46 PM
+-- Generation Time: May 14, 2014 at 07:16 PM
 -- Server version: 5.6.15
 -- PHP Version: 5.3.27
 
@@ -61,6 +61,37 @@ INSERT INTO `assetmanager` (`configured`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `assets`
+--
+
+CREATE TABLE IF NOT EXISTS `assets` (
+  `assetid` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(11) NOT NULL,
+  `categoryid` int(11) NOT NULL,
+  `assetname` varchar(50) NOT NULL,
+  `assetdescription` text NOT NULL,
+  `units` double NOT NULL,
+  `ppu` double NOT NULL COMMENT 'priceperunit',
+  `unitform` varchar(20) NOT NULL,
+  PRIMARY KEY (`assetid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE IF NOT EXISTS `categories` (
+  `categoryid` int(11) NOT NULL AUTO_INCREMENT,
+  `categoryname` varchar(30) NOT NULL,
+  `riskid` int(11) NOT NULL,
+  PRIMARY KEY (`categoryid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `ci_sessions`
 --
 
@@ -105,6 +136,30 @@ INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('user/users', 0),
 ('user/users/all', 0),
 ('welcome', 999);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `riskcategories`
+--
+
+CREATE TABLE IF NOT EXISTS `riskcategories` (
+  `riskid` int(11) NOT NULL AUTO_INCREMENT,
+  `riskname` varchar(20) NOT NULL,
+  PRIMARY KEY (`riskid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `riskcategories`
+--
+
+INSERT INTO `riskcategories` (`riskid`, `riskname`) VALUES
+(1, 'Very High'),
+(2, 'High'),
+(3, 'Medium'),
+(4, 'Low'),
+(5, 'Very Low'),
+(6, 'No');
 
 -- --------------------------------------------------------
 
