@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('home', 1),
 ('login', 999),
+('otheruserupdate', 0),
 ('user', 1),
 ('user/firstrun', 999),
 ('user/firstrun/configure', 999),
@@ -101,8 +102,26 @@ INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('user/update', 1),
 ('user/update/all', 1),
 ('user/update/displayname', 1),
-('otheruserupdate', 0),
+('user/users/all', 0),
 ('welcome', 999);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `specialperm`
+--
+
+CREATE TABLE IF NOT EXISTS `specialperm` (
+  `uri` varchar(40) NOT NULL,
+  PRIMARY KEY (`uri`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `specialperm`
+--
+
+INSERT INTO `specialperm` (`uri`) VALUES
+('user/view/');
 
 -- --------------------------------------------------------
 

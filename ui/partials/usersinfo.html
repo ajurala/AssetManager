@@ -1,0 +1,27 @@
+<div class="col-md-6 col-md-offset-3" ng-controller="usersController">
+    <!-- PAGE TITLE -->
+    <div class="page-header">
+        <h1>
+            <span class="glyphicon glyphicon-user"></span>
+            <span> Users Information</span>
+            <span></span>
+        </h1>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <th class='text-center'>Name</th>
+                <th class='text-center'>User Name</th>
+                <th class='text-center'>Net Assets</th>
+                <th class='text-center'></th>
+            </tr>
+            <tr ng-repeat="user in users">
+                <td class='text-center'><a href='user/view/{{user.username}}'>{{user.displayname}}</a></td>
+                <td class='text-center'>{{user.username}}</td>
+                <td class='text-center'>{{user.netassets}}</td>
+                <td class='text-right'><button type="button" class="btn btn-success btn-sm" ng-click="">Edit Profile</button></td>
+            </tr>
+        </table>
+    </div>
+</div>

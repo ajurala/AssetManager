@@ -7,7 +7,6 @@ class AssetManager extends CI_Controller
         /* Check for access roles and then redirect if not allowed */
 
         if(!access_allowed(uri_string())) {
-            //echo 'what???';
             redirect('');
         }
     }

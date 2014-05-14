@@ -7,7 +7,8 @@ app.factory('Session', function($http, $q) {
            'loggedin': false,
            'userinfo': {'userid': '-1',
                         'username': 'unknown',
-                        'displayname': 'Unknown'
+                        'displayname': 'Unknown',
+                        'accessroles': [-1],
                        }
           },
     defferred: $q.defer(),
@@ -30,6 +31,12 @@ app.config(function($routeProvider, $locationProvider){
             toAllowOrNot: checkStatus
         }
     })
+    .when("/user/users", {
+        templateUrl : "ui/partials/usersinfo.html",
+        resolve: {
+            toAllowOrNot: checkStatus
+        }
+    })
     .when("/user/:type", {
         controller : "userController",
         templateUrl : "ui/partials/user.html",
@@ -38,7 +45,6 @@ app.config(function($routeProvider, $locationProvider){
         }
     })
     .when("/user", {
-        //controller : "userProfileController",
         templateUrl : "ui/partials/userprofile.html",
         resolve: {
             toAllowOrNot: checkStatus

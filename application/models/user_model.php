@@ -204,4 +204,27 @@ class User_model extends CI_Model{
 
         return true;
     }
+
+    public function getAllUsersInfo() {
+        // Get the users and their net assets
+        // Get usernames
+        $this->db->select('username, displayname');
+        $query = $this->db->get('users');
+        $usersInfo = array();
+
+        foreach ($query->result() as $row)
+        {
+            if($row->username !== 'admin') {
+                $userInfo['username'] = $row->username;
+                $userInfo['displayname'] = $row->displayname;
+
+                // TODO - Get the netassets from db;
+
+                $userInfo['netassets'] = 0;
+                $usersInfo[] = $userInfo;
+            }
+        }
+
+        return $usersInfo;
+    }
 }

@@ -70,6 +70,8 @@ if ( ! function_exists('access_allowed'))
         // Get the uri perms first
         $permissions = get_permissions();
 
+        //var_dump($permissions);
+
         /* If access to all , then return true, else check for access role */
         if(array_key_exists ( $permkey , $permissions )) {
             $permission = $permissions[$permkey];
@@ -109,6 +111,33 @@ if ( ! function_exists('get_permissions'))
             foreach ($query->result() as $row)
             {
                 $permissions[$row->uri] = $row->accessrole;
+            }
+
+            // Get usernames
+            $CI->db->select('username');
+            $query = $CI->db->get('users');
+            $users = array();
+
+            foreach ($query->result() as $row)
+            {
+                $users[] = $row->username;
+            }
+
+            // Get special permissions
+            $query = $CI->db->get('specialperm');
+            $splperm = array();
+
+            foreach ($query->result() as $row)
+            {
+                foreach ($users as $user) {
+                    /* Admin is never shown as an user */
+                    if($user !== 'admin') {
+                        $permissions[$row->uri.$user] = $row->accessrole;
+                    }
+                }
+
+                /* Show a collective view too */
+                $permissions[$row->uri."all"] = $row->accessrole;
             }
 
             $CI->session->set_userdata('permissions', $permissions);

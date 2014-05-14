@@ -47,6 +47,20 @@ class User extends AssetManager
         echo json_encode($data);
     }
 
+    public function users($request='') {
+        if($request === "all") {
+            if(is_configured() && is_logged_in()){
+                // Access control is being handled in the constructer, so we are safe
+                $this->load->model("user_model");
+                $usersinfo = $this->user_model->getAllUsersInfo();
+
+                echo json_encode($usersinfo);
+            }
+        } else {
+            $this->load->view('base');
+        }
+    }
+
     public function register($request='') {
         if($request === "new") {
             if(is_configured() && is_logged_in()) {

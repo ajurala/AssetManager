@@ -11,7 +11,7 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="<?php echo base_url(); ?>home">Home</a></li>
         </ul>
-        
+
         <ul class="nav navbar-nav navbar-right" ng-controller="navbarController">
         <li class="dropdown" ng-show="loggedin">
           <a href="" class="dropdown-toggle" data-toggle="dropdown">
@@ -21,13 +21,14 @@
           <ul class="dropdown-menu">
             <li><a href="<?php echo base_url(); ?>user">Profile</a></li>
             <li ng-show="admin"><a href="<?php echo base_url(); ?>user/register">Register user</a></li>
+            <li ng-show="admin"><a href="<?php echo base_url(); ?>user/users">Users</a></li>
             <li class="divider"></li>
             <li><a href="" ng-click="logout()">Logout</a></li>
           </ul>
         </li>
         <li class="active" ng-hide="loggedin"><a href="<?php echo base_url(); ?>login">Login</a></li>
       </ul>
-      </div><!--/.nav-collapse --> 
+      </div><!--/.nav-collapse -->
     </div>
   </div>
 </div>

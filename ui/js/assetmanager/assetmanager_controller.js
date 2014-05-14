@@ -72,6 +72,19 @@ function userprofileController($scope, $location) {
     }
 }
 
+function usersController($scope, $http, $location) {
+    $http({
+        method : 'POST',
+        url : 'user/users/all'
+    })
+    .success(function(data) {
+        //console.log(data.success);
+        if(data) {
+            $scope.users = data;
+        }
+    });
+}
+
 app.controller("welcomeController", function($scope, $location){
     //console.log('welcomeController here');
 
