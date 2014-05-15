@@ -56,7 +56,7 @@ class User_model extends CI_Model{
 
     }
 
-    public function updateUser($user, $password, $currentpassword, $displayname, &$message) {
+    public function updateUser($user, $password, $currentpassword, $displayname, $admin, &$message) {
 
         // Check if user is already present, if so update the password, else problem
         $this->db->select('id, username');
@@ -132,6 +132,28 @@ class User_model extends CI_Model{
                         return false;
                     }
                 }
+
+                /*
+                 *  Update the admin or non admin role
+                 *  If $currentpassword is NULL, then some admin is modifying user profile,
+                 *  so change the access roles
+                 */
+                if($currentpassword === NULL) {
+
+                    // Delete the current roles
+                    $this->db->delete('userroles', array('userid' => $userid));
+
+                    // Now add the roles
+                    if($admin) {
+                        $this->addAdminAccess($userid);
+                    } else {
+                        $data = array(
+                                'userid' => $userid,
+                                'accessid' => 1
+                            );
+                        $this->db->insert('userroles', $data);
+                    }
+                }
             }
 
         } else {
@@ -143,7 +165,7 @@ class User_model extends CI_Model{
         return true;
     }
 
-    public function registerUser($user, $password, $displayname, $access, &$message) {
+    public function registerUser($user, $password, $displayname, $admin, &$message) {
 
         // Check if user is already present, if so return error
         $this->db->select('id, username');
@@ -185,7 +207,7 @@ class User_model extends CI_Model{
                 $row = $query->row();
                 $userid = $row->id;
 
-                if($access) {
+                if($admin) {
                     $this->addAdminAccess($userid);
                 } else {
                     $data = array(

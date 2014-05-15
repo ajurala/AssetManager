@@ -26,7 +26,7 @@
             <span class="help-block" ng-show="errorDisplayName">{{ errorDisplayName }}</span>
         </div>
 
-        <div id="admin-checkbox" class="form-group" ng-show="register || !currentPassword">
+        <div id="admin-checkbox" class="form-group" ng-show="(register || !currentPassword) && !setPassword">
             <label class="checkbox-inline">
                 <input type="checkbox" name="admin" ng-model="formData.admin"> Admin access
             </label>

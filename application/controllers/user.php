@@ -82,10 +82,10 @@ class User extends AssetManager
                      $user = $this->input->post($this->username['formdata']);
                      $password = $this->input->post($this->pass['formdata']);
                      $displayname = $this->input->post($this->displayname['formdata']);
-                     $access = $this->input->post('admin') === "true";
+                     $admin = $this->input->post('admin') === "true";
                      $message = "";
 
-                     $update = $this->user_model->registerUser($user, $password, $displayname, $access, $message);
+                     $update = $this->user_model->registerUser($user, $password, $displayname, $admin, $message);
                      if($update === false){
                         $errors['message'] = $message;
                      }
@@ -119,9 +119,10 @@ class User extends AssetManager
                      $password = $this->input->post($this->pass['formdata']);
                      $currentpassword = $this->input->post($this->currentpassword['formdata']);
                      $displayname = $this->input->post($this->displayname['formdata']);
+                     $admin = $this->input->post('admin') === "true";
                      $message = "";
 
-                     $update = $this->user_model->updateUser($user, $password, $currentpassword, $displayname, $message);
+                     $update = $this->user_model->updateUser($user, $password, $currentpassword, $displayname, $admin, $message);
                      if($update === false){
                         $errors['message'] = $message;
                      }
@@ -143,9 +144,10 @@ class User extends AssetManager
                      $this->load->model("user_model");
                      $user = $this->input->post($this->username['formdata']);
                      $displayname = $this->input->post($this->displayname['formdata']);
+                     $admin = $this->input->post('admin') === "true";
                      $message = "";
 
-                     $update = $this->user_model->updateUser($user, NULL, NULL, $displayname, $message);
+                     $update = $this->user_model->updateUser($user, NULL, NULL, $displayname, $admin, $message);
                      if($update === false){
                         $errors['message'] = $message;
                      }
