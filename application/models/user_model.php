@@ -19,6 +19,17 @@ class User_model extends CI_Model{
         }
     }
 
+    private function updateAccessRoles($admin, $userid) {
+        if($admin) {
+            $this->addAdminAccess($userid);
+        } else {
+            $data = array(
+                    'userid' => $userid,
+                    'accessid' => 1
+                );
+            $this->db->insert('userroles', $data);
+    }
+
     // Update the admin password
     public function updateadmin($user, $password) {
         if($user !== 'admin') {
@@ -131,28 +142,22 @@ class User_model extends CI_Model{
                         $message = 'No such user to update profile';
                         return false;
                     }
+
+                    /*
+                     *  Update the admin or non admin role
+                     *  If $currentpassword is NULL, then some admin is modifying user profile,
+                     *  so change the access roles
+                     */
+                    if($currentpassword === NULL) {
+                        // Delete the current roles
+                        $this->db->delete('userroles', array('userid' => $userid));
+
+                        // Now add the roles
+                        updateAccessRoles($admin, $userid);
+                    }
                 }
 
-                /*
-                 *  Update the admin or non admin role
-                 *  If $currentpassword is NULL, then some admin is modifying user profile,
-                 *  so change the access roles
-                 */
-                if($currentpassword === NULL) {
 
-                    // Delete the current roles
-                    $this->db->delete('userroles', array('userid' => $userid));
-
-                    // Now add the roles
-                    if($admin) {
-                        $this->addAdminAccess($userid);
-                    } else {
-                        $data = array(
-                                'userid' => $userid,
-                                'accessid' => 1
-                            );
-                        $this->db->insert('userroles', $data);
-                    }
                 }
             }
 
@@ -207,15 +212,7 @@ class User_model extends CI_Model{
                 $row = $query->row();
                 $userid = $row->id;
 
-                if($admin) {
-                    $this->addAdminAccess($userid);
-                } else {
-                    $data = array(
-                            'userid' => $userid,
-                            'accessid' => 1
-                        );
-                    $this->db->insert('userroles', $data);
-                }
+                updateAccessRoles($admin, $userid);
             } else {
                 $message = 'User was not registered';
                 return false;
