@@ -28,6 +28,7 @@ class User_model extends CI_Model{
                     'accessid' => 1
                 );
             $this->db->insert('userroles', $data);
+        }
     }
 
     // Update the admin password
@@ -153,11 +154,8 @@ class User_model extends CI_Model{
                         $this->db->delete('userroles', array('userid' => $userid));
 
                         // Now add the roles
-                        updateAccessRoles($admin, $userid);
+                        $this->updateAccessRoles($admin, $userid);
                     }
-                }
-
-
                 }
             }
 
@@ -212,7 +210,7 @@ class User_model extends CI_Model{
                 $row = $query->row();
                 $userid = $row->id;
 
-                updateAccessRoles($admin, $userid);
+                $this->updateAccessRoles($admin, $userid);
             } else {
                 $message = 'User was not registered';
                 return false;

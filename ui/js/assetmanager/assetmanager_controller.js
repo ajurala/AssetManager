@@ -108,6 +108,9 @@ app.controller("welcomeController", function($scope, $location){
     //console.log('welcomeController here');
 
     //$location.path('login')
+    $scope.gotohome = function() {
+        $location.path( '/home' );
+    }
 })
 
 app.controller("loginController", function($scope, $http, $location, Session){
@@ -283,7 +286,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         $scope.alertMessage = data.message;
                         $scope.alertError = false;
 
-                        if($scope.currentPassword)
+                        if($scope.register || $scope.currentPassword)
                             $scope.formData.admin = 'false';
                         $scope.formData.password = '';
                         $scope.formData.password2 = '';
@@ -292,7 +295,7 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
                         Session.updateSession();
 
                         if(!Session.data['configured']) {
-                            $rootScope.timeCount = 10;
+                            $rootScope.timeCount = 5;
                             $rootScope.alertInfo = "You will be directed to Welcome / Login page in " +  $scope.timeCount + " seconds"
 
                             $timeout(redirectToWelcome, 1000);

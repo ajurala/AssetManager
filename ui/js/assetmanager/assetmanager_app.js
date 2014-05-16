@@ -36,7 +36,13 @@ app.factory('Session', function($http, $q) {
 });
 
 app.config(function($routeProvider, $locationProvider){
-    $routeProvider.when("/login", {
+    $routeProvider.when("/home", {
+        templateUrl : "ui/partials/home.html",
+        resolve: {
+            toAllowOrNot: checkStatus
+        }
+    })
+    .when("/login", {
         controller : "loginController",
         templateUrl : "ui/partials/login.html",
         resolve: {
