@@ -1,5 +1,5 @@
 // define angular module/app
-var app = angular.module('AssetManager', ['ngRoute']);
+var app = angular.module('AssetManager', ['ngRoute', 'ui.bootstrap']);
 
 app.factory('Session', function($http, $q) {
   var Session = {

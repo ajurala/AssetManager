@@ -54,6 +54,9 @@ function check_login($q, $location, $http, Session) {
 }
 
 function navbarController($scope, $http, $location, $window, $rootScope, Session) {
+
+    $scope.isCollapsed = true;
+
     $scope.$watch( function () { return Session.data; }, function ( data ) {
         $rootScope.loggedin = data['loggedin']
         $rootScope.username = data['userinfo']['username'];
@@ -128,8 +131,14 @@ app.controller("loginController", function($scope, $http, $location, Session){
         $http({
             method : 'POST',
             url : 'login/loginUser',
-            data : $.param($scope.formData), // pass in data as strings
-            headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
+            data : $scope.formData, // pass in data as strings
+            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+            transformRequest: function(obj) {
+                str = [];
+                for(p in obj)
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
         })
         .success(function(data) {
             //console.log(data.success);
@@ -266,8 +275,14 @@ app.controller("userController", function($scope, $http, $rootScope, $timeout, $
             $http({
                 method : 'POST',
                 url : urlapi,
-                data : $.param($scope.formData), // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' } // set the headers so angular passing info as form data (not request payload)
+                data : $scope.formData, // pass in data as strings
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                transformRequest: function(obj) {
+                    str = [];
+                    for(p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                },
             })
             .success(function(data) {
                 //console.log(data.success);

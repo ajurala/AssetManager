@@ -1,20 +1,20 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" ng-controller="navbarController">
   <div class="navbar-inner">
     <div class="container">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+      <button type="button" class="navbar-toggle" ng-click="isCollapsed = !isCollapsed">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">Asset Manager</a>
-      <div class="navbar-collapse collapse">
+      <div class="navbar-collapse" collapse="isCollapsed">
         <ul class="nav navbar-nav">
           <li class="active"><a href="<?php echo base_url(); ?>home">Home</a></li>
         </ul>
 
-        <ul class="nav navbar-nav navbar-right" ng-controller="navbarController">
+        <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" ng-show="loggedin">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown">
+          <a href class="dropdown-toggle">
             {{displayname}}
             <b class="caret"></b>
           </a>
