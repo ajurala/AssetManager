@@ -1,1 +1,26 @@
-<h2>This is home page</h2>
+<div class="col-md-10 col-md-offset-1">
+    <div class="page-header">
+        <h1><span class="glyphicon glyphicon-briefcase"></span> <strong>Net Assets:</strong> {{netassets}}</h1>
+    </div>
+    <tabset>
+        <tab heading="Assets" popover="Group by Assets" popover-trigger="mouseenter" popover-placement="bottom">
+
+        <assetchart></assetchart>
+
+        <div class="assetchart" items="ideas"></div>
+            
+        </tab>
+        <tab heading="Asset Types" popover="Group by Asset types" popover-trigger="mouseenter" popover-placement="bottom">
+            
+        </tab>
+        <tab heading="Sub Asset Types" popover="Group by Sub Asset types" popover-trigger="mouseenter" popover-placement="bottom">
+            
+        </tab>
+        <tab heading="Risk" popover="Group by Risk types" popover-trigger="mouseenter" popover-placement="bottom">
+            
+        </tab>
+        <tab heading="Update Asset Types" popover="Add/Update/Remove asset types" popover-trigger="mouseenter" popover-placement="bottom">
+            
+        </tab>
+    </tabset>
+</div>

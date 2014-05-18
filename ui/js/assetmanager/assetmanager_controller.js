@@ -1,5 +1,8 @@
 function checkStatus($q, $location, $http, Session) {
-    return Session.defferred.promise.then(function(response){return check_login($q, $location, $http, Session)});
+    return Session.defferred.promise
+                .then(function(response){return Session.assetsotherinfodefferred.promise})
+                .then(function(response){return Session.assetsinfodefferred.promise})
+                .then(function(response){return check_login($q, $location, $http, Session)});
 }
 
 function check_login($q, $location, $http, Session) {
@@ -106,6 +109,17 @@ function usersController($scope, $http, $location, Session) {
 
     $scope.getUsersInfo();
 }
+
+app.controller("homeController", function($scope, Session){
+    Session.getAssetsOtherInfo();
+    Session.getAssetsInfo();
+
+    $scope.ideas = [
+        ['ideas1', 1],
+        ['ideas2', 8],
+        ['ideas3', 5]
+    ];
+})
 
 app.controller("welcomeController", function($scope, $location){
     //console.log('welcomeController here');

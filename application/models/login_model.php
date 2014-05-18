@@ -1,4 +1,5 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 class Login_model extends CI_Model{
     public function __construct(){
         parent::__construct();
@@ -23,6 +24,8 @@ class Login_model extends CI_Model{
                 $this->session->set_userdata('username', $row->username);
                 $this->session->set_userdata('displayname', $row->displayname);
 
+                $userid = $row->id;
+
                 $this->db->select('accessid');
                 $query = $this->db->get_where('userroles', array('userid' => $row->id));
 
@@ -46,6 +49,8 @@ class Login_model extends CI_Model{
                 $this->session->set_userdata('accessroles', $accessroles);
                 $this->session->set_userdata('accessroleids', $accessroleids);
                 $this->session->set_userdata('admin', $admin);
+
+                $this->session->set_userdata('currentuserid', $userid);
 
                 return true;
             } else {
