@@ -5,10 +5,22 @@
     <tabset>
         <tab heading="Assets" popover="Group by Assets" popover-trigger="mouseenter" popover-placement="bottom">
 
-        <assetchart></assetchart>
+            <div class="col-md-6">
+            <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                x="xFunction()" y="yFunction()" tooltips="true" labelType="percent" showLegend="true">
+                <svg></svg>
+            </nvd3-pie-chart>
+            <h1 class="chart-title"> Invested Assets </h1>
+            </div>
 
-        <div class="assetchart" items="ideas"></div>
-            
+            <div class="col-md-6">
+            <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                x="xFunction()" y="yFunction()" tooltips="true" labelType="percent" showLegend="true">
+                <svg></svg>
+            </nvd3-pie-chart>
+            <h1 class="chart-title"> Current Assets</h1>
+            </div>
+
         </tab>
         <tab heading="Asset Types" popover="Group by Asset types" popover-trigger="mouseenter" popover-placement="bottom">
             

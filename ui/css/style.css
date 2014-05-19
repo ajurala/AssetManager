@@ -2,6 +2,10 @@ body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
+.chart-title {
+    text-align: center;
+    margin-top: -50px;
+}
 .vertical-middle {
     vertical-align: middle;
 }
