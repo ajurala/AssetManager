@@ -6,19 +6,49 @@
         <tab heading="Assets" popover="Group by Assets" popover-trigger="mouseenter" popover-placement="bottom">
 
             <div class="col-md-6">
-            <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
-                x="nameFunction()" y="ppuFunction()" tooltips="true" labelType="percent" showLegend="true">
-                <svg></svg>
-            </nvd3-pie-chart>
-            <h1 class="chart-title"> Invested Assets </h1>
+                <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                    x="nameFunction()" y="ppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+                    objectEquality="true" >
+                    <svg></svg>
+                </nvd3-pie-chart>
+                <h1 class="chart-title"> Invested Assets </h1>
             </div>
 
             <div class="col-md-6">
-            <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
-                x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true">
-                <svg></svg>
-            </nvd3-pie-chart>
-            <h1 class="chart-title"> Current Assets</h1>
+                <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                    x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+                    objectEquality="true" >
+                    <svg></svg>
+                </nvd3-pie-chart>
+                <h1 class="chart-title"> Current Assets</h1>
+            </div>
+            <div class="clearfix visible-*"></div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <th class='text-center'>Asset Name</th>
+                        <th class='text-center'>Category</th>
+                        <th class='text-center'>Sub-Category</th>
+                        <th class='text-center'>Units</th>
+                        <th class='text-center'>Invested Price Per Unit</th>
+                        <th class='text-center'>Invested Total</th>
+                        <th class='text-center'>Current Price Per Unit</th>
+                        <th class='text-center'>Current Total</th>
+
+                    </tr>
+
+                    <tr ng-repeat="asset in data" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top">
+                        <td class='text-center'>{{asset.assetname}}</td>
+                        <td class='text-center'>{{asset.subcategoryid}}</td>
+                        <td class='text-center'>{{asset.subcategoryid}}</td>
+                        <td class='text-center'>{{asset.units}} {{asset.unitform}}</td>
+                        <td class='text-center'>{{asset.ppu}}</td>
+                        <td class='text-center'>{{getppu(data[$index])}}</td>
+                        <td class='text-center'>{{asset.cppu}}</td>
+                        <td class='text-center'>{{getcppu(data[$index])}}</td>
+                    </tr>
+                    
+                </table>
             </div>
 
         </tab>

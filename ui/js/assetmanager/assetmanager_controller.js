@@ -121,6 +121,8 @@ app.controller("homeController", function($scope, Session){
 
         assetsInfo = Session.assetsinfo;
 
+        console.log(assetsInfo);
+
         $scope.data = assetsInfo.assets;
 
         $scope.nameFunction = function(){
@@ -149,6 +151,8 @@ app.controller("homeController", function($scope, Session){
             };
         }
 
+        $scope.getppu = $scope.ppuFunction()
+
         $scope.cppuFunction = function(){
             return function(d){
                 if(d.dcval == null) {
@@ -167,6 +171,8 @@ app.controller("homeController", function($scope, Session){
                 return d.dcval
             };
         }
+
+        $scope.getcppu = $scope.cppuFunction()
 
         /*
         $scope.toolTipContentFunction = function(){
