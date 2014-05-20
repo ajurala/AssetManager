@@ -2,10 +2,10 @@
 -- version 4.1.7
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: May 17, 2014 at 02:13 PM
--- Server version: 5.6.15
--- PHP Version: 5.3.27
+-- Host: localhost
+-- Generation Time: May 20, 2014 at 10:36 AM
+-- Server version: 5.6.16
+-- PHP Version: 5.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `assetdescription` text NOT NULL,
   `units` double NOT NULL,
   `ppu` double NOT NULL COMMENT 'priceperunit',
+  `cppu` double DEFAULT NULL,
   `unitform` varchar(20) NOT NULL,
   `color` int(11) DEFAULT NULL,
   PRIMARY KEY (`assetid`)
@@ -81,8 +82,8 @@ CREATE TABLE IF NOT EXISTS `assets` (
 -- Dumping data for table `assets`
 --
 
-INSERT INTO `assets` (`assetid`, `userid`, `subcategoryid`, `assetname`, `assetdescription`, `units`, `ppu`, `unitform`, `color`) VALUES
-(1, 0, 1, 'HDFC 200', 'Equity mutual fund', 45, 25, '', NULL);
+INSERT INTO `assets` (`assetid`, `userid`, `subcategoryid`, `assetname`, `assetdescription`, `units`, `ppu`, `cppu`, `unitform`, `color`) VALUES
+(1, 0, 1, 'HDFC 200', 'Equity mutual fund', 45, 25, 27, '', NULL);
 
 -- --------------------------------------------------------
 
@@ -125,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('6145969d80d096ebbe14fbd5f76873cf', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400334211, 'a:11:{s:9:"user_data";s:0:"";s:10:"configured";s:1:"1";s:11:"permissions";a:20:{s:4:"home";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
+('c66e1dbb9fb7f00fb9621d632a0440d5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0', 1400578183, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:20:{s:4:"home";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
 
 -- --------------------------------------------------------
 
@@ -217,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `subcategories` (
   `riskid` int(11) NOT NULL,
   `subcategoryname` varchar(40) NOT NULL,
   `priceperunit` double NOT NULL DEFAULT '0',
+  `currentpriceperunit` double DEFAULT NULL,
   `unitform` varchar(20) NOT NULL,
   `color` int(11) DEFAULT NULL,
   PRIMARY KEY (`categoryid`,`subcategoryid`)
@@ -226,8 +228,8 @@ CREATE TABLE IF NOT EXISTS `subcategories` (
 -- Dumping data for table `subcategories`
 --
 
-INSERT INTO `subcategories` (`categoryid`, `subcategoryid`, `riskid`, `subcategoryname`, `priceperunit`, `unitform`, `color`) VALUES
-(1, 1, 1, 'Large Cap', 23, '', NULL);
+INSERT INTO `subcategories` (`categoryid`, `subcategoryid`, `riskid`, `subcategoryname`, `priceperunit`, `currentpriceperunit`, `unitform`, `color`) VALUES
+(1, 1, 1, 'Large Cap', 23, NULL, '', NULL);
 
 -- --------------------------------------------------------
 

@@ -22,7 +22,7 @@ app.factory('Session', function($http, $q) {
 
       /* load data from db */
       $http.post('login/get_login_info').then(function(r) {
-            Session.data = r.data; 
+            Session.data = r.data;
             Session.currentuser['username'] = Session.data['userinfo']['username'];
             Session.currentuser['displayname'] = Session.data['userinfo']['displayname'];
             Session.currentuser['admin'] = Session.data['userinfo']['admin'];
@@ -40,7 +40,7 @@ app.factory('Session', function($http, $q) {
       $http.post('home/getotherinfo').then(function(r) {
             Session.assetsotherinfo = r.data;
 
-            Session.assetsotherinfodefferred.resolve(); 
+            Session.assetsotherinfodefferred.resolve();
         }, function(r) {Session.assetsotherinfodefferred.resolve();});
     },
 
@@ -52,8 +52,9 @@ app.factory('Session', function($http, $q) {
       /* load data from db */
       $http.post('home/getnetassets').then(function(r) {
             Session.assetsinfo = r.data;
+            //console.log(Session.assetsinfo)
 
-            Session.assetsinfodefferred.resolve(); 
+            Session.assetsinfodefferred.resolve();
         }, function(r) {Session.assetsinfodefferred.resolve();});
     },
   };

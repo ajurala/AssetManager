@@ -113,34 +113,69 @@ function usersController($scope, $http, $location, Session) {
 app.controller("homeController", function($scope, Session){
     Session.getAssetsOtherInfo();
     Session.getAssetsInfo();
+    Session.assetsotherinfodefferred.promise
+        .then(function(response){return Session.assetsinfodefferred.promise})
+        .then(function(response){updateAssetsData()});
 
-    $scope.data = [
-        { key: "One", y: 5 },
-        { key: "Two", y: 2 },
-        { key: "Three", y: 9 },
-        { key: "Four", y: 7 },
-        { key: "Five", y: 4 },
-        { key: "Six", y: 3 },
-        { key: "Seven", y: 9 },
-    ];
+    updateAssetsData = function() {
 
-    $scope.xFunction = function(){
-        return function(d) {
-            return d.key;
-        };
-    }
+        assetsInfo = Session.assetsinfo;
 
-    $scope.yFunction = function(){
-        return function(d){
-            return d.y;
-        };  
-    }
+        $scope.data = assetsInfo.assets;
 
-    $scope.toolTipContentFunction = function(){
-        return function(key, x, y, e, graph) {
-            return  '<h1>' + key + '</h1>' +
-                '<p>' +  y + ' at ' + x + '</p>'
+        $scope.nameFunction = function(){
+            return function(d) {
+                return d.assetname;
+            };
         }
+
+        $scope.ppuFunction = function(){
+            return function(d){
+                if(d.dval == null) {
+                    // Calculate the values now and save it for later use
+                    // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
+                    //       or when category ppu changes
+                    if(d.ppu != null) {
+                        d.dval = d.ppu
+                    } else {
+                        d.dval = 0 //Should get value from the subcategory
+                    }
+
+                    d.dval = d.dval * d.units
+                    return d.dval
+                }
+
+                return d.dval
+            };
+        }
+
+        $scope.cppuFunction = function(){
+            return function(d){
+                if(d.dcval == null) {
+                    // Calculate the values now and save it for later use
+                    // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
+                    //       or when category cppu changes
+                    if(d.cppu != null) {
+                        d.dcval = d.cppu
+                    } else {
+                        d.dcval = 0 //Should get value from the subcategory
+                    }
+
+                    d.dcval = d.dcval * d.units
+                }
+
+                return d.dcval
+            };
+        }
+
+        /*
+        $scope.toolTipContentFunction = function(){
+            return function(key, x, y, e, graph) {
+                return  '<h1>' + key + '</h1>' +
+                    '<p>' +  y + ' at ' + x + '</p>'
+            }
+        }
+        */
     }
 
 })
