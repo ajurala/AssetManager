@@ -9,3 +9,7 @@ body {
 .vertical-middle {
     vertical-align: middle;
 }
+.emptychart {
+    padding-top: 150px;
+    height: 450px;
+}

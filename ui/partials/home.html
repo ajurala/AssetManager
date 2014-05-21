@@ -6,26 +6,30 @@
         <tab heading="Assets" popover="Group by Assets" popover-trigger="mouseenter" popover-placement="bottom">
 
             <div class="col-md-6">
-                <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                <nvd3-pie-chart data="chartdata" height="450" showLabels="true" noData="Nothing to show"
                     x="nameFunction()" y="ppuFunction()" tooltips="true" labelType="percent" showLegend="true"
-                    objectEquality="true" >
+                    objectEquality="true" ng-show="chartdata.length">
                     <svg></svg>
                 </nvd3-pie-chart>
+                <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div>
                 <h1 class="chart-title"> Invested Assets </h1>
             </div>
 
             <div class="col-md-6">
-                <nvd3-pie-chart data="data" height="450" showLabels="true" noData="Nothing to show"
+                <nvd3-pie-chart data="chartdata" height="450" showLabels="true" noData="Nothing to show"
                     x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true"
-                    objectEquality="true" >
+                    objectEquality="true" ng-show="chartdata.length">
                     <svg></svg>
                 </nvd3-pie-chart>
+                <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div>
                 <h1 class="chart-title"> Current Assets</h1>
             </div>
             <div class="clearfix visible-*"></div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <tr>
+                        <th class='text-center'><input type="checkbox" name="admin" ng-model="assetsInfo.assetchartincludeall" ng-change="selectallassets()"></th>
+                        <th class='text-center'></th>
                         <th class='text-center'>Asset Name</th>
                         <th class='text-center'>Category</th>
                         <th class='text-center'>Sub-Category</th>
@@ -37,8 +41,17 @@
 
                     </tr>
 
-                    <tr ng-repeat="asset in data" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top">
-                        <td class='text-center'>{{asset.assetname}}</td>
+                    <tr ng-repeat="asset in data">
+                        <td class='text-center'>
+                            <input type="checkbox" name="admin" ng-model="asset.chartinclude" ng-change="selectedassets()">
+                        </td>
+                        <td class='text-center'>
+                            <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow($index) popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
+                            <div class="glyphicon glyphicon-minus btn-link" ng-click=removerow($index) popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
+                        </td>
+                        <td class='text-center' popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top">
+                            {{asset.assetname}}
+                        </td>
                         <td class='text-center'>{{asset.subcategoryid}}</td>
                         <td class='text-center'>{{asset.subcategoryid}}</td>
                         <td class='text-center'>{{asset.units}} {{asset.unitform}}</td>
@@ -47,7 +60,15 @@
                         <td class='text-center'>{{asset.cppu}}</td>
                         <td class='text-center'>{{getcppu(data[$index])}}</td>
                     </tr>
-                    
+
+                    <tr>
+                        <td></td>
+                        <td class='text-center'>
+                            <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow(-1) popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
+                        </td>
+                        <td colspan="20"></td>
+                    </tr>
+
                 </table>
             </div>
 
@@ -65,4 +86,4 @@
 
         </tab>
     </tabset>
-</div>
+</div

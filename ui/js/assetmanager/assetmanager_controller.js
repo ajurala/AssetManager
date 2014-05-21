@@ -110,20 +110,30 @@ function usersController($scope, $http, $location, Session) {
     $scope.getUsersInfo();
 }
 
-app.controller("homeController", function($scope, Session){
-    Session.getAssetsOtherInfo();
-    Session.getAssetsInfo();
-    Session.assetsotherinfodefferred.promise
-        .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){updateAssetsData()});
+app.controller("homeController", function($scope, $filter, Session){
+
+    getAssetsData = function() {
+        Session.getAssetsOtherInfo();
+        Session.getAssetsInfo();
+        Session.assetsotherinfodefferred.promise
+            .then(function(response){return Session.assetsinfodefferred.promise})
+            .then(function(response){updateAssetsData()});
+    }
 
     updateAssetsData = function() {
 
-        assetsInfo = Session.assetsinfo;
+        $scope.assetsInfo = Session.assetsinfo;
 
-        console.log(assetsInfo);
+        console.log($scope.assetsInfo);
 
-        $scope.data = assetsInfo.assets;
+        $scope.data = $scope.assetsInfo.assets;
+        $scope.chartdata = [];
+        $scope.assetsInfo.assetchartincludeall = true;
+
+        $scope.selectedassets = function () {
+            console.log('called to filter');
+            $scope.chartdata = $filter('filter')($scope.data, {chartinclude: true});
+        }
 
         $scope.nameFunction = function(){
             return function(d) {
@@ -174,15 +184,46 @@ app.controller("homeController", function($scope, Session){
 
         $scope.getcppu = $scope.cppuFunction()
 
-        /*
-        $scope.toolTipContentFunction = function(){
-            return function(key, x, y, e, graph) {
-                return  '<h1>' + key + '</h1>' +
-                    '<p>' +  y + ' at ' + x + '</p>'
-            }
+        $scope.addrow = function(index) {
+            //console.log('got a call to add row');
+
+            d = angular.copy($scope.data[0]);
+            d.ppu = Math.floor((Math.random() * 50) + 1);
+            d.dval = null;
+            d.cppu = Math.floor((Math.random() * 50) + 1);
+            d.dcval = null;
+            if(index == -1)
+                $scope.data.push(d)
+            else
+                $scope.data.splice(index, 0, d)
+
+            $scope.selectedassets()
         }
-        */
+
+        $scope.removerow = function(index) {
+            //console.log('got a call to remove row')
+            $scope.data.splice(index, 1)
+
+            $scope.selectedassets()
+        }
+
+        $scope.selectallassets = function() {
+            for (index = 0; index < $scope.data.length; ++index) {
+                $scope.data[index].chartinclude = $scope.assetsInfo.assetchartincludeall
+            }
+
+            $scope.selectedassets()
+        }
+
+
+        /* All the function calls are here */
+
+        /* Call the selectallassets */
+        $scope.selectallassets();
     }
+
+    //On initialization, call this up
+    getAssetsData();
 
 })
 
