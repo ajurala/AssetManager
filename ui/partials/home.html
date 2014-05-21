@@ -49,8 +49,13 @@
                             <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow($index) popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
                             <div class="glyphicon glyphicon-minus btn-link" ng-click=removerow($index) popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
                         </td>
-                        <td class='text-center' popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top">
-                            {{asset.assetname}}
+                        <td class='text-center' >
+                            <span ng-hide="editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="editMode=true;">
+                                {{asset.assetname}}
+                            </span>
+                            <input type="text" ng-show="editMode" ng-model="asset.assetname" ng-required />
+
+                            {{editMode}}
                         </td>
                         <td class='text-center'>{{asset.subcategoryid}}</td>
                         <td class='text-center'>{{asset.subcategoryid}}</td>
