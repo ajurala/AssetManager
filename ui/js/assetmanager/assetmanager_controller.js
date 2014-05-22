@@ -188,13 +188,31 @@ app.controller("homeController", function($scope, $filter, Session){
 
         $scope.getcppu = $scope.cppuFunction()
 
+        $scope.getdefaultasset = function() {
+            d = {
+                    assetid: "0", 
+                    subcategoryid: "", 
+                    assetname: "", 
+                    assetdescription: "", 
+                    units: "",
+                    ppu: "", 
+                    cppu: "", 
+                    unitform: "",
+                    date: new Date().toISOString().slice(0, 10),
+                    color: null,
+                    extra: {
+                        chartinclude: true,
+                    },
+                }
+
+            return d;
+        }
+
         $scope.addrow = function(index) {
             //console.log('got a call to add row');
 
-            d = angular.copy($scope.data[0]);
-            d.ppu = Math.floor((Math.random() * 50) + 1);
+            d = $scope.getdefaultasset();
             d.extra.dval = null;
-            d.cppu = Math.floor((Math.random() * 50) + 1);
             d.extra.dcval = null;
             d.extra.newrow = true;
             if(index == -1) {
@@ -227,20 +245,21 @@ app.controller("homeController", function($scope, $filter, Session){
             $scope.data[index].extra.editMode = true;
 
             d = angular.copy($scope.data[index]);
-            d.extra.copy = null;
+            //d.extra.copy = null;
             $scope.data[index].extra.copy = d
         }
 
         $scope.submitchanges = function(index) {
-            d = $scope.data[index].extra.copy
-            $scope.data[index] = d;
-            $scope.data[index].ppu = parseInt($scope.data[index].ppu);
-            $scope.data[index].cppu = parseInt($scope.data[index].cppu);
-            $scope.data[index].extra.dval = null;
-            $scope.data[index].extra.dcval = null;
+            d = $scope.data[index].extra.copy;
+            if(typeof d.date != 'string' && !(d.date instanceof String)) {
+                d.date = d.date.toISOString().slice(0, 10);
+            }
+            d.extra.dval = null;
+            d.extra.dcval = null;
+            d.extra.newrow = false;
+            d.extra.editMode = false;
 
-            $scope.data[index].extra.newrow == false;
-            $scope.data[index].extra.editMode = false;
+            $scope.data[index] = d;
 
             $scope.selectedassets();
 
@@ -252,7 +271,7 @@ app.controller("homeController", function($scope, $filter, Session){
             if($scope.data[index].extra.newrow == true) {
                 $scope.removerow(index);
             } else {
-                $scope.data[index].extra.ccopy = null;
+                delete $scope.data[index].extra.copy
                 $scope.data[index].extra.editMode = false;
 
                 $scope.selectedassets();
@@ -261,6 +280,13 @@ app.controller("homeController", function($scope, $filter, Session){
             console.log('cancelling now');
 
         }
+
+        $scope.open = function($event, index) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.data[index].extra.opened = true;
+        };
 
 
         /* All the function calls are here */
