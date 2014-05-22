@@ -130,9 +130,13 @@ app.controller("homeController", function($scope, $filter, Session){
         $scope.chartdata = [];
         $scope.assetsInfo.assetchartincludeall = true;
 
+        // Add extra data to the assets information
+        for (index = 0; index < $scope.data.length; ++index) {
+            $scope.data[index].extra = {};
+        }
+
         $scope.selectedassets = function () {
-            console.log('called to filter');
-            $scope.chartdata = $filter('filter')($scope.data, {chartinclude: true});
+            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
         $scope.nameFunction = function(){
@@ -143,21 +147,20 @@ app.controller("homeController", function($scope, $filter, Session){
 
         $scope.ppuFunction = function(){
             return function(d){
-                if(d.dval == null) {
+                if(d.extra.dval == null) {
                     // Calculate the values now and save it for later use
                     // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
                     //       or when category ppu changes
                     if(d.ppu != null) {
-                        d.dval = d.ppu
+                        d.extra.dval = d.ppu;
                     } else {
-                        d.dval = 0 //Should get value from the subcategory
+                        d.extra.dval = 0; //Should get value from the subcategory
                     }
 
-                    d.dval = d.dval * d.units
-                    return d.dval
+                    d.extra.dval = d.extra.dval * d.units;
+                    d.extra.dval = d.extra.dval.toFixed(2);
                 }
-
-                return d.dval
+                return d.extra.dval
             };
         }
 
@@ -165,20 +168,21 @@ app.controller("homeController", function($scope, $filter, Session){
 
         $scope.cppuFunction = function(){
             return function(d){
-                if(d.dcval == null) {
+                if(d.extra.dcval == null) {
                     // Calculate the values now and save it for later use
                     // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
                     //       or when category cppu changes
                     if(d.cppu != null) {
-                        d.dcval = d.cppu
+                        d.extra.dcval = d.cppu;
                     } else {
-                        d.dcval = 0 //Should get value from the subcategory
+                        d.extra.dcval = 0 //Should get value from the subcategory
                     }
 
-                    d.dcval = d.dcval * d.units
+                    d.extra.dcval = d.extra.dcval * d.units;
+                    d.extra.dcval = d.extra.dcval.toFixed(2);
                 }
 
-                return d.dcval
+                return d.extra.dcval
             };
         }
 
@@ -189,15 +193,19 @@ app.controller("homeController", function($scope, $filter, Session){
 
             d = angular.copy($scope.data[0]);
             d.ppu = Math.floor((Math.random() * 50) + 1);
-            d.dval = null;
+            d.extra.dval = null;
             d.cppu = Math.floor((Math.random() * 50) + 1);
-            d.dcval = null;
-            if(index == -1)
-                $scope.data.push(d)
-            else
+            d.extra.dcval = null;
+            d.extra.newrow = true;
+            if(index == -1) {
+                $scope.data.push(d);
+                index = $scope.data.length - 1;
+            }
+            else {
                 $scope.data.splice(index, 0, d)
+            }
 
-            $scope.selectedassets()
+            $scope.entereditmode(index);
         }
 
         $scope.removerow = function(index) {
@@ -209,10 +217,49 @@ app.controller("homeController", function($scope, $filter, Session){
 
         $scope.selectallassets = function() {
             for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].chartinclude = $scope.assetsInfo.assetchartincludeall
+                $scope.data[index].extra.chartinclude = $scope.assetsInfo.assetchartincludeall
             }
 
             $scope.selectedassets()
+        }
+
+        $scope.entereditmode = function(index) {
+            $scope.data[index].extra.editMode = true;
+
+            d = angular.copy($scope.data[index]);
+            d.extra.copy = null;
+            $scope.data[index].extra.copy = d
+        }
+
+        $scope.submitchanges = function(index) {
+            d = $scope.data[index].extra.copy
+            $scope.data[index] = d;
+            $scope.data[index].ppu = parseInt($scope.data[index].ppu);
+            $scope.data[index].cppu = parseInt($scope.data[index].cppu);
+            $scope.data[index].extra.dval = null;
+            $scope.data[index].extra.dcval = null;
+
+            $scope.data[index].extra.newrow == false;
+            $scope.data[index].extra.editMode = false;
+
+            $scope.selectedassets();
+
+            //Submit the changes to the backend for this row
+            console.log('submitting now');
+        }
+
+        $scope.cancelchanges = function(index) {
+            if($scope.data[index].extra.newrow == true) {
+                $scope.removerow(index);
+            } else {
+                $scope.data[index].extra.ccopy = null;
+                $scope.data[index].extra.editMode = false;
+
+                $scope.selectedassets();
+            }
+
+            console.log('cancelling now');
+
         }
 
 

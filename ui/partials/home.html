@@ -37,33 +37,72 @@
                         <th class='text-center'>Invested Price Per Unit</th>
                         <th class='text-center'>Invested Total</th>
                         <th class='text-center'>Current Price Per Unit</th>
-                        <th class='text-center'>Current Total</th>
+                        <th class='text-center' colspan="20">Current Total</th>
 
                     </tr>
 
                     <tr ng-repeat="asset in data">
                         <td class='text-center'>
-                            <input type="checkbox" name="admin" ng-model="asset.chartinclude" ng-change="selectedassets()">
+                            <input type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedassets()">
                         </td>
                         <td class='text-center'>
-                            <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow($index) popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
-                            <div class="glyphicon glyphicon-minus btn-link" ng-click=removerow($index) popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
+                            <span ng-hide="asset.extra.editMode">
+                                <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow($index) popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
+                                <div class="glyphicon glyphicon-minus btn-link" ng-click=removerow($index) popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
+                            </span>
+                            <span ng-show="asset.extra.editMode">
+                                <div class="glyphicon glyphicon-ok col-md-6 btn-link ok" ng-click="submitchanges($index)" popover="Submit the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                                <div class="glyphicon glyphicon-remove btn-link" ng-click="cancelchanges($index)" popover="Cancel the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                            </span>
                         </td>
                         <td class='text-center' >
-                            <span ng-hide="editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="editMode=true;">
+                            <span ng-hide="asset.extra.editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="entereditmode($index)">
                                 {{asset.assetname}}
                             </span>
-                            <input type="text" ng-show="editMode" ng-model="asset.assetname" ng-required />
-
-                            {{editMode}}
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.assetname" ng-required />
                         </td>
-                        <td class='text-center'>{{asset.subcategoryid}}</td>
-                        <td class='text-center'>{{asset.subcategoryid}}</td>
-                        <td class='text-center'>{{asset.units}} {{asset.unitform}}</td>
-                        <td class='text-center'>{{asset.ppu}}</td>
-                        <td class='text-center'>{{getppu(data[$index])}}</td>
-                        <td class='text-center'>{{asset.cppu}}</td>
-                        <td class='text-center'>{{getcppu(data[$index])}}</td>
+                        <td class='text-center'>
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                                {{asset.subcategoryid}}
+                            </span>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.subcategoryid" ng-required />
+                        </td>
+                        <td class='text-center'>
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                                {{asset.subcategoryid}}
+                            </span>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.subcategoryid" ng-required />
+                        </td>
+                        <td class='text-center'>
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                                {{asset.units}} {{asset.unitform}}
+                            </span>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.units" ng-required />
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.unitform" placeholder="units (ex. gms)" />
+                        </td>
+                        <td class='text-center'>
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                                {{asset.ppu}}
+                            </span>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.ppu" ng-required />
+                        </td>
+                        <td class='text-center'>
+                            <span ng-click="entereditmode($index)">
+                                {{getppu(data[$index])}}
+                            </span>
+                        </td>
+                        <td class='text-center'>
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                                {{asset.cppu}}
+                            </span>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.cppu" ng-required />
+                        </td>
+                        <td class='text-center'>
+                            <span ng-click="entereditmode($index)">
+                                {{getcppu(data[$index])}}
+                            </span>
+                        </td>
+
                     </tr>
 
                     <tr>
@@ -91,4 +130,4 @@
 
         </tab>
     </tabset>
-</div
+</div>
