@@ -16,3 +16,7 @@ body {
 .ok {
     padding-left: 5px;
 }
+.piecolor {
+    padding-top: 5px;
+    float: right !important;
+}

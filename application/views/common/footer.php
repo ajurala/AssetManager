@@ -13,6 +13,7 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular/angular.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular/angular-route.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular-ui-bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular-ui-bootstrap/bootstrap-colorpicker-module.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_app.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_controller.js"></script>
 

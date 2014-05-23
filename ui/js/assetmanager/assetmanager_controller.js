@@ -204,7 +204,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
                 }
 
                 if(d.extra.color == null) {
-                    if(d.color == 0 || d.color == null) {
+                    if(d.color == '' || d.color == null) {
                         // Get a random color and save it
                         d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
                     } else {
@@ -229,7 +229,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: null,
+                    color: "",
                     extra: {
                         chartinclude: true,
                     },
@@ -304,6 +304,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
             }
             d.extra.dval = null;
             d.extra.dcval = null;
+            d.extra.color = null;
             d.extra.newrow = false;
             d.extra.editMode = false;
 

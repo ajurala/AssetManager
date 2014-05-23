@@ -14,6 +14,7 @@
     <!-- Le styles -->
     <link href="<?php echo base_url(); ?>ui/css/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>ui/css/nvd3/nv.d3.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>ui/css/colorpicker/colorpicker.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>ui/css/style.css" rel="stylesheet">
 
     <link href="<?php echo base_url(); ?>ui/images/favicon.ico" rel="shortcut icon"/>
