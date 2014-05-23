@@ -72,4 +72,8 @@ class Home_model extends CI_Model{
         return $data;
 
     }
+
+    public function remove_asset($assetid) {
+        $this->db->delete('assets', array('assetid' => $assetid));
+    }
 }

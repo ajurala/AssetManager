@@ -259,9 +259,18 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
         $scope.removerow = function(index) {
             //console.log('got a call to remove row')
-            $scope.data.splice(index, 1)
+            assetid = $scope.data[index].assetid;
+            $scope.data.splice(index, 1);
 
-            $scope.selectedassets()
+            $scope.selectedassets();
+
+            //update database
+            if(assetid != "0") {
+                data = {
+                    'assetid': assetid
+                }
+                $scope.removasset(data);
+            } 
         }
 
         $scope.selectallassets = function() {
@@ -272,7 +281,20 @@ app.controller("homeController", function($scope, $http, $filter, Session){
             $scope.selectedassets()
         }
 
-        $scope.senddata = function(d, index) {
+        $scope.removasset = function(d) {
+            $http({
+                method : 'POST',
+                url : 'home/removeeasset',
+                data : d, // pass in data as strings
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                transformRequest: transformURIRequest,
+            })
+            .success(function(data) {
+                console.log("successfully removed data from server");
+            });
+        }
+
+        $scope.addupdateasset = function(d, index) {
             console.log(d);
             $http({
                 method : 'POST',
@@ -319,7 +341,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
             delete d.extra;
             delete d.disabled;
 
-            $scope.senddata(d, index);
+            $scope.addupdateasset(d, index);
             console.log('submitting now');
         }
 

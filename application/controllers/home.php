@@ -44,4 +44,13 @@ class Home extends AssetManager
 
         echo json_encode($data);
     }
+
+    public function removeeasset() {
+        if(is_logged_in()) {
+            $this->load->model("home_model");
+            $assetid = $this->input->post('assetid');
+            $data = $this->home_model->remove_asset($assetid);
+            //var_dump($indata);
+        }
+    }
 }
