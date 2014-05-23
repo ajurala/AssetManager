@@ -44,7 +44,7 @@ class Home_model extends CI_Model{
 
         $query = $this->db->get_where($key, $where);
         $data[$key] = array();
-        
+
         foreach ($query->result_array() as $row) {
             $info = array();
             foreach ($fields as $field) {
@@ -53,5 +53,23 @@ class Home_model extends CI_Model{
 
             $data[$key][] = $info;
         }
+    }
+
+    public function add_update_asset($indata)
+    {
+        $data = array();
+        if($indata['assetid'] == "0") {
+            // insert into the table
+            $indata['userid'] = $this->session->userdata('currentuserid');
+            $this->db->insert('assets', $indata);
+            $assetid = $this->db->insert_id();
+            $data['assetid'] = $assetid;
+        } else {
+            // update the table
+             $this->db->update('assets', $indata, array('assetid' => $indata['assetid']));
+        }
+
+        return $data;
+
     }
 }

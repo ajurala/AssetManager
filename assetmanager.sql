@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 20, 2014 at 10:36 AM
+-- Generation Time: May 23, 2014 at 10:17 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.3.28
 
@@ -67,6 +67,7 @@ INSERT INTO `assetmanager` (`configured`) VALUES
 CREATE TABLE IF NOT EXISTS `assets` (
   `assetid` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) NOT NULL,
+  `date` date NOT NULL,
   `subcategoryid` int(11) NOT NULL,
   `assetname` varchar(50) NOT NULL,
   `assetdescription` text NOT NULL,
@@ -76,14 +77,16 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `unitform` varchar(20) NOT NULL,
   `color` int(11) DEFAULT NULL,
   PRIMARY KEY (`assetid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `assets`
 --
 
-INSERT INTO `assets` (`assetid`, `userid`, `subcategoryid`, `assetname`, `assetdescription`, `units`, `ppu`, `cppu`, `unitform`, `color`) VALUES
-(1, 0, 1, 'HDFC 200', 'Equity mutual fund', 45, 25, 27, '', NULL);
+INSERT INTO `assets` (`assetid`, `userid`, `date`, `subcategoryid`, `assetname`, `assetdescription`, `units`, `ppu`, `cppu`, `unitform`, `color`) VALUES
+(1, 0, '2014-04-17', 1, 'HDFC 2000', 'Equity mutual fund\nthis is it', 46, 20, 32, '', 0),
+(2, 0, '2014-05-23', 1, 'asd', '', 23, 1, 2, 'ad', 0),
+(3, 0, '2014-05-06', 1, 'lkajsdkl', 'llkas;;lad', 56, 1111, 876, 'kgs', 0);
 
 -- --------------------------------------------------------
 
@@ -126,7 +129,8 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('c66e1dbb9fb7f00fb9621d632a0440d5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0', 1400578183, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:20:{s:4:"home";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
+('5f6015b674cb8d6cc2499e9ce54b1712', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0', 1400833522, 'a:11:{s:9:"user_data";s:0:"";s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";s:11:"permissions";a:21:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}}'),
+('e0c2af8ca9ba90c75bf7ac7f2cdd59f3', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0', 1400830202, 'a:2:{s:9:"user_data";s:0:"";s:10:"configured";s:1:"1";}');
 
 -- --------------------------------------------------------
 
@@ -146,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 
 INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('home', 1),
+('home/addupdateasset', 1),
 ('home/getnetassets', 1),
 ('home/getotherinfo', 1),
 ('login', 999),

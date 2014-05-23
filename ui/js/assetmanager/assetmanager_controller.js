@@ -1,3 +1,10 @@
+function transformURIRequest(obj) {
+    str = [];
+    for(p in obj)
+    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    return str.join("&");
+}
+
 function checkStatus($q, $location, $http, Session) {
     return Session.defferred.promise
                 .then(function(response){return Session.assetsotherinfodefferred.promise})
@@ -110,7 +117,7 @@ function usersController($scope, $http, $location, Session) {
     $scope.getUsersInfo();
 }
 
-app.controller("homeController", function($scope, $filter, Session){
+app.controller("homeController", function($scope, $http, $filter, Session){
 
     getAssetsData = function() {
         Session.getAssetsOtherInfo();
@@ -190,13 +197,13 @@ app.controller("homeController", function($scope, $filter, Session){
 
         $scope.getdefaultasset = function() {
             d = {
-                    assetid: "0", 
-                    subcategoryid: "", 
-                    assetname: "", 
-                    assetdescription: "", 
+                    assetid: "0",
+                    subcategoryid: "",
+                    assetname: "",
+                    assetdescription: "",
                     units: "",
-                    ppu: "", 
-                    cppu: "", 
+                    ppu: "",
+                    cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
                     color: null,
@@ -241,6 +248,23 @@ app.controller("homeController", function($scope, $filter, Session){
             $scope.selectedassets()
         }
 
+        $scope.senddata = function(d) {
+            console.log(d);
+            $http({
+                method : 'POST',
+                url : 'home/addupdateasset',
+                data : d, // pass in data as strings
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                transformRequest: transformURIRequest,
+            })
+            .success(function(data) {
+                //console.log(data.success);
+                if(data && d.assetid == "0") {
+                    d.assetid = data.assetid;
+                }
+            });
+        }
+
         $scope.entereditmode = function(index) {
             $scope.data[index].extra.editMode = true;
 
@@ -264,6 +288,9 @@ app.controller("homeController", function($scope, $filter, Session){
             $scope.selectedassets();
 
             //Submit the changes to the backend for this row
+            d = angular.copy($scope.data[index]);
+            delete d.extra;
+            $scope.senddata(d);
             console.log('submitting now');
         }
 
@@ -326,12 +353,7 @@ app.controller("loginController", function($scope, $http, $location, Session){
             url : 'login/loginUser',
             data : $scope.formData, // pass in data as strings
             headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-            transformRequest: function(obj) {
-                str = [];
-                for(p in obj)
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                return str.join("&");
-            },
+            transformRequest: transformURIRequest,
         })
         .success(function(data) {
             //console.log(data.success);
