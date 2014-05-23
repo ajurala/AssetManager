@@ -76,14 +76,14 @@
                             <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
                                 {{asset.subcategoryid}}
                             </span>
-                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.subcategoryid" placeholder="Asset type" size="14"/>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.categoryname" typeahead="category.categoryname for category in assetsOtherInfo.categories" placeholder="Asset type" size="14"/>
                             <strong class="piecolor" ng-show="asset.extra.editMode">Pie Color:</strong>
                         </td>
                         <td class='text-center'>
                             <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
                                 {{asset.subcategoryid}}
                             </span>
-                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.subcategoryid" placeholder="Asset sub-type" size="14"/>
+                            <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>
                             <input colorpicker ng-show="asset.extra.editMode" type="text" ng-model="asset.extra.copy.color" size="14"/>
                         </td>
                         <td class='text-center'>

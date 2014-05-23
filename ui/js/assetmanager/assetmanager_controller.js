@@ -130,8 +130,9 @@ app.controller("homeController", function($scope, $http, $filter, Session){
     updateAssetsData = function() {
 
         $scope.assetsInfo = Session.assetsinfo;
-
-        console.log($scope.assetsInfo);
+        $scope.assetsOtherInfo = Session.assetsotherinfo;
+        
+        console.log($scope.assetsOtherInfo);
 
         $scope.data = $scope.assetsInfo.assets;
         $scope.chartdata = [];
