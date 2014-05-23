@@ -195,6 +195,29 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
         $scope.getcppu = $scope.cppuFunction()
 
+        $scope.colorFunction = function(){
+            return function(dp, index){
+                d = dp.data;
+
+                if(d == null) {
+                    d = dp;
+                }
+
+                if(d.extra.color == null) {
+                    if(d.color == 0 || d.color == null) {
+                        // Get a random color and save it
+                        d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+                    } else {
+                        d.extra.color = d.color;
+                    }
+                }
+
+                return d.extra.color;
+            }
+        }
+
+        $scope.getcolor = $scope.colorFunction();
+
         $scope.getdefaultasset = function() {
             d = {
                     assetid: "0",
@@ -214,6 +237,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
             return d;
         }
+
 
         $scope.addrow = function(index) {
             //console.log('got a call to add row');
@@ -248,7 +272,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
             $scope.selectedassets()
         }
 
-        $scope.senddata = function(d) {
+        $scope.senddata = function(d, index) {
             console.log(d);
             $http({
                 method : 'POST',
@@ -258,9 +282,9 @@ app.controller("homeController", function($scope, $http, $filter, Session){
                 transformRequest: transformURIRequest,
             })
             .success(function(data) {
-                //console.log(data.success);
+                console.log("successfully sent data to server");
                 if(data && d.assetid == "0") {
-                    d.assetid = data.assetid;
+                    $scope.data[index].assetid = data.assetid;
                 }
             });
         }
@@ -289,8 +313,12 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
             //Submit the changes to the backend for this row
             d = angular.copy($scope.data[index]);
+
+            //Delete the extra information that is populated into the data
             delete d.extra;
-            $scope.senddata(d);
+            delete d.disabled;
+
+            $scope.senddata(d, index);
             console.log('submitting now');
         }
 

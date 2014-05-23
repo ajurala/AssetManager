@@ -8,7 +8,7 @@
             <div class="col-md-6">
                 <nvd3-pie-chart data="chartdata" height="450" showLabels="true" noData="Nothing to show"
                     x="nameFunction()" y="ppuFunction()" tooltips="true" labelType="percent" showLegend="true"
-                    objectEquality="true" ng-show="chartdata.length">
+                    objectEquality="true" color="colorFunction()" legendcolor="colorFunction()" ng-show="chartdata.length">
                     <svg></svg>
                 </nvd3-pie-chart>
                 <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div>
@@ -18,7 +18,7 @@
             <div class="col-md-6">
                 <nvd3-pie-chart data="chartdata" height="450" showLabels="true" noData="Nothing to show"
                     x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true"
-                    objectEquality="true" ng-show="chartdata.length">
+                    objectEquality="true" color="colorFunction()" legendcolor="colorFunction()" ng-show="chartdata.length">
                     <svg></svg>
                 </nvd3-pie-chart>
                 <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div>
