@@ -141,6 +141,31 @@ app.controller("homeController", function($scope, $http, $filter, Session){
         // Add extra data to the assets information
         for (index = 0; index < $scope.data.length; ++index) {
             $scope.data[index].extra = {};
+
+            categoryid = 0;
+            categoryname = '';
+            subcategoryname = '';
+
+            subcategories = $scope.assetsOtherInfo.subcategories;
+            for(i = 0; i < subcategories.length; ++i) {
+                if(subcategories[i].subcategoryid == $scope.data[index].subcategoryid) {
+                    subcategoryname = subcategories[i].subcategoryname;
+                    categoryid = subcategories[i].categoryid;
+                    break;
+                }
+            }
+
+            categories = $scope.assetsOtherInfo.categories;
+            for(i = 0; i < categories.length; ++i) {
+                if(categories[i].categoryid == categoryid) {
+                    categoryname = categories[i].categoryname;
+                    break;
+                }
+            }
+
+            $scope.data[index].extra.categoryid = categoryid;
+            $scope.data[index].extra.categoryname = categoryname;
+            $scope.data[index].extra.subcategoryname = subcategoryname;
         }
 
         $scope.selectedassets = function () {
@@ -322,6 +347,14 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
         $scope.submitchanges = function(index) {
             d = $scope.data[index].extra.copy;
+
+            if(d.extra.categoryname != $scope.data[index].extra.categoryname) {
+                // Check if id exists, else create one
+
+                // If id is available, check if provided subcategory exists for the category
+                // If yes then continue with the rest
+            }
+
             if(typeof d.date != 'string' && !(d.date instanceof String)) {
                 d.date = d.date.toISOString().slice(0, 10);
             }
