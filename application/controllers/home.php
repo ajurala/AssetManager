@@ -39,7 +39,7 @@ class Home extends AssetManager
         if(is_logged_in()) {
             $this->load->model("home_model");
             $indata = $this->input->post();
-            $data = $this->home_model->add_update_asset($indata);
+            $this->home_model->add_update_asset($indata);
         }
 
         echo json_encode($data);
@@ -51,6 +51,21 @@ class Home extends AssetManager
             $assetid = $this->input->post('assetid');
             $data = $this->home_model->remove_asset($assetid);
             //var_dump($indata);
+        }
+    }
+
+    public function addcategorysubcategory() {
+        if(is_logged_in()) {
+            $this->load->model("home_model");
+            $details = $this->input->post();
+            $categorydetails = $this->input->post('category');
+            $subcategorydetails = $this->input->post('subcategory');
+            $data = $this->home_model->add_category_subcategory($categorydetails);
+            var_dump(json_decode($categorydetails, true));
+            var_dump(json_decode($subcategorydetails, true));
+            //var_dump($details);
+
+            echo json_encode($data);
         }
     }
 }

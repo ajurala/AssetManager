@@ -73,14 +73,14 @@
                             </span>
                         </td>
                         <td class='text-center'>
-                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
                                 {{asset.extra.categoryname}}
                             </span>
                             <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.categoryname" typeahead="category.categoryname for category in assetsOtherInfo.categories" placeholder="Asset type" size="14"/>
                             <strong class="piecolor" ng-show="asset.extra.editMode">Pie Color:</strong>
                         </td>
                         <td class='text-center'>
-                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                            <span ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
                                 {{asset.extra.subcategoryname}}
                             </span>
                             <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>

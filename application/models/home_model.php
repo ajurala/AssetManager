@@ -76,4 +76,8 @@ class Home_model extends CI_Model{
     public function remove_asset($assetid) {
         $this->db->delete('assets', array('assetid' => $assetid));
     }
+
+    public function add_category_subcategory($catgorydetails) {
+        
+    }
 }

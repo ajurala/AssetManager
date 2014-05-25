@@ -20,3 +20,6 @@ body {
     padding-top: 5px;
     float: right !important;
 }
+.category-control {
+    width: 150px;
+}

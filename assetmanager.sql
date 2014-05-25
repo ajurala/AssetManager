@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2014 at 04:24 AM
+-- Generation Time: May 25, 2014 at 04:38 PM
 -- Server version: 5.6.15
 -- PHP Version: 5.3.27
 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `unitform` varchar(20) NOT NULL,
   `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`assetid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `assets`
@@ -128,8 +128,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('04ce90ddfd426a78945d97ce4659ff0b', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400991496, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:22:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}'),
-('c9129e780cb846c548bb156059606c39', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400922988, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:22:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
+('bdb24fcb4120b39da50eac5fe6195c07', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1401035595, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:23:{s:4:"home";s:1:"1";s:27:"home/addcategorysubcategory";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
 
 -- --------------------------------------------------------
 
@@ -149,6 +148,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 
 INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('home', 1),
+('home/addcategorysubcategory', 1),
 ('home/addupdateasset', 1),
 ('home/getnetassets', 1),
 ('home/getotherinfo', 1),
@@ -176,7 +176,7 @@ INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 CREATE TABLE IF NOT EXISTS `riskcategories` (
   `riskid` int(11) NOT NULL AUTO_INCREMENT,
   `riskname` varchar(20) NOT NULL,
-  `color` int(11) NOT NULL,
+  `color` varchar(7) NOT NULL,
   PRIMARY KEY (`riskid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
@@ -185,12 +185,12 @@ CREATE TABLE IF NOT EXISTS `riskcategories` (
 --
 
 INSERT INTO `riskcategories` (`riskid`, `riskname`, `color`) VALUES
-(1, 'Very High', 0),
-(2, 'High', 1),
-(3, 'Medium', 2),
-(4, 'Low', 3),
-(5, 'Very Low', 4),
-(6, 'No', 5);
+(1, 'Very High', '#500000'),
+(2, 'High', '#FF0000'),
+(3, 'Medium', '#0000FF'),
+(4, 'Low', '#32CD32'),
+(5, 'Very Low', '#006400'),
+(6, 'No', '#00FF00');
 
 -- --------------------------------------------------------
 
