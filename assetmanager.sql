@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2014 at 07:06 PM
+-- Generation Time: May 25, 2014 at 04:24 AM
 -- Server version: 5.6.15
 -- PHP Version: 5.3.27
 
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
 --
 
 INSERT INTO `assets` (`assetid`, `userid`, `date`, `subcategoryid`, `assetname`, `assetdescription`, `units`, `ppu`, `cppu`, `unitform`, `color`) VALUES
-(1, 0, '2014-04-17', 1, 'HDFC 2000', 'Equity mutual fund', 46, 20, 32, '', '');
+(1, 0, '2014-04-17', 1, 'HDFC 2000', 'Equity mutual fund', 46, 20, 32, '', '#ff0000');
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,8 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('b3039ea8e2f05c529ec9cc542b19071b', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400871954, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:22:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
+('04ce90ddfd426a78945d97ce4659ff0b', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400991496, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:22:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}'),
+('c9129e780cb846c548bb156059606c39', '::1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:29.0) Gecko/20100101 Firefox/29.0', 1400922988, 'a:11:{s:9:"user_data";s:0:"";s:11:"permissions";a:22:{s:4:"home";s:1:"1";s:19:"home/addupdateasset";s:1:"1";s:17:"home/getnetassets";s:1:"1";s:17:"home/getotherinfo";s:1:"1";s:17:"home/removeeasset";s:1:"1";s:5:"login";s:3:"999";s:15:"otheruserupdate";s:1:"0";s:4:"user";s:1:"1";s:13:"user/firstrun";s:3:"999";s:23:"user/firstrun/configure";s:3:"999";s:13:"user/register";s:1:"0";s:17:"user/register/new";s:1:"0";s:11:"user/update";s:1:"1";s:15:"user/update/all";s:1:"1";s:23:"user/update/displayname";s:1:"1";s:10:"user/users";s:1:"0";s:14:"user/users/all";s:1:"0";s:7:"welcome";s:3:"999";s:12:"user/view/aj";s:1:"0";s:13:"user/view/aja";s:1:"0";s:13:"user/view/aks";s:1:"0";s:13:"user/view/all";s:1:"0";}s:10:"configured";s:1:"1";s:8:"loggedin";b:1;s:6:"userid";s:1:"0";s:8:"username";s:5:"admin";s:11:"displayname";s:5:"Admin";s:11:"accessroles";a:2:{i:0;s:5:"admin";i:1;s:3:"all";}s:13:"accessroleids";a:2:{i:0;s:1:"0";i:1;s:1:"1";}s:5:"admin";b:1;s:13:"currentuserid";s:1:"0";}');
 
 -- --------------------------------------------------------
 
@@ -221,7 +222,6 @@ CREATE TABLE IF NOT EXISTS `subcategories` (
   `subcategoryid` int(11) NOT NULL,
   `riskid` int(11) NOT NULL,
   `subcategoryname` varchar(40) NOT NULL,
-  `priceperunit` double NOT NULL DEFAULT '0',
   `currentpriceperunit` double DEFAULT NULL,
   `unitform` varchar(20) NOT NULL,
   `color` int(11) DEFAULT NULL,
@@ -232,8 +232,8 @@ CREATE TABLE IF NOT EXISTS `subcategories` (
 -- Dumping data for table `subcategories`
 --
 
-INSERT INTO `subcategories` (`categoryid`, `subcategoryid`, `riskid`, `subcategoryname`, `priceperunit`, `currentpriceperunit`, `unitform`, `color`) VALUES
-(1, 1, 1, 'Large Cap', 23, NULL, '', NULL);
+INSERT INTO `subcategories` (`categoryid`, `subcategoryid`, `riskid`, `subcategoryname`, `currentpriceperunit`, `unitform`, `color`) VALUES
+(1, 1, 1, 'Large Cap', NULL, '', NULL);
 
 -- --------------------------------------------------------
 
