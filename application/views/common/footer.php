@@ -16,6 +16,7 @@
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/angular-ui-bootstrap/bootstrap-colorpicker-module.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_app.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_controller.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/assetmanager/assetmanager_misc.js"></script>
 
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/nvd3/d3.js"></script>
     <script type="text/javascript" src="<?php echo base_url(); ?>ui/js/nvd3/nv.d3.js"></script>

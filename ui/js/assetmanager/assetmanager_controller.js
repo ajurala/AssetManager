@@ -117,7 +117,17 @@ function usersController($scope, $http, $location, Session) {
     $scope.getUsersInfo();
 }
 
-app.controller("homeController", function($scope, $http, $filter, Session){
+function categoryModelController($scope, $modalInstance, categorydetails){
+    $scope.ok = function () {
+        $modalInstance.close(categorydetails);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+app.controller("homeController", function($scope, $http, $filter, $modal, Session){
 
     getAssetsData = function() {
         Session.getAssetsOtherInfo();
@@ -348,6 +358,7 @@ app.controller("homeController", function($scope, $http, $filter, Session){
         $scope.submitchanges = function(index) {
             d = $scope.data[index].extra.copy;
 
+            $scope.opencategorymodel();
             if(d.extra.categoryname != $scope.data[index].extra.categoryname) {
                 // Check if id exists, else create one
 
@@ -393,11 +404,33 @@ app.controller("homeController", function($scope, $http, $filter, Session){
 
         }
 
-        $scope.open = function($event, index) {
+        $scope.datepickopen = function($event, index) {
             $event.preventDefault();
             $event.stopPropagation();
 
             $scope.data[index].extra.opened = true;
+        };
+
+
+        $scope.opencategorymodel = function (size) {
+
+            modalInstance = $modal.open({
+                    template: categoryhtml,
+                    controller: categoryModelController,
+                    size: size,
+                    resolve: {
+                        categorydetails: function () {
+                            categoryInfo = {};
+                            return categoryInfo; // information to be passed to model
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (categorydetails) {
+                // Save the details
+            }, function () {
+                // cancelled, so nothing to do now
+            });
         };
 
 
