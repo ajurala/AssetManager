@@ -602,7 +602,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
                 d.subcategoryid = saveddetails.subcategoryid;
                 d.extra.subcategoryname = saveddetails.subcategoryname;
                 d.extra.categoryname = saveddetails.categoryname;
-                
+
                 $scope.submitdefferredchanges(d, index);
             }, function () {
                 // cancelled, so nothing to do now

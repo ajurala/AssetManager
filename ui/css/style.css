@@ -23,3 +23,12 @@ body {
 .category-control {
     width: 150px;
 }
+.colorrect {
+    width: 47px;
+    height: 17px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.cursor {
+    cursor: pointer;
+}
