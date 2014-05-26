@@ -77,7 +77,21 @@ class Home_model extends CI_Model{
         $this->db->delete('assets', array('assetid' => $assetid));
     }
 
-    public function add_category_subcategory($catgorydetails) {
-        
+    public function add_category_subcategory($categorydetails, $subcategorydetails) {
+        $data = array();
+        if($categorydetails !== FALSE) {
+            // insert the category details
+            $this->db->insert('categories', $categorydetails);
+            $catprimary = $this->db->insert_id();
+            $categorydetails['categoryid'] = $catid;
+            $subcategorydetails['categoryid'] = $catid;
+
+            $data['categorydetails'] = $categorydetails;
+        }
+
+        $this->db->insert('subcategories', $subcategorydetails);
+        $subcatid = $this->db->insert_id();
+        $subcategorydetails['subcategoryid'] = $subcatid;
+        $data['subcategorydetails'] = $subcategorydetails;
     }
 }

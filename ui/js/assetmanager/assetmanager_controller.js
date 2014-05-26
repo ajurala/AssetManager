@@ -120,7 +120,7 @@ function usersController($scope, $http, $location, Session) {
     $scope.getUsersInfo();
 }
 
-function categoryModelController($scope, $modalInstance, $http, categorydetails){
+function categoryModelController($scope, $modalInstance, $http, categorydetails, Session){
     $scope.categorydetails = categorydetails;
     $scope.assetsOtherInfo = categorydetails.assetsOtherInfo;
 
@@ -226,7 +226,7 @@ function categoryModelController($scope, $modalInstance, $http, categorydetails)
                     subcategorydetails = data.subcategorydetails;
 
                     // Append the details to the Session
-                    if(categoryid == "0") {
+                    if(categorydetails != null) {
                         Session.assetsotherinfo.categories.push(categorydetails);
                     }
                     Session.assetsotherinfo.subcategories.push(subcategorydetails);
@@ -256,7 +256,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
 
         $scope.assetsInfo = Session.assetsinfo;
         $scope.assetsOtherInfo = Session.assetsotherinfo;
-        
+
         console.log($scope.assetsOtherInfo);
 
         $scope.data = $scope.assetsInfo.assets;
@@ -432,7 +432,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
                     'assetid': assetid
                 }
                 $scope.removasset(data);
-            } 
+            }
         }
 
         $scope.selectallassets = function() {
@@ -485,7 +485,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
             d = $scope.data[index].extra.copy;
 
             entereddetails = {
-                'categoryname': d.extra.categoryname, 
+                'categoryname': d.extra.categoryname,
                 'subcategoryname': d.extra.subcategoryname,
                 'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
             };

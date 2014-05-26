@@ -59,10 +59,14 @@ class Home extends AssetManager
             $this->load->model("home_model");
             $details = $this->input->post();
             $categorydetails = $this->input->post('category');
-            $subcategorydetails = $this->input->post('subcategory');
-            $data = $this->home_model->add_category_subcategory($categorydetails);
-            var_dump(json_decode($categorydetails, true));
-            var_dump(json_decode($subcategorydetails, true));
+            if($categorydetails !== FALSE) {
+                $categorydetails = json_decode($categorydetails, true);
+            }
+            $subcategorydetails = json_decode($this->input->post('subcategory'));
+            $data = $this->home_model->add_category_subcategory($categorydetails, $subcategorydetails);
+
+            //var_dump(json_decode($categorydetails, true));
+            //var_dump(json_decode($subcategorydetails, true));
             //var_dump($details);
 
             echo json_encode($data);
