@@ -82,7 +82,7 @@ class Home_model extends CI_Model{
         if($categorydetails !== FALSE) {
             // insert the category details
             $this->db->insert('categories', $categorydetails);
-            $catprimary = $this->db->insert_id();
+            $catid = $this->db->insert_id();
             $categorydetails['categoryid'] = $catid;
             $subcategorydetails['categoryid'] = $catid;
 
@@ -93,5 +93,7 @@ class Home_model extends CI_Model{
         $subcatid = $this->db->insert_id();
         $subcategorydetails['subcategoryid'] = $subcatid;
         $data['subcategorydetails'] = $subcategorydetails;
+
+        return $data;
     }
 }

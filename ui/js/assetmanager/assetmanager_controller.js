@@ -219,7 +219,7 @@ function categoryModelController($scope, $modalInstance, $http, categorydetails,
                     entereddetails = {
                         'categoryname': $scope.categorydetails.entereddetails.categoryname,
                         'subcategoryname': $scope.categorydetails.entereddetails.subcategoryname,
-                        'subcategoryid': data.subcategoryid,
+                        'subcategoryid': data.subcategorydetails.subcategoryid,
                     }
 
                     categorydetails = data.categorydetails;
@@ -273,6 +273,8 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
             riskname = '';
 
             subcategories = $scope.assetsOtherInfo.subcategories;
+            categoryid = 0;
+            riskid = -1;
             for(i = 0; i < subcategories.length; ++i) {
                 if(subcategories[i].subcategoryid == $scope.data[index].subcategoryid) {
                     subcategoryname = subcategories[i].subcategoryname;
@@ -481,23 +483,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
             $scope.data[index].extra.copy = d
         }
 
-        $scope.submitchanges = function(index) {
-            d = $scope.data[index].extra.copy;
-
-            entereddetails = {
-                'categoryname': d.extra.categoryname,
-                'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
-            };
-
-            $scope.opencategorymodel(null, entereddetails);
-            if(d.extra.categoryname != $scope.data[index].extra.categoryname) {
-                // Check if id exists, else create one
-
-                // If id is available, check if provided subcategory exists for the category
-                // If yes then continue with the rest
-            }
-
+        $scope.submitdefferredchanges = function(d, index) {
             if(typeof d.date != 'string' && !(d.date instanceof String)) {
                 d.date = d.date.toISOString().slice(0, 10);
             }
@@ -522,6 +508,55 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
             console.log('submitting now');
         }
 
+        $scope.submitchanges = function(index) {
+            d = $scope.data[index].extra.copy;
+
+            entereddetails = {
+                'categoryname': d.extra.categoryname,
+                'subcategoryname': d.extra.subcategoryname,
+                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
+            };
+
+            if(d.extra.categoryname != $scope.data[index].extra.categoryname
+                || d.extra.subcategoryname != $scope.data[index].extra.subcategoryname) {
+                // Check if id exists, else create one
+
+                categoryid = null;
+                categories = $scope.assetsOtherInfo.categories;
+                for(i = 0; i < categories.length; ++i) {
+                    if(entereddetails.categoryname == categories[i].categoryname) {
+                        categoryid = categories[i].categoryid;
+                        break;
+                    }
+                }
+                if(categoryid == null) {
+                    $scope.opencategorymodel(null, entereddetails, d, index);
+                } else {
+                    // If id is available, check if provided subcategory exists for the category
+                    // If yes then continue with the rest
+
+                    subcategoryid = null;
+                    subcategories = $scope.assetsOtherInfo.subcategories;
+                    for(i = 0; i < subcategories.length; ++i) {
+                        if(categoryid == subcategories[i].categoryid
+                            && entereddetails.subcategoryname == subcategories[i].subcategoryname) {
+                            subcategoryid = subcategories[i].subcategoryid;
+                            break;
+                        }
+                    }
+
+                    if(subcategoryid == null) {
+                        $scope.opencategorymodel(null, entereddetails, d, index);
+                    } else {
+                        d.subcategoryid = subcategoryid;
+                        $scope.submitdefferredchanges(d, index);
+                    }
+                }
+            } else {
+                $scope.submitdefferredchanges(d, index);
+            }
+        }
+
         $scope.cancelchanges = function(index) {
             if($scope.data[index].extra.newrow == true) {
                 $scope.removerow(index);
@@ -544,7 +579,7 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
         };
 
 
-        $scope.opencategorymodel = function (size, entereddetails) {
+        $scope.opencategorymodel = function (size, entereddetails, d, index) {
 
             modalInstance = $modal.open({
                     template: categoryhtml,
@@ -562,8 +597,13 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
                 }
             });
 
-            modalInstance.result.then(function (categorydetails) {
+            modalInstance.result.then(function (saveddetails) {
                 // Save the details
+                d.subcategoryid = saveddetails.subcategoryid;
+                d.extra.subcategoryname = saveddetails.subcategoryname;
+                d.extra.categoryname = saveddetails.categoryname;
+                
+                $scope.submitdefferredchanges(d, index);
             }, function () {
                 // cancelled, so nothing to do now
             });
