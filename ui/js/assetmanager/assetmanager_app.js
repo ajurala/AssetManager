@@ -117,7 +117,22 @@ app.config(function($routeProvider, $locationProvider){
     $locationProvider.html5Mode(true);
 });
 
+app.directive('assets', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'ui/partials/assets.html'
+    };
+});
 
+app.directive('riskbasedassets', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'ui/partials/riskbasedassets.html'
+    };
+});
+
+/* How to use  a HighCharts with a directive */
+/*
 app.directive('assetchart', function () {
   return {
     restrict: 'C',
@@ -165,7 +180,7 @@ app.directive('assetchart', function () {
     }
   }
 });
-
+*/
 /* How to use  a dyraph with a directive */
 /*
 

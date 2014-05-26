@@ -310,6 +310,12 @@ app.controller("homeController", function($scope, $http, $filter, $modal, Sessio
             $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
+        $scope.tabselected = function() {
+            for(i = 0; i < nv.graphs.length; ++i) {
+                nv.graphs[i].update(); 
+            }
+        }
+
         $scope.nameFunction = function(){
             return function(d) {
                 return d.assetname;
