@@ -32,3 +32,17 @@ body {
 .cursor {
     cursor: pointer;
 }
+.riskrow {
+    padding: 15px;
+    background-color: #D9EDF7;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+.collexp {
+    float: left;
+    width: 2%;
+    padding-left: 2px;
+}
+.riskassets {
+    margin-left: 2%;
+}

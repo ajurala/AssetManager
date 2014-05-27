@@ -648,7 +648,13 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
 
         // Add extra data to the assets information
         for (index = 0; index < $scope.data.length; ++index) {
-            $scope.data[index].extra = {};
+            if($scope.data[index].extra == null) {
+                $scope.data[index].extra = {};
+                $scope.data[index].extra.showassets = false;
+            }
+
+            $scope.data[index].extra.dval = null;
+            $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.assets = [];
 
         }
