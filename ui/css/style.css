@@ -24,7 +24,6 @@ body {
     width: 150px;
 }
 .colorrect {
-    width: 47px;
     height: 17px;
     border-radius: 5px;
     cursor: pointer;
@@ -42,6 +41,7 @@ body {
     float: left;
     width: 2%;
     padding-left: 2px;
+    margin-right: 7px;
 }
 .riskassets {
     margin-left: 2%;
