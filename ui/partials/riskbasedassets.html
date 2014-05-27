@@ -1,6 +1,6 @@
 <div class="col-md-6">
     <nvd3-pie-chart id="assetsrisksinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="ppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        x="nameFunction()" y="rppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -10,7 +10,7 @@
 
 <div class="col-md-6">
     <nvd3-pie-chart id="assetsriskscurrent" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        x="nameFunction()" y="rcppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -21,7 +21,7 @@
 <div class="table-responsive">
     <table class="table table-striped">
         <tr>
-            <th class='text-center'><input type="checkbox" name="admin" ng-model="assetsInfo.assetchartincludeall" ng-change="selectallassets()"></th>
+            <th class='text-center'><input type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets()"></th>
             <th class='text-center'></th>
             <th class='text-center'>Asset Name</th>
             <th class='text-center'>Date Bought</th>
@@ -92,7 +92,7 @@
             </td>
             <td class='text-center'>
                 <span class="cursor" ng-click="entereditmode($index)">
-                    {{getppu(data[$index])}}
+                    <!-- {{getppu(data[$index])}} -->
                 </span>
             </td>
             <td class='text-center'>
@@ -103,7 +103,7 @@
             </td>
             <td class='text-center'>
                 <span class="cursor" ng-click="entereditmode($index)">
-                    {{getcppu(data[$index])}}
+                    <!-- {{getcppu(data[$index])}} -->
                 </span>
             </td>
             <td class='text-center'>

@@ -127,7 +127,7 @@ app.directive('assets', function() {
 app.directive('riskbasedassets', function() {
     return {
       restrict: 'E',
-      templateUrl: 'ui/partials/riskbasedassets.html'
+      templateUrl: 'ui/partials/riskbasedassets.html',
     };
 });
 
