@@ -62,7 +62,7 @@
                 </span>
                 <input type="text" ng-show="asset.extra.editMode" datepicker-popup="yyyy-MM-dd" ng-model="asset.extra.copy.date" is-open="asset.extra.opened" close-text="Close" size="10"/>
                 <span class="input-group-btn" ng-show="asset.extra.editMode">
-                    <button type="button" class="btn btn-default" ng-click="open($event, $index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="datepickopen($event, $index)"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </td>
             <td class='text-center'>
@@ -118,7 +118,7 @@
         <tr>
             <td></td>
             <td class='text-center'>
-                <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow(-1) popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
+                <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click="addrow(-1)" popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
             </td>
             <td colspan="20"></td>
         </tr>

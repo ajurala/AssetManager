@@ -17,6 +17,7 @@
     <!-- <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div> -->
     <h1 class="chart-title"> Current Assets</h1>
 </div>
+
 <div class="clearfix visible-*"></div>
 <div ng-repeat="risk in data">
     <div class="cursor row riskrow">
@@ -49,75 +50,75 @@
                 <th class='text-center' colspan="20">Color</th>
             </tr>
 
-            <tr ng-repeat="asset in data">
+            <tr ng-repeat="asset in data[$index].extra.assets">
                 <td class='text-center'>
-                    <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedassets()">
+                    <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
                 </td>
                 <td class='text-center'>
                     <span ng-hide="asset.extra.editMode">
-                        <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow($index) popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
-                        <div class="glyphicon glyphicon-minus btn-link" ng-click=removerow($index) popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click="addrow($parent.$index, $index)" popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-minus btn-link" ng-click="removerow($parent.$index, $index)" popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
                     </span>
                     <span ng-show="asset.extra.editMode">
-                        <div class="glyphicon glyphicon-ok col-md-6 btn-link ok" ng-click="submitchanges($index)" popover="Submit the changes" popover-trigger="mouseenter" popover-placement="top"></div>
-                        <div class="glyphicon glyphicon-remove btn-link" ng-click="cancelchanges($index)" popover="Cancel the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-ok col-md-6 btn-link ok" ng-click="submitchanges($parent.$index, $index)" popover="Submit the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-remove btn-link" ng-click="cancelchanges($parent.$index, $index)" popover="Cancel the changes" popover-trigger="mouseenter" popover-placement="top"></div>
                     </span>
                 </td>
                 <td class='text-center' >
-                    <span class="cursor" ng-hide="asset.extra.editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="entereditmode($index)">
+                    <span class="cursor" ng-hide="asset.extra.editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="entereditmode($parent.$index, $index)">
                         {{asset.assetname}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.assetname" placeholder="Asset name" size="20"/>
                     <textarea type="textarea" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.assetdescription"placeholder="Asset description"></textarea>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)">
                         {{asset.date}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" datepicker-popup="yyyy-MM-dd" ng-model="asset.extra.copy.date" is-open="asset.extra.opened" close-text="Close" size="10"/>
                     <span class="input-group-btn" ng-show="asset.extra.editMode">
-                        <button type="button" class="btn btn-default" ng-click="open($event, $index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="datepickopen($event, $parent.$index, $index)"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
                         {{asset.extra.categoryname}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.categoryname" typeahead="category.categoryname for category in assetsOtherInfo.categories" placeholder="Asset type" size="14"/>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
                         {{asset.extra.subcategoryname}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)">
                         {{asset.units}} {{asset.unitform}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.units" size="12"/>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.unitform" placeholder="units (ex. gms)" size="12"/>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)">
                         {{asset.ppu}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.ppu" size="12" />
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-click="entereditmode($index)">
-                        <!-- {{getppu(data[$index])}} -->
+                    <span class="cursor" ng-click="entereditmode($parent.$index, $index)">
+                        {{getppu(data[$parent.$index].extra.assets[$index])}}
                     </span>
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$index, $index)">
                         {{asset.cppu}}
                     </span>
                     <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.cppu" size="12" />
                 </td>
                 <td class='text-center'>
-                    <span class="cursor" ng-click="entereditmode($index)">
-                        <!-- {{getcppu(data[$index])}} -->
+                    <span class="cursor" ng-click="entereditmode($parent.$index, $index)">
+                        {{getcppu(data[$parent.$index].extra.assets[$index])}}
                     </span>
                 </td>
                 <td class='text-center'>
@@ -132,7 +133,7 @@
             <tr>
                 <td></td>
                 <td class='text-center'>
-                    <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click=addrow(-1) popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
+                    <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click="addrow($index, -1)" popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
                 </td>
                 <td colspan="20"></td>
             </tr>

@@ -249,7 +249,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
         .then(function(response){$scope.updateAssetsData()});
 
     $scope.$on('assetsupdated', function(event, from) {
-        if(from !== 'assetsController') {
+        if(from != 'assetsController') {
             $scope.updateAssetsData();
         }
     });
@@ -311,6 +311,14 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
 
         $scope.selectedassets = function () {
             $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+        }
+
+        $scope.selectallassets = function() {
+            for (index = 0; index < $scope.data.length; ++index) {
+                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall
+            }
+
+            $scope.selectedassets()
         }
 
         $scope.nameFunction = function(){
@@ -438,14 +446,6 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                 }
                 $scope.removasset(data);
             }
-        }
-
-        $scope.selectallassets = function() {
-            for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall
-            }
-
-            $scope.selectedassets()
         }
 
         $scope.removasset = function(d) {
@@ -630,7 +630,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
         .then(function(response){$scope.updateAssetsData()});
 
     $scope.$on('assetsupdated', function(event, from) {
-        if(from !== 'riskbasedassetsController') {
+        if(from != 'riskbasedassetsController') {
             $scope.updateAssetsData();
         }
     });
@@ -714,10 +714,6 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             }
 
             $scope.assetsdata[index].extra.riskname = riskname;
-        }
-
-        $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
         $scope.nameFunction = function(){
@@ -853,13 +849,21 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             return d;
         }
 
+        $scope.selectedassets = function () {
+            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+        }
+
+        $scope.selectedchildassets = function (parentindex) {
+            //$scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+        }
+
         $scope.selectallassets = function() {
             for (index = 0; index < $scope.data.length; ++index) {
                 $scope.data[index].extra.chartinclude = $scope.assetchartincludeall
                 assets = $scope.data[index].extra.assets;
 
                 for(i = 0; i < assets.length; ++i) {
-                    assets[index].extra.chartinclude = $scope.assetchartincludeall
+                    assets[i].extra.chartinclude = $scope.assetchartincludeall
                 }
             }
 
@@ -906,8 +910,6 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                 }
                 $scope.removasset(data);
             }
-
-            /* TODO - Broadcast/emit the changes, so other tab charts are updated */
         }
 
         $scope.removasset = function(d) {
@@ -920,6 +922,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             })
             .success(function(data) {
                 console.log("successfully removed data from server");
+                /* TODO - Broadcast/emit the changes, so other tab charts are updated */
             });
         }
 
@@ -937,6 +940,8 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                 if(data && d.assetid == "0") {
                     $scope.data[index].assetid = data.assetid;
                 }
+
+                /* TODO - Broadcast/emit the changes, so other tab charts are updated */
             });
         }
 
