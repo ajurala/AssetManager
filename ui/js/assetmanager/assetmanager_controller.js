@@ -1554,6 +1554,38 @@ app.controller("homeController", function($scope, Session){
     $scope.getAssetsData = function() {
         Session.getAssetsOtherInfo();
         Session.getAssetsInfo();
+
+        Session.assetsotherinfodefferred.promise
+        .then(function(response){return Session.assetsinfodefferred.promise})
+        .then(function(response){$scope.updateNetAssetsData()});
+    }
+
+    $scope.$on('assetsupdated', function(event, from) {
+            $scope.updateNetAssetsData();
+    });
+
+    $scope.updateNetAssetsData = function() {
+        assetsdata = Session.assetsinfo.assets;
+
+        cppuFunction = function(d){
+            if(d.cppu != null) {
+                dcval = d.cppu;
+            } else {
+                dcval = 0 //Should get value from the subcategory
+            }
+
+            dcval = dcval * d.units;
+
+            return dcval;
+        }
+
+        netassets = 0;
+        for(i = 0; i < assetsdata.length; ++i) {
+            netassets += cppuFunction(assetsdata[i]);
+        }
+
+        $scope.netassets = netassets.toFixed(2);
+
     }
 
     $scope.tabselected = function() {
