@@ -1386,9 +1386,16 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
         $scope.removerow = function(parentindex, index) {
             //console.log('got a call to remove row')
             assetid = $scope.data[parentindex].extra.assets[index].assetid;
-            $scope.data[parentindex].extra.assets.splice(index, 1);
+            var d = $scope.data[parentindex].extra.assets.splice(index, 1);
 
-            $scope.selectedchildassets();
+            //  Find the index of the object in assetsdata, if exists, delete from there too
+            i = $scope.assetsdata.indexOf(d[0]);
+
+            if(i >= 0) {
+                $scope.assetsdata.splice(i, 1);
+            }
+
+            $scope.selectedchildassets(parentindex);
 
             //update database
             if(assetid != "0") {
