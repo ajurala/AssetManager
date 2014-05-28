@@ -967,6 +967,9 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                 console.log("successfully sent data to server");
                 if(data && d.assetid == "0") {
                     $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
+                    // new asset, push the asset to assetsInfo
+                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
+
                 }
 
                 $rootScope.$broadcast('assetsupdated', 'subcategoriesController');
