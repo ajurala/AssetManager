@@ -781,7 +781,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                     // Calculate the values now and save it for later use
                     d.extra.dval = 0;
                     for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dval += $scope.getppu(d.extra.assets[index]);
+                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index]));
                     }
                 }
                 return d.extra.dval
@@ -796,7 +796,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                     // Calculate the values now and save it for later use
                     d.extra.dcval = 0;
                     for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dcval += $scope.getcppu(d.extra.assets[index]);
+                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index]));
                     }
                 }
 
