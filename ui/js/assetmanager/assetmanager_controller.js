@@ -901,7 +901,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             assetid = $scope.data[parentindex].extra.assets[index].assetid;
             $scope.data[parentindex].extra.assets.splice(index, 1);
 
-            $scope.childselectedassets();
+            $scope.selectedchildassets();
 
             //update database
             if(assetid != "0") {
@@ -1027,21 +1027,21 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             }
         }
 
-        $scope.cancelchanges = function(index) {
-            if($scope.data[index].extra.newrow == true) {
-                $scope.removerow(index);
+        $scope.cancelchanges = function(parentindex, index) {
+            if($scope.data[parentindex].extra.assets[index].extra.newrow == true) {
+                $scope.removerow(parentindex, index);
             } else {
-                delete $scope.data[index].extra.copy
-                $scope.data[index].extra.editMode = false;
+                delete $scope.data[parentindex].extra.assets[index].extra.copy
+                $scope.data[parentindex].extra.assets[index].extra.editMode = false;
 
-                $scope.selectedassets();
+                $scope.selectedchildassets();
             }
 
             console.log('cancelling now');
 
         }
 
-        $scope.opencategorymodel = function (size, entereddetails, d, index) {
+        $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
 
             modalInstance = $modal.open({
                     template: categoryhtml,
@@ -1065,7 +1065,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                 d.extra.subcategoryname = saveddetails.subcategoryname;
                 d.extra.categoryname = saveddetails.categoryname;
 
-                $scope.submitdefferredchanges(d, index);
+                $scope.submitdefferredchanges(d, parentindex, index);
             }, function () {
                 // cancelled, so nothing to do now
             });

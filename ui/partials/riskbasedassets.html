@@ -35,8 +35,8 @@
 <div ng-repeat="risk in data">
     <div class="cursor row riskrow">
         <div class="collexp">
-            <span class="glyphicon glyphicon-chevron-right" ng-hide="data[$index].extra.showassets" ng-click="data[$index].extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
-            <span class="glyphicon glyphicon-chevron-down" ng-show="data[$index].extra.showassets" ng-click="data[$index].extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-right" ng-hide="risk.extra.showassets" ng-click="risk.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-down" ng-show="risk.extra.showassets" ng-click="risk.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
         </div>
         <input class="cursor collexp" type="checkbox" name="admin" ng-model="risk.extra.chartinclude" ng-change="selectedassets()">
         <label class="col-md-3">
@@ -46,7 +46,7 @@
             {{risk.color}}
         </span>
     </div>
-    <div class="table-responsive riskassets" ng-show="data[$index].extra.showassets">
+    <div class="table-responsive riskassets" ng-show="risk.extra.showassets">
         <table class="table table-striped">
             <tr>
                 <th class='text-center'><input type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets()"></th>
@@ -63,7 +63,7 @@
                 <th class='text-center' colspan="20">Color</th>
             </tr>
 
-            <tr ng-repeat="asset in data[$index].extra.assets">
+            <tr ng-repeat="asset in risk.extra.assets">
                 <td class='text-center'>
                     <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
                 </td>
@@ -120,7 +120,7 @@
                 </td>
                 <td class='text-center'>
                     <span class="cursor" ng-click="entereditmode($parent.$index, $index)">
-                        {{getppu(data[$parent.$index].extra.assets[$index])}}
+                        {{getppu(asset)}}
                     </span>
                 </td>
                 <td class='text-center'>
@@ -131,7 +131,7 @@
                 </td>
                 <td class='text-center'>
                     <span class="cursor" ng-click="entereditmode($parent.$index, $index)">
-                        {{getcppu(data[$parent.$index].extra.assets[$index])}}
+                        {{getcppu(asset)}}
                     </span>
                 </td>
                 <td class='text-center'>
