@@ -120,7 +120,7 @@ function usersController($scope, $http, $location, Session) {
     $scope.getUsersInfo();
 }
 
-function categoryModelController($scope, $modalInstance, $http, categorydetails, Session){
+function categoryModelController($scope, $rootScope, $modalInstance, $http, categorydetails, Session){
     $scope.categorydetails = categorydetails;
     $scope.assetsOtherInfo = categorydetails.assetsOtherInfo;
 
@@ -232,6 +232,8 @@ function categoryModelController($scope, $modalInstance, $http, categorydetails,
                     Session.assetsotherinfo.subcategories.push(subcategorydetails);
 
                     $modalInstance.close(entereddetails);
+
+                    /* TODO - Might need to broadcast when update of category and subcategory is done */
                 }
             });
         }
@@ -623,16 +625,18 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
 })
 
 
-app.controller("riskbasedassetsController", function($scope, $http, $filter, $modal, Session) {
+app.controller("riskbasedassetsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
     Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
         .then(function(response){$scope.updateAssetsData()});
 
     $scope.$on('assetsupdated', function(event, from) {
-        if(from != 'riskbasedassetsController') {
+        // Even if riskbasedassetsController has sent it, update internal data again
+        // TODO - Improve this later where, on submit, modify internal structure
+        // if(from == "riskbasedassetsController") {
             $scope.updateAssetsData();
-        }
+        //}
     });
 
     $scope.updateAssetsData = function() {
@@ -922,11 +926,11 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             })
             .success(function(data) {
                 console.log("successfully removed data from server");
-                /* TODO - Broadcast/emit the changes, so other tab charts are updated */
+                $rootScope.$broadcast('assetsupdated', 'riskbasedassetsController');
             });
         }
 
-        $scope.addupdateasset = function(d, index) {
+        $scope.addupdateasset = function(d, parentindex, index) {
             console.log(d);
             $http({
                 method : 'POST',
@@ -938,10 +942,10 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             .success(function(data) {
                 console.log("successfully sent data to server");
                 if(data && d.assetid == "0") {
-                    $scope.data[index].assetid = data.assetid;
+                    $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
                 }
 
-                /* TODO - Broadcast/emit the changes, so other tab charts are updated */
+                $rootScope.$broadcast('assetsupdated', 'riskbasedassetsController');
             });
         }
 
@@ -953,7 +957,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             $scope.data[parentindex].extra.assets[index].extra.copy = d
         }
 
-        $scope.submitdefferredchanges = function(d, index) {
+        $scope.submitdefferredchanges = function(d, parentindex, index) {
             if(typeof d.date != 'string' && !(d.date instanceof String)) {
                 d.date = d.date.toISOString().slice(0, 10);
             }
@@ -963,23 +967,23 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
             d.extra.newrow = false;
             d.extra.editMode = false;
 
-            $scope.data[index] = d;
+            $scope.data[parentindex].extra.assets[index] = d;
 
             $scope.selectedassets();
 
             //Submit the changes to the backend for this row
-            d = angular.copy($scope.data[index]);
+            d = angular.copy($scope.data[parentindex].extra.assets[index]);
 
             //Delete the extra information that is populated into the data
             delete d.extra;
             delete d.disabled;
 
-            $scope.addupdateasset(d, index);
+            $scope.addupdateasset(d, parentindex, index);
             console.log('submitting now');
         }
 
-        $scope.submitchanges = function(index) {
-            d = $scope.data[index].extra.copy;
+        $scope.submitchanges = function(parentindex, index) {
+            d = $scope.data[parentindex].extra.assets[index].extra.copy;
 
             entereddetails = {
                 'categoryname': d.extra.categoryname,
@@ -1000,7 +1004,7 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                     }
                 }
                 if(categoryid == null) {
-                    $scope.opencategorymodel(null, entereddetails, d, index);
+                    $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
                 } else {
                     // If id is available, check if provided subcategory exists for the category
                     // If yes then continue with the rest
@@ -1016,14 +1020,14 @@ app.controller("riskbasedassetsController", function($scope, $http, $filter, $mo
                     }
 
                     if(subcategoryid == null) {
-                        $scope.opencategorymodel(null, entereddetails, d, index);
+                        $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
                     } else {
                         d.subcategoryid = subcategoryid;
                         $scope.submitdefferredchanges(d, index);
                     }
                 }
             } else {
-                $scope.submitdefferredchanges(d, index);
+                $scope.submitdefferredchanges(d, parentindex, index);
             }
         }
 
