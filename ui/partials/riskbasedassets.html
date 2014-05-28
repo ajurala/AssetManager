@@ -24,7 +24,7 @@
     <div class="collexp">
         &nbsp;
     </div>
-    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets()">
+    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallrisks(false)">
     <label class="col-md-3 grouptitle">
         Risk Type
     </label>
@@ -49,7 +49,7 @@
     <div class="table-responsive groupassets" ng-show="risk.extra.showassets">
         <table class="table table-striped">
             <tr>
-                <th class='text-center'><input type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets()"></th>
+                <th class='text-center'><input type="checkbox" name="admin" ng-model="risk.extra.assetchartincludeall" ng-change="selectallassets($index)"></th>
                 <th class='text-center'></th>
                 <th class='text-center'>Asset Name</th>
                 <th class='text-center'>Date Bought</th>
@@ -65,7 +65,7 @@
 
             <tr ng-repeat="asset in risk.extra.assets">
                 <td class='text-center'>
-                    <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$parent.$index)">
+                    <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
                 </td>
                 <td class='text-center'>
                     <span ng-hide="asset.extra.editMode">

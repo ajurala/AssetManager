@@ -1091,17 +1091,17 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
 
     Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData()});
+        .then(function(response){$scope.updateAssetsData(true)});
 
     $scope.$on('assetsupdated', function(event, from) {
         // Even if riskbasedassetsController has sent it, update internal data again
         // TODO - Improve this later where, on submit, modify internal structure
         // if(from == "riskbasedassetsController") {
-            $scope.updateAssetsData();
+            $scope.updateAssetsData(false);
         //}
     });
 
-    $scope.updateAssetsData = function() {
+    $scope.updateAssetsData = function(firstload) {
         $scope.assetsInfo = Session.assetsinfo;
         $scope.assetsOtherInfo = Session.assetsotherinfo;
 
@@ -1319,19 +1319,41 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
             $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
-        $scope.selectedchildassets = function (parentindex) {
-            //$scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+        $scope.selectedchildassets = function(index) {
+            /* Recalculate the total values of risks */
+            $scope.data[index].extra.dcval = null;
+            $scope.data[index].extra.dval = null;
+
+            $scope.selectedassets();
         }
 
-        $scope.selectallassets = function() {
+        $scope.selectallrisks = function(firstload) {
             for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall
-                assets = $scope.data[index].extra.assets;
+                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
+                
+                if(firstload) {
+                    assets = $scope.data[index].extra.assets;
+                    $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;
 
-                for(i = 0; i < assets.length; ++i) {
-                    assets[i].extra.chartinclude = $scope.assetchartincludeall
+                    for(i = 0; i < assets.length; ++i) {
+                        assets[i].extra.chartinclude = $scope.assetchartincludeall
+                    }
                 }
             }
+
+            $scope.selectedassets();
+        }
+
+        $scope.selectallassets = function(index) {
+            assets = $scope.data[index].extra.assets;
+
+            for(i = 0; i < assets.length; ++i) {
+                assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
+            }
+
+            /* Recalculate the total values of risks */
+            $scope.data[index].extra.dcval = null;
+            $scope.data[index].extra.dval = null;
 
             $scope.selectedassets();
         }
@@ -1543,8 +1565,10 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
 
         /* All the function calls are here */
 
-        /* Call the selectallassets */
-        $scope.selectallassets();
+        if(firstload) {
+            /* Call the selectallassets */
+            $scope.selectallrisks(firstload);
+        }
     }
 })
 
