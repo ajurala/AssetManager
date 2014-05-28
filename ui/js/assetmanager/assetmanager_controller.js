@@ -654,6 +654,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
             if($scope.data[index].extra == null) {
                 $scope.data[index].extra = {};
                 $scope.data[index].extra.showassets = false;
+                $scope.data[index].extra.chartinclude = true;
             }
 
             $scope.data[index].extra.dval = null;
@@ -859,7 +860,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
         }
 
         $scope.selectedchildassets = function (index) {
-            /* Recalculate the total values of risks */
+            /* Recalculate the total values of subcategories */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
@@ -890,7 +891,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                 assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
             }
 
-            /* Recalculate the total values of risks */
+            /* Recalculate the total values of subcategories */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
@@ -1117,7 +1118,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
 
         if(firstload) {
             /* Call the selectallassets */
-            $scope.selectallrisks(firstload);
+            $scope.selectallsubcategories(firstload);
         } else {
             $scope.selectedassets();
         }
@@ -1521,7 +1522,7 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
             entereddetails = {
                 'categoryname': d.extra.categoryname,
                 'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
+                'riskname': $scope.data[parentindex].riskname,
             };
 
             if(d.extra.categoryname != $scope.data[index].extra.categoryname
