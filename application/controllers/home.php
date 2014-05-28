@@ -39,7 +39,7 @@ class Home extends AssetManager
         if(is_logged_in()) {
             $this->load->model("home_model");
             $indata = $this->input->post();
-            $this->home_model->add_update_asset($indata);
+            $data = $this->home_model->add_update_asset($indata);
         }
 
         echo json_encode($data);
@@ -50,7 +50,6 @@ class Home extends AssetManager
             $this->load->model("home_model");
             $assetid = $this->input->post('assetid');
             $data = $this->home_model->remove_asset($assetid);
-            //var_dump($indata);
         }
     }
 

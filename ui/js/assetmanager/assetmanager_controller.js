@@ -1122,7 +1122,6 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
             $scope.data[index].extra.dval = null;
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.assets = [];
-
         }
 
         // Add extra data to the assets information
@@ -1427,6 +1426,8 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
                 console.log("successfully sent data to server");
                 if(data && d.assetid == "0") {
                     $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
+                    // new asset, push the asset to assetsInfo
+                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
                 }
 
                 $rootScope.$broadcast('assetsupdated', 'riskbasedassetsController');
@@ -1568,6 +1569,8 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
         if(firstload) {
             /* Call the selectallassets */
             $scope.selectallrisks(firstload);
+        } else {
+            $scope.selectedassets();
         }
     }
 })

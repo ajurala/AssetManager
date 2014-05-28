@@ -66,7 +66,7 @@ class Home_model extends CI_Model{
             $data['assetid'] = $assetid;
         } else {
             // update the table
-             $this->db->update('assets', $indata, array('assetid' => $indata['assetid']));
+            $this->db->update('assets', $indata, array('assetid' => $indata['assetid']));
         }
 
         return $data;
