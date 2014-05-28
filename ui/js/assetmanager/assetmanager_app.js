@@ -124,6 +124,13 @@ app.directive('assets', function() {
     };
 });
 
+app.directive('subcategories', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'ui/partials/subcategories.html',
+    };
+});
+
 app.directive('riskbasedassets', function() {
     return {
       restrict: 'E',
