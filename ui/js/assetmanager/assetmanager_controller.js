@@ -1023,7 +1023,7 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
                         $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
                     } else {
                         d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, index);
+                        $scope.submitdefferredchanges(d, parentindex, index);
                     }
                 }
             } else {
