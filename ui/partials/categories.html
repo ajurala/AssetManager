@@ -1,0 +1,157 @@
+<div class="col-md-6">
+    <nvd3-pie-chart id="assetssubcategoriesinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
+        x="nameFunction()" y="sppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
+        <svg></svg>
+    </nvd3-pie-chart>
+    <!-- <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div> -->
+    <h1 class="chart-title"> Invested Assets </h1>
+</div>
+
+<div class="col-md-6">
+    <nvd3-pie-chart id="assetssubcategoriescurrent" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
+        x="nameFunction()" y="scppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
+        <svg></svg>
+    </nvd3-pie-chart>
+    <!-- <div class="text-center emptychart" ng-hide="chartdata.length"> <h3><strong>Nothing to show</strong></h3> </div> -->
+    <h1 class="chart-title"> Current Assets</h1>
+</div>
+
+<div class="clearfix visible-*"></div>
+
+<div class="row grouprow grouprowtitle">
+    <div class="collexp">
+        &nbsp;
+    </div>
+    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallsubcategories(false)">
+    <label class="col-md-3 grouptitle">
+        Sub-Asset Type
+    </label>
+    <label class="col-md-3 grouptitle">
+        Color
+    </label>
+</div>
+<div ng-repeat="subcategory in data">
+    <div class="cursor row grouprow">
+        <div class="collexp">
+            <span class="glyphicon glyphicon-chevron-right" ng-hide="subcategory.extra.showassets" ng-click="subcategory.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-down" ng-show="subcategory.extra.showassets" ng-click="subcategory.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
+        </div>
+        <input class="cursor collexp" type="checkbox" name="admin" ng-model="subcategory.extra.chartinclude" ng-change="selectedassets()">
+        <label class="col-md-3">
+            {{subcategory.subcategoryname}}
+        </label>
+        <span class="col-md-1 colorrect" ng-style="{'color': subcategory.color, 'background-color': subcategory.color}">
+            {{subcategory.color}}
+        </span>
+    </div>
+    <div class="table-responsive groupassets" ng-show="subcategory.extra.showassets">
+        <table class="table table-striped">
+            <tr>
+                <th class='text-center'><input type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets($index)"></th>
+                <th class='text-center'></th>
+                <th class='text-center'>Asset Name</th>
+                <th class='text-center'>Date Bought</th>
+                <th class='text-center'>Category</th>
+                <th class='text-center'>Sub-Category</th>
+                <th class='text-center'>Units</th>
+                <th class='text-center'>Invested Price Per Unit</th>
+                <th class='text-center'>Invested Total</th>
+                <th class='text-center'>Current Price Per Unit</th>
+                <th class='text-center'>Current Total</th>
+                <th class='text-center' colspan="20">Color</th>
+            </tr>
+
+            <tr ng-repeat="asset in subcategory.extra.assets">
+                <td class='text-center'>
+                    <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
+                </td>
+                <td class='text-center'>
+                    <span ng-hide="asset.extra.editMode">
+                        <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click="addrow($parent.$parent.$index, $index)" popover="Add an asset above" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-minus btn-link" ng-click="removerow($parent.$parent.$index, $index)" popover="Remove this asset" popover-trigger="mouseenter" popover-placement="top"></div>
+                    </span>
+                    <span ng-show="asset.extra.editMode">
+                        <div class="glyphicon glyphicon-ok col-md-6 btn-link ok" ng-click="submitchanges($parent.$parent.$index, $index)" popover="Submit the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                        <div class="glyphicon glyphicon-remove btn-link" ng-click="cancelchanges($parent.$parent.$index, $index)" popover="Cancel the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                    </span>
+                </td>
+                <td class='text-center' >
+                    <span class="cursor" ng-hide="asset.extra.editMode" popover="{{asset.assetdescription}}" popover-title="Description" popover-trigger="mouseenter" popover-placement="top" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{asset.assetname}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.assetname" placeholder="Asset name" size="20"/>
+                    <textarea type="textarea" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.assetdescription"placeholder="Asset description"></textarea>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{asset.date}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" datepicker-popup="yyyy-MM-dd" ng-model="asset.extra.copy.date" is-open="asset.extra.opened" close-text="Close" size="10"/>
+                    <span class="input-group-btn" ng-show="asset.extra.editMode">
+                        <button type="button" class="btn btn-default" ng-click="datepickopen($event, $parent.$parent.$index, $index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
+                        {{asset.extra.categoryname}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.categoryname" typeahead="category.categoryname for category in assetsOtherInfo.categories" placeholder="Asset type" size="14"/>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)" popover="{{asset.extra.riskname}}" popover-title="Risk Associated" popover-trigger="mouseenter" popover-placement="top">
+                        {{asset.extra.subcategoryname}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{asset.units}} {{asset.unitform}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.units" size="12"/>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.unitform" placeholder="units (ex. gms)" size="12"/>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{asset.ppu}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.ppu" size="12" />
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{getppu(asset, false)}}
+                    </span>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{asset.cppu}}
+                    </span>
+                    <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.cppu" size="12" />
+                </td>
+                <td class='text-center'>
+                    <span class="cursor" ng-click="entereditmode($parent.$parent.$index, $index)">
+                        {{getcppu(asset, false)}}
+                    </span>
+                </td>
+                <td class='text-center'>
+                    <span class="cursor colorrect" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" ng-style="{'color': asset.color, 'background-color': asset.color}">
+                        {{asset.color}}
+                    </span>
+                    <input class="colorrect" colorpicker ng-show="asset.extra.editMode" type="text" ng-model="asset.extra.copy.color" ng-style="{'color': asset.extra.copy.color, 'background-color': asset.extra.copy.color}" size="5"/>
+                </td>
+
+            </tr>
+
+            <tr>
+                <td></td>
+                <td class='text-center'>
+                    <div class="glyphicon glyphicon-plus col-md-6 btn-link" ng-click="addrow($index, -1)" popover="Add an asset at the end" popover-trigger="mouseenter" popover-placement="top"></div>
+                </td>
+                <td colspan="20"></td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="clearfix visible-*"></div>
+</div>

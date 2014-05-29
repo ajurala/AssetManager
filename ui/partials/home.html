@@ -7,7 +7,7 @@
             <assets ng-controller="assetsController"></assets>
         </tab>
         <tab class="cursor" heading="Asset Types" popover="Group by Asset types" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">
-
+            <categories ng-controller="categoriesController"></categories>
         </tab>
         <tab class="cursor" heading="Sub Asset Types" popover="Group by Sub Asset types" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">
             <subcategories ng-controller="subcategoriesController"></subcategories>

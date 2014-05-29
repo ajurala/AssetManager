@@ -124,6 +124,13 @@ app.directive('assets', function() {
     };
 });
 
+app.directive('categories', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'ui/partials/categories.html',
+    };
+});
+
 app.directive('subcategories', function() {
     return {
       restrict: 'E',
