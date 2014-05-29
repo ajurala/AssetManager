@@ -174,7 +174,7 @@ class User extends AssetManager
                 }else{
                      $this->load->model("user_model");
                      $user = $this->input->post($this->username['formdata']);
-                     $password = $this->input->post($this->username['formdata']);
+                     $password = $this->input->post($this->pass['formdata']);
                      $updateadmin = $this->user_model->updateadmin($user, $password);
                      if($updateadmin === false){
                         $errors['message'] = "Could not update admin password. Try again.";
