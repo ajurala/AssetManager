@@ -705,7 +705,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                         break;
                     }
                 }
-            } 
+            }
 
             categories = $scope.data;
             for(i = 0; i < categories.length; ++i) {
@@ -719,7 +719,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             $scope.assetsdata[index].extra.categoryid = categoryid;
             $scope.assetsdata[index].extra.categoryname = categoryname;
 
-            
+
         }
 
         $scope.nameFunction = function(){
@@ -785,36 +785,56 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             };
         }
 
-        $scope.cppuFunction = function(){
-            return function(d){
-                if(d.extra.dval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    }
+        $scope.getcatppu = function(d, forchart) {
+            if(d.extra.dval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dval = 0;
+                d.extra.dval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
+                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
                 }
+            }
+
+            if(!forchart) {
+                return d.extra.dval2;
+            } else if(d.extra.chartinclude) {
                 return d.extra.dval
-            };
+            } else {
+                return 0;
+            }
         }
 
-        $scope.cgetppu = $scope.cppuFunction()
-
-        $scope.ccppuFunction = function(){
+        $scope.catppuFunction = function(){
             return function(d){
-                if(d.extra.dcval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dcval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    }
-                }
-
-                return d.extra.dcval
+                return $scope.getcatppu(d, true);
             };
         }
 
-        $scope.cgetcppu = $scope.ccppuFunction()
+        $scope.getcatcppu = function(d, forchart) {
+            if(d.extra.dcval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dcval = 0;
+                d.extra.dcval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
+                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
+                }
+            }
+
+            if(!forchart) {
+                return d.extra.dcval2;
+            } else if(d.extra.chartinclude) {
+                return d.extra.dcval
+            } else {
+                return 0;
+            }
+        }
+        $scope.catcppuFunction = function(){
+            return function(d){
+                return $scope.getcatcppu(d, true);
+            };
+        }
 
         $scope.colorFunction = function(){
             return function(dp, index){
@@ -1291,36 +1311,56 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
             };
         }
 
+        $scope.getsppu = function(d, forchart) {
+            if(d.extra.dval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dval = 0;
+                d.extra.dval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
+                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
+                }
+            }
+
+            if(!forchart) {
+                return d.extra.dval2;
+            } else if(d.extra.chartinclude) {
+                return d.extra.dval
+            } else {
+                return 0;
+            }
+        }
+
         $scope.sppuFunction = function(){
             return function(d){
-                if(d.extra.dval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    }
-                }
-                return d.extra.dval
+                return $scope.getsppu(d, true);
             };
         }
 
-        $scope.sgetppu = $scope.sppuFunction()
+        $scope.getscppu = function(d, forchart) {
+            if(d.extra.dcval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dcval = 0;
+                d.extra.dcval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
+                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
+                }
+            }
 
+            if(!forchart) {
+                return d.extra.dcval2;
+            } else if(d.extra.chartinclude) {
+                return d.extra.dcval
+            } else {
+                return 0;
+            }
+        }
         $scope.scppuFunction = function(){
             return function(d){
-                if(d.extra.dcval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dcval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    }
-                }
-
-                return d.extra.dcval
+                return $scope.getscppu(d, true);
             };
         }
-
-        $scope.sgetcppu = $scope.scppuFunction()
 
         $scope.colorFunction = function(){
             return function(dp, index){
@@ -1793,36 +1833,57 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
             };
         }
 
+        $scope.getrppu = function(d, forchart) {
+            if(d.extra.dval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dval = 0;
+                d.extra.dval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
+                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
+                }
+            }
+
+            if(!forchart) {
+                return d.extra.dval2;
+            } else if(d.extra.chartinclude) {
+                return d.extra.dval
+            } else {
+                return 0;
+            }
+        }
+
         $scope.rppuFunction = function(){
             return function(d){
-                if(d.extra.dval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    }
-                }
-                return d.extra.dval
+                return $scope.getrppu(d, true);
             };
         }
 
-        $scope.rgetppu = $scope.rppuFunction()
+        $scope.getrcppu = function(d, forchart) {
+            if(d.extra.dcval == null) {
+                // Calculate the values now and save it for later use
+                d.extra.dcval = 0;
+                d.extra.dcval2 = 0;
+                for(index = 0; index < d.extra.assets.length; ++index) {
+                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
+                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
+                }
+            }
+
+            if(!forchart) {
+                return d.extra.dcval2;
+            } else if(d.extra.chartinclude) {
+                return d.extra.dcval
+            } else {
+                return 0;
+            }
+        }
 
         $scope.rcppuFunction = function(){
             return function(d){
-                if(d.extra.dcval == null) {
-                    // Calculate the values now and save it for later use
-                    d.extra.dcval = 0;
-                    for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    }
-                }
-
-                return d.extra.dcval
+                return $scope.getrcppu(d, true);
             };
         }
-
-        $scope.rgetcppu = $scope.rcppuFunction()
 
         $scope.colorFunction = function(){
             return function(dp, index){
@@ -1882,7 +1943,7 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
         $scope.selectallrisks = function(firstload) {
             for (index = 0; index < $scope.data.length; ++index) {
                 $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
-                
+
                 if(firstload) {
                     assets = $scope.data[index].extra.assets;
                     $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;

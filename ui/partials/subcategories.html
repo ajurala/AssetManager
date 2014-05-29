@@ -28,8 +28,14 @@
     <label class="col-md-3 grouptitle">
         Sub-Asset Type
     </label>
-    <label class="col-md-3 grouptitle">
+    <label class="col-md-2 grouptitle">
         Color
+    </label>
+    <label class="col-md-3 grouptitle">
+        Invested
+    </label>
+    <label class="col-md-3 grouptitle">
+        Current
     </label>
 </div>
 <div ng-repeat="subcategory in data">
@@ -45,6 +51,12 @@
         <span class="col-md-1 colorrect" ng-style="{'color': subcategory.color, 'background-color': subcategory.color}">
             {{subcategory.color}}
         </span>
+        <label class="col-md-3 col-md-offset-1">
+            {{getsppu(subcategory, false)}}
+        </label>
+        <label class="col-md-3">
+            {{getscppu(subcategory, false)}}
+        </label>
     </div>
     <div class="table-responsive groupassets" ng-show="subcategory.extra.showassets">
         <table class="table table-striped">
