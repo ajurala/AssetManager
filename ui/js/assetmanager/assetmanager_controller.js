@@ -728,58 +728,62 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
             };
         }
 
+        $scope.getppu = function(d, forchart){
+            if(d.extra.dval == null) {
+                // Calculate the values now and save it for later use
+                // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
+                //       or when category ppu changes
+                if(d.ppu != null) {
+                    d.extra.dval = d.ppu;
+                } else {
+                    d.extra.dval = 0; //TODO - Should get value from the subcategory
+                }
+
+                d.extra.dval = d.extra.dval * d.units;
+                d.extra.dval = d.extra.dval.toFixed(2);
+            }
+
+            /* If asset should not be included, then return 0 value */
+            if(!forchart || d.extra.chartinclude) {
+                return d.extra.dval
+            } else {
+                return 0;
+            }
+        }
+
         $scope.ppuFunction = function(){
             return function(d){
-                if(d.extra.dval == null) {
-                    // Calculate the values now and save it for later use
-                    // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                    //       or when category ppu changes
-                    if(d.ppu != null) {
-                        d.extra.dval = d.ppu;
-                    } else {
-                        d.extra.dval = 0; //TODO - Should get value from the subcategory
-                    }
-
-                    d.extra.dval = d.extra.dval * d.units;
-                    d.extra.dval = d.extra.dval.toFixed(2);
-                }
-
-                /* If asset should not be included, then return 0 value */
-                if(d.extra.chartinclude) {
-                    return d.extra.dval
-                } else {
-                    return 0;
-                }
+                return $scope.getppu(d, true);
             };
         }
 
-        $scope.getppu = $scope.ppuFunction()
+        $scope.getcppu = function(d, forchart) {
+            if(d.extra.dcval == null) {
+                // Calculate the values now and save it for later use
+                // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
+                //       or when category cppu changes
+                if(d.cppu != null) {
+                    d.extra.dcval = d.cppu;
+                } else {
+                    d.extra.dcval = 0 //Should get value from the subcategory
+                }
+
+                d.extra.dcval = d.extra.dcval * d.units;
+                d.extra.dcval = d.extra.dcval.toFixed(2);
+            }
+
+            if(!forchart || d.extra.chartinclude) {
+                return d.extra.dcval
+            } else {
+                return 0;
+            }
+        }
 
         $scope.cppuFunction = function(){
             return function(d){
-                if(d.extra.dcval == null) {
-                    // Calculate the values now and save it for later use
-                    // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                    //       or when category cppu changes
-                    if(d.cppu != null) {
-                        d.extra.dcval = d.cppu;
-                    } else {
-                        d.extra.dcval = 0 //Should get value from the subcategory
-                    }
-
-                    d.extra.dcval = d.extra.dcval * d.units;
-                    d.extra.dcval = d.extra.dcval.toFixed(2);
-                }
-
-                if(d.extra.chartinclude) {
-                    return d.extra.dcval
-                } else {
-                    return 0;
-                }
+                return $scope.getcppu(d, true);
             };
         }
-
-        $scope.getcppu = $scope.cppuFunction()
 
         $scope.sppuFunction = function(){
             return function(d){
@@ -787,7 +791,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                     // Calculate the values now and save it for later use
                     d.extra.dval = 0;
                     for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index]));
+                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
                     }
                 }
                 return d.extra.dval
@@ -802,7 +806,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                     // Calculate the values now and save it for later use
                     d.extra.dcval = 0;
                     for(index = 0; index < d.extra.assets.length; ++index) {
-                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index]));
+                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
                     }
                 }
 
