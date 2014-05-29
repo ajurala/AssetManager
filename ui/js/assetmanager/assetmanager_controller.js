@@ -631,9 +631,9 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
         .then(function(response){$scope.updateAssetsData(true)});
 
     $scope.$on('assetsupdated', function(event, from) {
-        // Even if subcategoriesController has sent it, update internal data again
+        // Even if categoriesController has sent it, update internal data again
         // TODO - Improve this later where, on submit, modify internal structure
-        // if(from == "subcategoriesController") {
+        // if(from == "categoriesController") {
             $scope.updateAssetsData(false);
         //}
     });
@@ -647,7 +647,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
         $scope.assetsdata = $scope.assetsInfo.assets;
         $scope.chartdata = [];
         $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.subcategories;
+        $scope.data = $scope.assetsOtherInfo.categories;
 
         // Add extra data to the assets information
         for (index = 0; index < $scope.data.length; ++index) {
@@ -665,12 +665,11 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
 
         // Add extra data to the assets information
         for (index = 0; index < $scope.assetsdata.length; ++index) {
-            dataAdded = false;
+            categoryid = -1;
+            categoryname = '';
             if($scope.assetsdata[index].extra == null) {
                 $scope.assetsdata[index].extra = {};
 
-                categoryid = 0;
-                categoryname = '';
                 subcategoryname = '';
                 riskname = '';
 
@@ -681,17 +680,6 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                         subcategoryname = subcategories[i].subcategoryname;
                         categoryid = subcategories[i].categoryid;
                         riskid = subcategories[i].riskid
-
-                        subcategories[i].extra.assets.push($scope.assetsdata[index]);
-                        dataAdded = true;
-                        break;
-                    }
-                }
-
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(categories[i].categoryid == categoryid) {
-                        categoryname = categories[i].categoryname;
                         break;
                     }
                 }
@@ -704,27 +692,39 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                     }
                 }
 
-                $scope.data[index].extra.categoryid = categoryid;
-                $scope.data[index].extra.categoryname = categoryname;
                 $scope.data[index].extra.subcategoryname = subcategoryname;
                 $scope.data[index].extra.riskname = riskname;
             }
 
-            if(!dataAdded) {
-                subcategories = $scope.data;
-                subcategoryid = $scope.assetsdata[index].subcategoryid;
+            if(categoryid == -1) {
+                subcategories = $scope.assetsOtherInfo.subcategories;
+                categoryid = 0;
                 for(i = 0; i < subcategories.length; ++i) {
-                    if(subcategories[i].subcategoryid == subcategoryid) {
-                        subcategories[i].extra.assets.push($scope.assetsdata[index]);
+                    if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
+                        categoryid = subcategories[i].categoryid;
                         break;
                     }
                 }
+            } 
+
+            categories = $scope.data;
+            for(i = 0; i < categories.length; ++i) {
+                if(categories[i].categoryid == categoryid) {
+                    categoryname = categories[i].categoryname;
+                    categories[i].extra.assets.push($scope.assetsdata[index]);
+                    break;
+                }
             }
+
+            $scope.assetsdata[index].extra.categoryid = categoryid;
+            $scope.assetsdata[index].extra.categoryname = categoryname;
+
+            
         }
 
         $scope.nameFunction = function(){
             return function(d) {
-                return d.subcategoryname;
+                return d.categoryname;
             };
         }
 
@@ -785,7 +785,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             };
         }
 
-        $scope.sppuFunction = function(){
+        $scope.cppuFunction = function(){
             return function(d){
                 if(d.extra.dval == null) {
                     // Calculate the values now and save it for later use
@@ -798,9 +798,9 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             };
         }
 
-        $scope.sgetppu = $scope.sppuFunction()
+        $scope.cgetppu = $scope.cppuFunction()
 
-        $scope.scppuFunction = function(){
+        $scope.ccppuFunction = function(){
             return function(d){
                 if(d.extra.dcval == null) {
                     // Calculate the values now and save it for later use
@@ -814,7 +814,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             };
         }
 
-        $scope.sgetcppu = $scope.scppuFunction()
+        $scope.cgetcppu = $scope.ccppuFunction()
 
         $scope.colorFunction = function(){
             return function(dp, index){
@@ -864,14 +864,14 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
         }
 
         $scope.selectedchildassets = function (index) {
-            /* Recalculate the total values of subcategories */
+            /* Recalculate the total values of categories */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
             $scope.selectedassets();
         }
 
-        $scope.selectallsubcategories = function(firstload) {
+        $scope.selectallcategories = function(firstload) {
             for (index = 0; index < $scope.data.length; ++index) {
                 $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
 
@@ -895,7 +895,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                 assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
             }
 
-            /* Recalculate the total values of subcategories */
+            /* Recalculate the total values of categories */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
@@ -962,7 +962,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             })
             .success(function(data) {
                 console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'subcategoriesController');
+                $rootScope.$broadcast('assetsupdated', 'categoriesController');
             });
         }
 
@@ -984,7 +984,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
 
                 }
 
-                $rootScope.$broadcast('assetsupdated', 'subcategoriesController');
+                $rootScope.$broadcast('assetsupdated', 'categoriesController');
             });
         }
 
@@ -1122,7 +1122,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
 
         if(firstload) {
             /* Call the selectallassets */
-            $scope.selectallsubcategories(firstload);
+            $scope.selectallcategories(firstload);
         } else {
             $scope.selectedassets();
         }

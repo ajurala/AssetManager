@@ -1,6 +1,6 @@
 <div class="col-md-6">
-    <nvd3-pie-chart id="assetssubcategoriesinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="sppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+    <nvd3-pie-chart id="assetscategoriesinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
+        x="nameFunction()" y="cppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -9,8 +9,8 @@
 </div>
 
 <div class="col-md-6">
-    <nvd3-pie-chart id="assetssubcategoriescurrent" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="scppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+    <nvd3-pie-chart id="assetscategoriescurrent" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
+        x="nameFunction()" y="ccppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -24,29 +24,29 @@
     <div class="collexp">
         &nbsp;
     </div>
-    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallsubcategories(false)">
+    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallcategories(false)">
     <label class="col-md-3 grouptitle">
-        Sub-Asset Type
+        Asset Type
     </label>
     <label class="col-md-3 grouptitle">
         Color
     </label>
 </div>
-<div ng-repeat="subcategory in data">
+<div ng-repeat="category in data">
     <div class="cursor row grouprow">
         <div class="collexp">
-            <span class="glyphicon glyphicon-chevron-right" ng-hide="subcategory.extra.showassets" ng-click="subcategory.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
-            <span class="glyphicon glyphicon-chevron-down" ng-show="subcategory.extra.showassets" ng-click="subcategory.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-right" ng-hide="category.extra.showassets" ng-click="category.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-down" ng-show="category.extra.showassets" ng-click="category.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
         </div>
-        <input class="cursor collexp" type="checkbox" name="admin" ng-model="subcategory.extra.chartinclude" ng-change="selectedassets()">
+        <input class="cursor collexp" type="checkbox" name="admin" ng-model="category.extra.chartinclude" ng-change="selectedassets()">
         <label class="col-md-3">
-            {{subcategory.subcategoryname}}
+            {{category.categoryname}}
         </label>
-        <span class="col-md-1 colorrect" ng-style="{'color': subcategory.color, 'background-color': subcategory.color}">
-            {{subcategory.color}}
+        <span class="col-md-1 colorrect" ng-style="{'color': category.color, 'background-color': category.color}">
+            {{category.color}}
         </span>
     </div>
-    <div class="table-responsive groupassets" ng-show="subcategory.extra.showassets">
+    <div class="table-responsive groupassets" ng-show="category.extra.showassets">
         <table class="table table-striped">
             <tr>
                 <th class='text-center'><input type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallassets($index)"></th>
@@ -63,7 +63,7 @@
                 <th class='text-center' colspan="20">Color</th>
             </tr>
 
-            <tr ng-repeat="asset in subcategory.extra.assets">
+            <tr ng-repeat="asset in category.extra.assets">
                 <td class='text-center'>
                     <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
                 </td>
