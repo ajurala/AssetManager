@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
 CREATE TABLE IF NOT EXISTS `categories` (
   `categoryid` int(11) NOT NULL AUTO_INCREMENT,
   `categoryname` varchar(30) NOT NULL,
-  `color` int(11) DEFAULT NULL,
+  `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`categoryid`),
   UNIQUE KEY `categoryname` (`categoryname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `subcategories` (
   `subcategoryname` varchar(40) NOT NULL,
   `currentpriceperunit` double DEFAULT NULL,
   `unitform` varchar(20) NOT NULL,
-  `color` int(11) DEFAULT NULL,
+  `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`subcategoryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
