@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 29, 2014 at 09:48 AM
+-- Generation Time: Jun 05, 2014 at 02:20 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.3.28
 
@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `userid` int(11) NOT NULL,
   `date` date NOT NULL,
   `subcategoryid` int(11) NOT NULL,
+  `customgroupid` int(11) NOT NULL,
   `assetname` varchar(50) NOT NULL,
   `assetdescription` text NOT NULL,
   `units` double NOT NULL,
@@ -107,6 +108,20 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
   `user_data` text NOT NULL,
   PRIMARY KEY (`session_id`),
   KEY `last_activity_idx` (`last_activity`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customgroups`
+--
+
+CREATE TABLE IF NOT EXISTS `customgroups` (
+  `groupid` int(11) NOT NULL,
+  `groupname` varchar(30) NOT NULL,
+  `color` varchar(7) DEFAULT NULL,
+  PRIMARY KEY (`groupid`),
+  UNIQUE KEY `groupname` (`groupname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
