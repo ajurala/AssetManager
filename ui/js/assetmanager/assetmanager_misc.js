@@ -5,13 +5,16 @@ categoryhtml =
     <div class="modal-body"> \
         <div class="form-group" ng-class="{ \'has-error\' : knownCombinationError }"> \
             <label class="text-right col-md-6">Asset Type Name:</label> \
-            <span><input type="text" class="form-control category-control" ng-model="categorydetails.entereddetails.categoryname" typeahead="category.categoryname for category in categorydetails.assetsOtherInfo.categories" placeholder="Asset type" /></span> \
-            <span><input colorpicker type="text" class="form-control category-color-control" colorpicker-position="bottom" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.categorycolor" ng-style="{\'color\': categorydetails.entereddetails.categorycolor, \'background-color\': categorydetails.entereddetails.categorycolor}" size="5"/></span> \
+            <input type="text" class="form-control category-control col-md-2" ng-model="categorydetails.entereddetails.categoryname" typeahead="category.categoryname for category in categorydetails.assetsOtherInfo.categories" placeholder="Asset type" /> \
+            <input colorpicker type="text" class="form-control category-color-control cursor col-md-2" colorpicker-position="bottom" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.categorycolor" ng-style="{\'color\': categorydetails.entereddetails.categorycolor, \'background-color\': categorydetails.entereddetails.categorycolor}"/> \
+            <div class="clearfix visible-*"></div> \
             <span class="help-block text-center" ng-show="knownCombinationError">{{ knownCombinationError }}</span> \
         </div> \
         <div class="form-group" ng-class="{ \'has-error\' : knownCombinationError }"> \
             <label class="text-right col-md-6">Sub-Asset Type Name:</label> \
-            <input type="text" class="form-control category-control" ng-model="categorydetails.entereddetails.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in categorydetails.assetsOtherInfo.subcategories" placeholder="Sub-Asset type" /> \
+            <input type="text" class="form-control category-control col-md-2" ng-model="categorydetails.entereddetails.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in categorydetails.assetsOtherInfo.subcategories" placeholder="Sub-Asset type" /> \
+            <input colorpicker type="text" class="form-control category-color-control cursor col-md-2" colorpicker-position="top" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.subcategorycolor"  ng-style="{\'color\': categorydetails.entereddetails.subcategorycolor, \'background-color\': categorydetails.entereddetails.subcategorycolor}"/> \
+            <div class="clearfix visible-*"></div> \
             <span class="help-block text-center" ng-show="knownCombinationError">{{ knownCombinationError }}</span> \
         </div> \
         <div class="form-group" ng-class="{ \'has-error\' : riskError }"> \
@@ -26,10 +29,6 @@ categoryhtml =
         <div class="form-group"> \
             <label class="text-right col-md-6">Units: </label> \
             <input type="text" class="form-control category-control" ng-model="categorydetails.entereddetails.unitform" placeholder="units (ex. gms)" /> \
-        </div> \
-        <div class="form-group"> \
-            <label class="text-right col-md-6">Sub-Asset Type Color: </label> \
-            <input colorpicker type="text" class="form-control category-control" colorpicker-position="top" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.subcategorycolor" /> \
         </div> \
     </div> \
     <div class="modal-footer"> \
