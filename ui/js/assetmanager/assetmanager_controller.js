@@ -123,6 +123,8 @@ function usersController($scope, $http, $location, Session) {
 function categoryModelController($scope, $rootScope, $modalInstance, $http, categorydetails, Session){
     $scope.categorydetails = categorydetails;
     $scope.assetsOtherInfo = categorydetails.assetsOtherInfo;
+    $scope.categorydetails.entereddetails.categorycolor = '#'+Math.floor(Math.random()*16777215).toString(16)
+    $scope.categorydetails.entereddetails.subcategorycolor = '#'+Math.floor(Math.random()*16777215).toString(16)
 
     $scope.ok = function () {
         $scope.riskError = "";
@@ -406,7 +408,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: "",
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
                     extra: {
                         chartinclude: true,
                     },

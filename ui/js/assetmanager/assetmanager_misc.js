@@ -1,16 +1,13 @@
-categoryhtml = 
+categoryhtml =
     '<div class="modal-header"> \
         <h3 class="modal-title">New Category and Sub-category Details</h3> \
     </div> \
     <div class="modal-body"> \
         <div class="form-group" ng-class="{ \'has-error\' : knownCombinationError }"> \
             <label class="text-right col-md-6">Asset Type Name:</label> \
-            <input type="text" class="form-control category-control" ng-model="categorydetails.entereddetails.categoryname" typeahead="category.categoryname for category in categorydetails.assetsOtherInfo.categories" placeholder="Asset type" /> \
+            <span><input type="text" class="form-control category-control" ng-model="categorydetails.entereddetails.categoryname" typeahead="category.categoryname for category in categorydetails.assetsOtherInfo.categories" placeholder="Asset type" /></span> \
+            <span><input colorpicker type="text" class="form-control category-color-control" colorpicker-position="bottom" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.categorycolor" ng-style="{\'color\': categorydetails.entereddetails.categorycolor, \'background-color\': categorydetails.entereddetails.categorycolor}" size="5"/></span> \
             <span class="help-block text-center" ng-show="knownCombinationError">{{ knownCombinationError }}</span> \
-        </div> \
-        <div class="form-group"> \
-            <label class="text-right col-md-6">Asset Type Color: </label> \
-            <input colorpicker type="text" class="form-control category-control" colorpicker-position="bottom" colorpicker-fixed-position="true" ng-model="categorydetails.entereddetails.categorycolor" /> \
         </div> \
         <div class="form-group" ng-class="{ \'has-error\' : knownCombinationError }"> \
             <label class="text-right col-md-6">Sub-Asset Type Name:</label> \

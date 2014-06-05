@@ -27,6 +27,9 @@ body {
 .category-control {
     width: 150px;
 }
+.category-color-control {
+    width: 30px;
+}
 .colorrect {
     height: 17px;
     border-radius: 5px;
