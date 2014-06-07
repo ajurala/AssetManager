@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2014 at 06:59 AM
+-- Generation Time: Jun 07, 2014 at 07:02 AM
 -- Server version: 5.6.15
 -- PHP Version: 5.3.27
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `userid` int(11) NOT NULL,
   `date` date NOT NULL,
   `subcategoryid` int(11) NOT NULL,
-  `customgroupid` int(11) NOT NULL,
+  `customgroupid` int(11) NOT NULL DEFAULT '1',
   `assetname` varchar(50) NOT NULL,
   `assetdescription` text NOT NULL,
   `units` double NOT NULL,
