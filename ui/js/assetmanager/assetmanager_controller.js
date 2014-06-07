@@ -494,7 +494,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
             $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
-        $scope.selectedchildassets = function (index) {
+        $scope.selectedchildassets = function(index) {
             /* Recalculate the total values of categories */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
@@ -711,7 +711,7 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                 delete $scope.data[parentindex].extra.assets[index].extra.copy
                 $scope.data[parentindex].extra.assets[index].extra.editMode = false;
 
-                $scope.selectedchildassets();
+                $scope.selectedchildassets(parentindex);
             }
 
             console.log('cancelling now');
@@ -1208,7 +1208,7 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                 delete $scope.data[parentindex].extra.assets[index].extra.copy
                 $scope.data[parentindex].extra.assets[index].extra.editMode = false;
 
-                $scope.selectedchildassets();
+                $scope.selectedchildassets(parentindex);
             }
 
             console.log('cancelling now');
@@ -1712,7 +1712,7 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
                 delete $scope.data[parentindex].extra.assets[index].extra.copy
                 $scope.data[parentindex].extra.assets[index].extra.editMode = false;
 
-                $scope.selectedchildassets();
+                $scope.selectedchildassets(parentindex);
             }
 
             console.log('cancelling now');
@@ -2204,7 +2204,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
                 delete $scope.data[parentindex].extra.assets[index].extra.copy
                 $scope.data[parentindex].extra.assets[index].extra.editMode = false;
 
-                $scope.selectedchildassets();
+                $scope.selectedchildassets(parentindex);
             }
 
             console.log('cancelling now');
@@ -2548,6 +2548,11 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
             console.log('submitting now');
         }
 
+        $scope.checkgroupname = function(d, index) {
+            // check if it is same group name else update to server and submitdefferredchanges
+            $scope.submitdefferredchanges(d, index)
+        }
+
         $scope.submitchanges = function(index) {
             d = $scope.data[index].extra.copy;
 
@@ -2589,11 +2594,11 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                         $scope.opencategorymodel(null, entereddetails, d, index);
                     } else {
                         d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, index);
+                        $scope.checkgroupname(d, index);
                     }
                 }
             } else {
-                $scope.submitdefferredchanges(d, index);
+                $scope.checkgroupname(d, index);
             }
         }
 
@@ -2643,7 +2648,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                 d.extra.subcategoryname = saveddetails.subcategoryname;
                 d.extra.categoryname = saveddetails.categoryname;
 
-                $scope.submitdefferredchanges(d, index);
+                $scope.checkgroupname(d, index);
             }, function () {
                 // cancelled, so nothing to do now
             });
