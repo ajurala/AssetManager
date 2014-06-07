@@ -2,6 +2,10 @@ body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 .chart-title {
     text-align: center;
     margin-top: -50px;
@@ -26,10 +30,6 @@ body {
 }
 .category-control {
     width: 150px;
-}
-.category-color-control {
-    margin-left: 5px;
-    width: 30px;
 }
 .colorrect {
     height: 17px;
@@ -57,7 +57,7 @@ body {
 .grouprowtitle {
     background-color: #428BCA;
 }
-.grouptitle {
+.risktitle {
     color: #FFFFFF;
     font-size: 18px;
 }

@@ -9,7 +9,7 @@ if (isset($header) && is_array($header)) {
 <?php $this->load->view('common/menu'); ?>
  
 <div class="container">
-<div class="alert alert-success text-center" ng-show="alertInfo">
+<div class="alert alert-success text-center ng-cloak" ng-show="alertInfo">
     <div>
       <!-- <a class="close" data-dismiss="alert">×</a>  -->
       {{alertInfo}}
