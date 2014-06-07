@@ -33,6 +33,7 @@
             <th class='text-center'>Invested Total</th>
             <th class='text-center'>Current Price Per Unit</th>
             <th class='text-center'>Current Total</th>
+            <th class='text-center'>CAGR</th>
             <th class='text-center' colspan="20">Color</th>
         </tr>
 
@@ -79,7 +80,7 @@
                 <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>
             </td>
             <td class='text-center'>
-                <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.groupname}}">
+                <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">
                     {{asset.extra.groupname}}
                 </span>
                 <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.groupname" typeahead="group.groupname for group in assetsOtherInfo.customgroups" placeholder="Group Name" size="14"/>
@@ -111,6 +112,11 @@
             <td class='text-center'>
                 <span class="cursor" ng-click="entereditmode($index)">
                     {{getcppu(data[$index])}}
+                </span>
+            </td>
+            <td class='text-center'>
+                <span class="cursor" ng-click="entereditmode($index)">
+                    {{getcagr(data[$index])}}
                 </span>
             </td>
             <td class='text-center'>

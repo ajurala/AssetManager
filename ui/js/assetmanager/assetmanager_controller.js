@@ -1,3 +1,5 @@
+_MS_PER_DAY = 1000 * 60 * 60 * 24;
+
 function transformURIRequest(obj) {
     str = [];
     for(p in obj)
@@ -466,13 +468,26 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: "",
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
                     extra: {
                         chartinclude: true,
                     },
                 }
 
             return d;
+        }
+
+        $scope.getcagr = function(d) {
+            cppu = parseFloat($scope.getcppu(d, false));
+            ppu = parseFloat($scope.getppu(d, false));
+
+            investeddate = new Date(d.date);
+            currentdate =  new Date();
+
+            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
+            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
+
+            return cagr.toFixed(2);
         }
 
         $scope.selectedassets = function () {
@@ -748,9 +763,9 @@ app.controller("categoriesController", function($scope, $rootScope, $http, $filt
 
 app.controller("subcategoriesController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
-    Session.assetsotherinfodefferred.promise
+    /*Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});
+        .then(function(response){$scope.updateAssetsData(true)});*/
 
     $scope.$on('assetsupdated', function(event, from) {
         // Even if subcategoriesController has sent it, update internal data again
@@ -950,13 +965,26 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: "",
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
                     extra: {
                         chartinclude: true,
                     },
                 }
 
             return d;
+        }
+
+        $scope.getcagr = function(d) {
+            cppu = parseFloat($scope.getcppu(d, false));
+            ppu = parseFloat($scope.getppu(d, false));
+
+            investeddate = new Date(d.date);
+            currentdate =  new Date();
+
+            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
+            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
+
+            return cagr.toFixed(2);
         }
 
         $scope.selectedassets = function () {
@@ -1232,9 +1260,9 @@ app.controller("subcategoriesController", function($scope, $rootScope, $http, $f
 
 app.controller("riskbasedassetsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
-    Session.assetsotherinfodefferred.promise
+    /*Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});
+        .then(function(response){$scope.updateAssetsData(true)});*/
 
     $scope.$on('assetsupdated', function(event, from) {
         // Even if riskbasedassetsController has sent it, update internal data again
@@ -1443,13 +1471,26 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: "",
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
                     extra: {
                         chartinclude: true,
                     },
                 }
 
             return d;
+        }
+
+        $scope.getcagr = function(d) {
+            cppu = parseFloat($scope.getcppu(d, false));
+            ppu = parseFloat($scope.getppu(d, false));
+
+            investeddate = new Date(d.date);
+            currentdate =  new Date();
+
+            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
+            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
+
+            return cagr.toFixed(2);
         }
 
         $scope.selectedassets = function () {
@@ -1722,9 +1763,9 @@ app.controller("riskbasedassetsController", function($scope, $rootScope, $http, 
 
 app.controller("customgroupsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
-    Session.assetsotherinfodefferred.promise
+    /*Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});
+        .then(function(response){$scope.updateAssetsData(true)});*/
 
     $scope.$on('assetsupdated', function(event, from) {
         // Even if categoriesController has sent it, update internal data again
@@ -1745,7 +1786,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
         $scope.assetsdata = $scope.assetsInfo.assets;
         $scope.chartdata = [];
         $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.categories;
+        $scope.data = $scope.assetsOtherInfo.customgroups;
 
         // Add extra data to the assets information
         for (index = 0; index < $scope.data.length; ++index) {
@@ -1763,38 +1804,18 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
 
         // Add extra data to the assets information
         for (index = 0; index < $scope.assetsdata.length; ++index) {
-            categoryid = -1;
-            categoryname = '';
-
-            if(categoryid == -1) {
-                subcategories = $scope.assetsOtherInfo.subcategories;
-                categoryid = 0;
-                for(i = 0; i < subcategories.length; ++i) {
-                    if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
-                        categoryid = subcategories[i].categoryid;
-                        break;
-                    }
-                }
-            }
-
-            categories = $scope.data;
-            for(i = 0; i < categories.length; ++i) {
-                if(categories[i].categoryid == categoryid) {
-                    categoryname = categories[i].categoryname;
-                    categories[i].extra.assets.push($scope.assetsdata[index]);
+            customgroups = $scope.data;
+            for(i = 0; i < customgroups.length; ++i) {
+                if(customgroups[i].groupid == $scope.assetsdata[index].customgroupid) {
+                    customgroups[i].extra.assets.push($scope.assetsdata[index]);
                     break;
                 }
             }
-
-            $scope.assetsdata[index].extra.categoryid = categoryid;
-            $scope.assetsdata[index].extra.categoryname = categoryname;
-
-
         }
 
         $scope.nameFunction = function(){
             return function(d) {
-                return d.categoryname;
+                return d.groupname;
             };
         }
 
@@ -1802,7 +1823,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             if(d.extra.dval == null) {
                 // Calculate the values now and save it for later use
                 // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                //       or when category ppu changes
+                //       or when group ppu changes
                 if(d.ppu != null) {
                     d.extra.dval = d.ppu;
                 } else {
@@ -1831,7 +1852,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             if(d.extra.dcval == null) {
                 // Calculate the values now and save it for later use
                 // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                //       or when category cppu changes
+                //       or when group cppu changes
                 if(d.cppu != null) {
                     d.extra.dcval = d.cppu;
                 } else {
@@ -1855,7 +1876,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             };
         }
 
-        $scope.getcatppu = function(d, forchart) {
+        $scope.getgppu = function(d, forchart) {
             if(d.extra.dval == null) {
                 // Calculate the values now and save it for later use
                 d.extra.dval = 0;
@@ -1875,13 +1896,13 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             }
         }
 
-        $scope.catppuFunction = function(){
+        $scope.gppuFunction = function(){
             return function(d){
-                return $scope.getcatppu(d, true);
+                return $scope.getgppu(d, true);
             };
         }
 
-        $scope.getcatcppu = function(d, forchart) {
+        $scope.getgcppu = function(d, forchart) {
             if(d.extra.dcval == null) {
                 // Calculate the values now and save it for later use
                 d.extra.dcval = 0;
@@ -1900,9 +1921,9 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
                 return 0;
             }
         }
-        $scope.catcppuFunction = function(){
+        $scope.gcppuFunction = function(){
             return function(d){
-                return $scope.getcatcppu(d, true);
+                return $scope.getgcppu(d, true);
             };
         }
 
@@ -1940,7 +1961,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
                     cppu: "",
                     unitform: "",
                     date: new Date().toISOString().slice(0, 10),
-                    color: "",
+                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
                     extra: {
                         chartinclude: true,
                     },
@@ -1949,19 +1970,32 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             return d;
         }
 
+        $scope.getcagr = function(d) {
+            cppu = parseFloat($scope.getcppu(d, false));
+            ppu = parseFloat($scope.getppu(d, false));
+
+            investeddate = new Date(d.date);
+            currentdate =  new Date();
+
+            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
+            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
+
+            return cagr.toFixed(2);
+        }
+
         $scope.selectedassets = function () {
             $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
         }
 
         $scope.selectedchildassets = function (index) {
-            /* Recalculate the total values of categories */
+            /* Recalculate the total values of groups */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
             $scope.selectedassets();
         }
 
-        $scope.selectallcategories = function(firstload) {
+        $scope.selectallgroups = function(firstload) {
             for (index = 0; index < $scope.data.length; ++index) {
                 $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
 
@@ -1985,7 +2019,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
                 assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
             }
 
-            /* Recalculate the total values of categories */
+            /* Recalculate the total values of groups */
             $scope.data[index].extra.dcval = null;
             $scope.data[index].extra.dval = null;
 
@@ -2052,7 +2086,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
             })
             .success(function(data) {
                 console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'categoriesController');
+                $rootScope.$broadcast('assetsupdated', 'customgroupsController');
             });
         }
 
@@ -2074,7 +2108,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
 
                 }
 
-                $rootScope.$broadcast('assetsupdated', 'categoriesController');
+                $rootScope.$broadcast('assetsupdated', 'customgroupsController');
             });
         }
 
@@ -2212,7 +2246,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
 
         if(firstload) {
             /* Call the selectallassets */
-            $scope.selectallcategories(firstload);
+            $scope.selectallgroups(firstload);
         } else {
             $scope.selectedassets();
         }
@@ -2399,6 +2433,19 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                 }
 
             return d;
+        }
+
+        $scope.getcagr = function(d) {
+            cppu = parseFloat($scope.getcppu(d));
+            ppu = parseFloat($scope.getppu(d));
+
+            investeddate = new Date(d.date);
+            currentdate =  new Date();
+
+            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
+            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
+
+            return cagr.toFixed(2);
         }
 
 
