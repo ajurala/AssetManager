@@ -1826,6 +1826,7 @@ app.controller("customgroupsController", function($scope, $rootScope, $http, $fi
         .then(function(response){return Session.assetsinfodefferred.promise})
         .then(function(response){$scope.updateAssetsData(true)});*/
 
+    console.log("how ya doing " + $scope.groupingtype);
     $scope.$on('assetsupdated', function(event, from) {
         // Even if categoriesController has sent it, update internal data again
         // TODO - Improve this later where, on submit, modify internal structure
