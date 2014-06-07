@@ -145,6 +145,13 @@ app.directive('riskbasedassets', function() {
     };
 });
 
+app.directive('customgroups', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'ui/partials/customgroups.html',
+    };
+});
+
 /* How to use  a HighCharts with a directive */
 /*
 app.directive('assetchart', function () {

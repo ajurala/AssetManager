@@ -27,6 +27,7 @@
             <th class='text-center'>Date Bought</th>
             <th class='text-center'>Category</th>
             <th class='text-center'>Sub-Category</th>
+            <th class='text-center'>Group</th>
             <th class='text-center'>Units</th>
             <th class='text-center'>Invested Price Per Unit</th>
             <th class='text-center'>Invested Total</th>
@@ -76,6 +77,12 @@
                     {{asset.extra.subcategoryname}}
                 </span>
                 <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.subcategoryname" typeahead="subcategory.subcategoryname for subcategory in assetsOtherInfo.subcategories" placeholder="Asset sub-type" size="14"/>
+            </td>
+            <td class='text-center'>
+                <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)" popover="{{asset.extra.groupname}}">
+                    {{asset.extra.groupname}}
+                </span>
+                <input type="text" ng-show="asset.extra.editMode" ng-model="asset.extra.copy.extra.groupname" typeahead="group.groupname for group in assetsOtherInfo.customgroups" placeholder="Group Name" size="14"/>
             </td>
             <td class='text-center'>
                 <span class="cursor" ng-hide="asset.extra.editMode" ng-click="entereditmode($index)">

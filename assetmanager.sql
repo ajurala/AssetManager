@@ -2,10 +2,10 @@
 -- version 4.1.7
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jun 05, 2014 at 02:20 PM
--- Server version: 5.6.16
--- PHP Version: 5.3.28
+-- Host: 127.0.0.1
+-- Generation Time: Jun 07, 2014 at 06:59 AM
+-- Server version: 5.6.15
+-- PHP Version: 5.3.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -117,12 +117,19 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 --
 
 CREATE TABLE IF NOT EXISTS `customgroups` (
-  `groupid` int(11) NOT NULL,
+  `groupid` int(11) NOT NULL AUTO_INCREMENT,
   `groupname` varchar(30) NOT NULL,
   `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`groupid`),
   UNIQUE KEY `groupname` (`groupname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `customgroups`
+--
+
+INSERT INTO `customgroups` (`groupid`, `groupname`, `color`) VALUES
+(1, 'Default', '#000000');
 
 -- --------------------------------------------------------
 

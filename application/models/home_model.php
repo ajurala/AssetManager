@@ -35,6 +35,9 @@ class Home_model extends CI_Model{
         $key = 'riskcategories';
         $this->add_table_info($data, $key);
 
+        $key = 'customgroups';
+        $this->add_table_info($data, $key);
+
         return $data;
     }
 
