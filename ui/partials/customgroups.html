@@ -38,30 +38,30 @@
         Current
     </label>
 </div>
-<div ng-repeat="category in data">
+<div ng-repeat="customgroup in data">
     <div class="cursor row grouprow">
         <div class="collexp">
-            <span class="glyphicon glyphicon-chevron-right" ng-hide="category.extra.showassets" ng-click="category.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
-            <span class="glyphicon glyphicon-chevron-down" ng-show="category.extra.showassets" ng-click="category.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-right" ng-hide="customgroup.extra.showassets" ng-click="customgroup.extra.showassets = true" popover="Click to expand" popover-trigger="mouseenter" popover-placement="top"></span>
+            <span class="glyphicon glyphicon-chevron-down" ng-show="customgroup.extra.showassets" ng-click="customgroup.extra.showassets = false" popover="Click to collapse" popover-trigger="mouseenter" popover-placement="top"></span>
         </div>
-        <input class="cursor collexp" type="checkbox" name="admin" ng-model="category.extra.chartinclude" ng-change="selectedassets()">
+        <input class="cursor collexp" type="checkbox" name="admin" ng-model="customgroup.extra.chartinclude" ng-change="selectedassets()">
         <label class="col-md-3">
-            {{category.categoryname}}
+            {{customgroup.groupname}}
         </label>
-        <span class="col-md-1 colorrect" ng-style="{'color': category.color, 'background-color': category.color}">
-            {{category.color}}
+        <span class="col-md-1 colorrect" ng-style="{'color': customgroup.color, 'background-color': customgroup.color}">
+            {{customgroup.color}}
         </span>
         <label class="col-md-3 col-md-offset-1">
-            {{getcatppu(category, false)}}
+            {{getcatppu(customgroup, false)}}
         </label>
         <label class="col-md-3">
-            {{getcatcppu(category, false)}}
+            {{getcatcppu(customgroup, false)}}
         </label>
     </div>
-    <div class="table-responsive groupassets" ng-show="category.extra.showassets">
+    <div class="table-responsive groupassets" ng-show="customgroup.extra.showassets">
         <table class="table table-striped">
             <tr>
-                <th class='text-center'><input type="checkbox" name="admin" ng-model="category.extra.assetchartincludeall" ng-change="selectallassets($index)"></th>
+                <th class='text-center'><input type="checkbox" name="admin" ng-model="customgroup.extra.assetchartincludeall" ng-change="selectallassets($index)"></th>
                 <th class='text-center'></th>
                 <th class='text-center'>Asset Name</th>
                 <th class='text-center'>Date Bought</th>
@@ -75,7 +75,7 @@
                 <th class='text-center' colspan="20">Color</th>
             </tr>
 
-            <tr ng-repeat="asset in category.extra.assets">
+            <tr ng-repeat="asset in customgroup.extra.assets">
                 <td class='text-center'>
                     <input class="cursor" type="checkbox" name="admin" ng-model="asset.extra.chartinclude" ng-change="selectedchildassets($parent.$index)">
                 </td>
