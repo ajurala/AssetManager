@@ -35,3 +35,24 @@ categoryhtml =
         <button class="btn btn-primary" ng-click="ok()">OK</button> \
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button> \
     </div>';
+
+
+    grouphtml =
+    '<div class="modal-header"> \
+        <h3 class="modal-title">New Group Details</h3> \
+    </div> \
+    <div class="modal-body"> \
+        <div class="form-group" ng-class="{ \'has-error\' : groupError }"> \
+            <label class="text-right col-md-6">Group Name:</label> \
+            <input type="text" class="form-control group-control" ng-model="groupdetails.groupname" typeahead="group.groupname for group in assetsOtherInfo.customgroups" placeholder="Group Name" /> \
+            <span class="help-block text-center" ng-show="groupError">{{ groupError }}</span> \
+        </div> \
+        <div class="form-group"> \
+            <label class="text-right col-md-6">Color:</label> \
+            <input colorpicker type="text" class="form-control group-color-control cursor" colorpicker-position="bottom" colorpicker-fixed-position="true" ng-model="groupdetails.color"  ng-style="{\'color\': groupdetails.color, \'background-color\': groupdetails.color}"/> \
+        </div> \
+    </div> \
+    <div class="modal-footer"> \
+        <button class="btn btn-primary" ng-click="ok()">OK</button> \
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button> \
+    </div>';

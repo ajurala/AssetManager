@@ -56,7 +56,6 @@ class Home extends AssetManager
     public function addcategorysubcategory() {
         if(is_logged_in()) {
             $this->load->model("home_model");
-            $details = $this->input->post();
             $categorydetails = $this->input->post('category');
             if($categorydetails !== FALSE) {
                 $categorydetails = json_decode($categorydetails, true);
@@ -67,6 +66,16 @@ class Home extends AssetManager
             //var_dump(json_decode($categorydetails, true));
             //var_dump(json_decode($subcategorydetails, true));
             //var_dump($data);
+
+            echo json_encode($data);
+        }
+    }
+
+    public function addcustomgroup() {
+        if(is_logged_in()) {
+            $this->load->model("home_model");
+            $details = $this->input->post();
+            $data = $this->home_model->add_customgroup($details);
 
             echo json_encode($data);
         }

@@ -35,6 +35,12 @@ body {
     width: 35px;
     margin-left: 5px;
 }
+.group-control {
+    width: 150px;
+}
+.group-color-control {
+    width: 150px;
+}
 .colorrect {
     height: 17px;
     border-radius: 5px;

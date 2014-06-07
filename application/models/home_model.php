@@ -99,4 +99,12 @@ class Home_model extends CI_Model{
 
         return $data;
     }
+
+    public function add_customgroup($details) {
+        $this->db->insert('customgroups', $details);
+        $groupid = $this->db->insert_id();
+        $details['groupid'] = $groupid;
+
+        return $details;
+    }
 }

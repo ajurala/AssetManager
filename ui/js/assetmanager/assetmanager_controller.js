@@ -248,6 +248,65 @@ function categoryModelController($scope, $rootScope, $modalInstance, $http, cate
     };
 };
 
+function groupModelController($scope, $rootScope, $modalInstance, $http, groupdetails, Session){
+    $scope.groupdetails = groupdetails;
+    $scope.assetsOtherInfo = groupdetails.assetsOtherInfo;
+    $scope.groupdetails.color = '#'+Math.floor(Math.random()*16777215).toString(16)
+
+    $scope.ok = function () {
+        $scope.groupError = "";
+        found = false;
+
+        customgroups = $scope.assetsOtherInfo.customgroups;
+        for(i = 0; i < customgroups.length; ++i) {
+            if($scope.groupdetails.groupname == customgroups[i].groupname) {
+                found = true;
+                break;
+            }
+        }
+
+        if(found) {
+            $scope.groupError = 'Group name already exists. Provide a new group name';
+        } else {
+            // update the server with new sub/category info
+
+            d = {};
+            d.groupname = $scope.groupdetails.groupname;
+            d.color = $scope.groupdetails.color;
+
+            $http({
+                method : 'POST',
+                url : 'home/addcustomgroup',
+                data : d, // pass in data as strings
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                transformRequest: transformURIRequest,
+            })
+            .success(function(data) {
+                console.log("successfully sent data to server for group");
+                if(data) {
+                    groupdetails = {
+                        'groupid': data.groupid,
+                        'groupname': data.groupname,
+                        'color': data.color
+                    }
+
+                    data.extra = {};
+                    data.extra.assets = [];
+                    data.extra.chartinclude = true;
+
+                    Session.assetsotherinfo.customgroups.push(data);
+
+                    $modalInstance.close(groupdetails);
+                }
+            });
+        }
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
 app.controller("categoriesController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
     /*Session.assetsotherinfodefferred.promise
@@ -2550,7 +2609,27 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
 
         $scope.checkgroupname = function(d, index) {
             // check if it is same group name else update to server and submitdefferredchanges
-            $scope.submitdefferredchanges(d, index)
+            if(d.extra.groupname != $scope.data[index].extra.groupname) {
+                groupid = null;
+                customgroups = $scope.assetsOtherInfo.customgroups;
+                for(i = 0; i < customgroups.length; ++i) {
+                    if(d.extra.groupname == customgroups[i].groupname) {
+                        groupid = customgroups[i].groupid;
+                        break;
+                    }
+                }
+
+                if(groupid == null) {
+                    // Save the name to the server via a dialog
+                    $scope.opengroupmodel(null, d.extra.groupname, d, index);
+                } else {
+                    d.customgroupid = groupid;
+                    $scope.submitdefferredchanges(d, index);
+                }
+
+            } else {
+                $scope.submitdefferredchanges(d, index)
+            }
         }
 
         $scope.submitchanges = function(index) {
@@ -2649,6 +2728,35 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                 d.extra.categoryname = saveddetails.categoryname;
 
                 $scope.checkgroupname(d, index);
+            }, function () {
+                // cancelled, so nothing to do now
+            });
+        };
+
+        $scope.opengroupmodel = function (size, groupname, d, index) {
+
+            modalInstance = $modal.open({
+                    template: grouphtml,
+                    controller: groupModelController,
+                    size: size,
+                    resolve: {
+                        groupdetails: function () {
+                            groupInfo = {
+                                'groupname': groupname,
+                                'assetsOtherInfo': $scope.assetsOtherInfo,
+                            };
+
+                            return groupInfo; // information to be passed to model
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (saveddetails) {
+                // Save the details
+                d.customgroupid = saveddetails.groupid;
+                d.extra.groupname = saveddetails.groupname;
+
+                $scope.submitdefferredchanges(d, index);
             }, function () {
                 // cancelled, so nothing to do now
             });
