@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2014 at 07:02 AM
+-- Generation Time: Jun 07, 2014 at 06:46 PM
 -- Server version: 5.6.15
 -- PHP Version: 5.3.27
 
@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 INSERT INTO `permissions` (`uri`, `accessrole`) VALUES
 ('home', 1),
 ('home/addcategorysubcategory', 1),
+('home/addcustomgroup', 1),
 ('home/addupdateasset', 1),
 ('home/getnetassets', 1),
 ('home/getotherinfo', 1),
