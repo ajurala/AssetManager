@@ -16,9 +16,9 @@
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li><a class="cursor" ng-click="">Category</a></li>
-              <li><a class="cursor" ng-click="">Subcategory</a></li>
-              <li><a class="cursor" ng-click="">Custom Group</a></li>
+              <li><a class="cursor" ng-click="newcategory()">Category</a></li>
+              <li><a class="cursor" ng-click="newsubcategory()">Subcategory</a></li>
+              <li><a class="cursor" ng-click="newgroup()">Custom Group</a></li>
             </ul>
           </li>
         </ul>

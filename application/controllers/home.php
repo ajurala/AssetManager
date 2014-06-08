@@ -71,6 +71,16 @@ class Home extends AssetManager
         }
     }
 
+    public function addcategory() {
+        if(is_logged_in()) {
+            $this->load->model("home_model");
+            $categorydetails = $this->input->post();
+            $data = $this->home_model->add_category($categorydetails);
+
+            echo json_encode($data);
+        }
+    }
+
     public function addcustomgroup() {
         if(is_logged_in()) {
             $this->load->model("home_model");

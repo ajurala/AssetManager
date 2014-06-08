@@ -85,124 +85,176 @@ categoryModelController = [
     $scope.ok = function () {
         $scope.riskError = "";
         $scope.knownCombinationError = "";
-        // If such a combination already exists, then do not close
+        $scope.categoryExistError = "";
+
+        foundCategory = false;
         foundcombination = false;
-        subcategories = $scope.assetsOtherInfo.subcategories;
-        for(i = 0; i < subcategories.length; ++i) {
-            if($scope.categorydetails.entereddetails.subcategoryname == subcategories[i].subcategoryname) {
-                subcategoryid = subcategories[i].subcategoryid;
-                categoryid = subcategories[i].categoryid;
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(categories[i].categoryid == categoryid
-                        && $scope.categorydetails.entereddetails.categoryname == categories[i].categoryname) {
-                        foundcombination = true;
-                        break;
-                    }
+
+        if($scope.categorydetails.entereddetails.categoryonly) {
+            categories = $scope.assetsOtherInfo.categories;
+            for(i = 0; i < categories.length; ++i) {
+                if($scope.categorydetails.entereddetails.categoryname == categories[i].categoryname) {
+                    foundCategory = true;
+                    break;
                 }
             }
+        } else {
+            // If such a combination already exists, then do not close
+            
+            subcategories = $scope.assetsOtherInfo.subcategories;
+            for(i = 0; i < subcategories.length; ++i) {
+                if($scope.categorydetails.entereddetails.subcategoryname == subcategories[i].subcategoryname) {
+                    subcategoryid = subcategories[i].subcategoryid;
+                    categoryid = subcategories[i].categoryid;
+                    categories = $scope.assetsOtherInfo.categories;
+                    for(i = 0; i < categories.length; ++i) {
+                        if(categories[i].categoryid == categoryid
+                            && $scope.categorydetails.entereddetails.categoryname == categories[i].categoryname) {
+                            foundcombination = true;
+                            break;
+                        }
+                    }
+                }
 
-            if(foundcombination) {
-                break;
+                if(foundcombination) {
+                    break;
+                }
             }
         }
 
         riskname = $scope.categorydetails.entereddetails.riskname;
 
-        if(foundcombination || riskname == null) {
+        if(foundCategory) {
+            $scope.categoryExistError = 'Asset type already exists. Provide a differet Asset type';
+        } else if(!$scope.categorydetails.entereddetails.categoryonly && (foundcombination || riskname == null)) {
             if(foundcombination) {
                 $scope.knownCombinationError = 'Asset type and Sub-Asset type combination already exists. Provide different combination';
             }
 
             if(riskname == null) {
                 // No such risk info, select proper one
-                $scope.riskError = 'No such risk category. Choose on in the list';
+                $scope.riskError = 'No such risk category. Choose one in the list';
             }
         } else {
             // update the server with new sub/category info
-
-            // Get the category id, if exists
-            categoryid = "0"
-            categories = $scope.assetsOtherInfo.categories;
-            for(i = 0; i < categories.length; ++i) {
-                if($scope.categorydetails.entereddetails.categoryname == categories[i].categoryname) {
-                    categoryid = categories[i].categoryid;
-                    break;
-                }
-            }
-            subcategoryid = "0";
-
-            riskid = "0";
-            riskcategories = $scope.assetsOtherInfo.riskcategories;
-            for(i = 0; i < riskcategories.length; ++i) {
-                if(riskcategories[i].riskname == riskname) {
-                    riskid = riskcategories[i].riskid;
-                    break;
-                }
-            }
-
-            //send it to server and close on success
-            d = {};
-            if(categoryid == "0") {
-                category = {
+            if($scope.categorydetails.entereddetails.categoryonly) {
+                d = {
                     'categoryname': $scope.categorydetails.entereddetails.categoryname,
                     'color': $scope.categorydetails.entereddetails.categorycolor
                 }
 
-                d.category = angular.toJson(category);
-            }
+                $http({
+                    method : 'POST',
+                    url : 'home/addcategory',
+                    data : d, // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                    transformRequest: transformURIRequest,
+                })
+                .success(function(data) {
+                    console.log("successfully sent data to server for category");
+                    if(data) {
 
-            subcategory = {
-                'categoryid': categoryid,
-                'riskid': riskid,
-                'subcategoryname': $scope.categorydetails.entereddetails.subcategoryname,
-                'currentpriceperunit': $scope.categorydetails.entereddetails.currentpriceperunit,
-                'unitform': $scope.categorydetails.entereddetails.unitform,
-                'color': $scope.categorydetails.entereddetails.subcategorycolor,
-            }
+                        entereddetails = {
+                            'categoryname': $scope.categorydetails.entereddetails.categoryname,
+                            'categoryid': data.categoryid,
+                        }
 
-            d.subcategory = angular.toJson(subcategory);
+                        categorydetails = data;
 
-
-            $http({
-                method : 'POST',
-                url : 'home/addcategorysubcategory',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully sent data to server for category");
-                if(data) {
-                    entereddetails = {
-                        'categoryname': $scope.categorydetails.entereddetails.categoryname,
-                        'subcategoryname': $scope.categorydetails.entereddetails.subcategoryname,
-                        'subcategoryid': data.subcategorydetails.subcategoryid,
-                    }
-
-                    categorydetails = data.categorydetails;
-                    subcategorydetails = data.subcategorydetails;
-
-                    // Append the details to the Session
-                    if(categorydetails != null) {
+                        // Append the details to the Session
                         categorydetails.extra = {};
                         categorydetails.extra.assets = [];
                         categorydetails.extra.chartinclude = true;
 
                         Session.assetsotherinfo.categories.push(categorydetails);
+
+                        $modalInstance.close(entereddetails);
+                    }
+                });
+            } else {
+                // Get the category id, if exists
+                categoryid = "0"
+                categories = $scope.assetsOtherInfo.categories;
+                for(i = 0; i < categories.length; ++i) {
+                    if($scope.categorydetails.entereddetails.categoryname == categories[i].categoryname) {
+                        categoryid = categories[i].categoryid;
+                        break;
+                    }
+                }
+                subcategoryid = "0";
+
+                riskid = "0";
+                riskcategories = $scope.assetsOtherInfo.riskcategories;
+                for(i = 0; i < riskcategories.length; ++i) {
+                    if(riskcategories[i].riskname == riskname) {
+                        riskid = riskcategories[i].riskid;
+                        break;
+                    }
+                }
+
+                //send it to server and close on success
+                d = {};
+                if(categoryid == "0") {
+                    category = {
+                        'categoryname': $scope.categorydetails.entereddetails.categoryname,
+                        'color': $scope.categorydetails.entereddetails.categorycolor
                     }
 
-                    subcategorydetails.extra = {};
-                    subcategorydetails.extra.assets = [];
-                    subcategorydetails.extra.chartinclude = true;
-
-                    Session.assetsotherinfo.subcategories.push(subcategorydetails);
-
-                    $modalInstance.close(entereddetails);
-
-                    /* TODO - Might need to broadcast when update of category and subcategory is done */
+                    d.category = angular.toJson(category);
                 }
-            });
+
+                subcategory = {
+                    'categoryid': categoryid,
+                    'riskid': riskid,
+                    'subcategoryname': $scope.categorydetails.entereddetails.subcategoryname,
+                    'currentpriceperunit': $scope.categorydetails.entereddetails.currentpriceperunit,
+                    'unitform': $scope.categorydetails.entereddetails.unitform,
+                    'color': $scope.categorydetails.entereddetails.subcategorycolor,
+                }
+
+                d.subcategory = angular.toJson(subcategory);
+
+
+                $http({
+                    method : 'POST',
+                    url : 'home/addcategorysubcategory',
+                    data : d, // pass in data as strings
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
+                    transformRequest: transformURIRequest,
+                })
+                .success(function(data) {
+                    console.log("successfully sent data to server for category");
+                    if(data) {
+                        entereddetails = {
+                            'categoryname': $scope.categorydetails.entereddetails.categoryname,
+                            'subcategoryname': $scope.categorydetails.entereddetails.subcategoryname,
+                            'subcategoryid': data.subcategorydetails.subcategoryid,
+                        }
+
+                        categorydetails = data.categorydetails;
+                        subcategorydetails = data.subcategorydetails;
+
+                        // Append the details to the Session
+                        if(categorydetails != null) {
+                            categorydetails.extra = {};
+                            categorydetails.extra.assets = [];
+                            categorydetails.extra.chartinclude = true;
+
+                            Session.assetsotherinfo.categories.push(categorydetails);
+                        }
+
+                        subcategorydetails.extra = {};
+                        subcategorydetails.extra.assets = [];
+                        subcategorydetails.extra.chartinclude = true;
+
+                        Session.assetsotherinfo.subcategories.push(subcategorydetails);
+
+                        $modalInstance.close(entereddetails);
+
+                        /* TODO - Might need to broadcast when update of category and subcategory is done */
+                    }
+                });
+            }
         }
     };
 
@@ -272,7 +324,7 @@ groupModelController = [
     };
 }]
 
-app.controller("navbarController", function($scope, $http, $location, $window, $rootScope, Session) {
+app.controller("navbarController", function($scope, $http, $location, $window, $rootScope, $modal, Session) {
 
     $scope.isCollapsed = true;
 
@@ -291,6 +343,73 @@ app.controller("navbarController", function($scope, $http, $location, $window, $
         .success(function() {
             Session.updateSession();
             $window.location.href = '';
+        });
+    }
+
+    $scope.newcategory = function() {
+        entereddetails = {
+                'categoryname': '',
+            };
+
+        modalInstance = $modal.open({
+            templateUrl: 'ui/partials/categorymodel.html',
+            controller: categoryModelController,
+            size: null,
+            resolve: {
+                categorydetails: function () {
+                    entereddetails.categoryonly = true;
+                    categoryInfo = {
+                        'entereddetails': entereddetails,
+                        'assetsOtherInfo': Session.assetsotherinfo,
+                    };
+
+                    return categoryInfo; // information to be passed to model
+                }
+            }
+        });
+    }
+
+    $scope.newsubcategory = function() {
+
+        entereddetails = {
+                'categoryname': '',
+                'subcategoryname': '',
+                'riskname': Session.assetsotherinfo.riskcategories[0].riskname,
+            };
+
+        modalInstance = $modal.open({
+            templateUrl: 'ui/partials/categorymodel.html',
+            controller: categoryModelController,
+            size: null,
+            resolve: {
+                categorydetails: function () {
+                    entereddetails.categoryonly = false;
+                    categoryInfo = {
+                        'entereddetails': entereddetails,
+                        'assetsOtherInfo': Session.assetsotherinfo,
+                    };
+
+                    return categoryInfo; // information to be passed to model
+                }
+            }
+        });
+    }
+
+    $scope.newgroup = function() {
+        modalInstance = $modal.open({
+            templateUrl: 'ui/partials/groupmodel.html',
+            controller: groupModelController,
+            size: null,
+            resolve: {
+                groupdetails: function () {
+                    groupInfo = {
+                        'groupname': '',
+                        'assetsOtherInfo': Session.assetsotherinfo,
+                    };
+
+                    return groupInfo; // information to be passed to model
+                }
+            }
         });
     }
 })
@@ -862,6 +981,7 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
                     size: size,
                     resolve: {
                         categorydetails: function () {
+                            entereddetails.categoryonly = false;
                             categoryInfo = {
                                 'entereddetails': entereddetails,
                                 'assetsOtherInfo': $scope.assetsOtherInfo,
@@ -1331,6 +1451,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
                     size: size,
                     resolve: {
                         categorydetails: function () {
+                            entereddetails.categoryonly = false;
                             categoryInfo = {
                                 'entereddetails': entereddetails,
                                 'assetsOtherInfo': $scope.assetsOtherInfo,

@@ -100,6 +100,14 @@ class Home_model extends CI_Model{
         return $data;
     }
 
+    public function add_category($categorydetails) {
+        $this->db->insert('categories', $categorydetails);
+        $catid = $this->db->insert_id();
+        $categorydetails['categoryid'] = $catid;
+
+        return $categorydetails;
+    }
+
     public function add_customgroup($details) {
         $this->db->insert('customgroups', $details);
         $groupid = $this->db->insert_id();
