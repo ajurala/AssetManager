@@ -185,8 +185,17 @@ categoryModelController = [
 
                     // Append the details to the Session
                     if(categorydetails != null) {
+                        categorydetails.extra = {};
+                        categorydetails.extra.assets = [];
+                        categorydetails.extra.chartinclude = true;
+
                         Session.assetsotherinfo.categories.push(categorydetails);
                     }
+
+                    subcategorydetails.extra = {};
+                    subcategorydetails.extra.assets = [];
+                    subcategorydetails.extra.chartinclude = true;
+
                     Session.assetsotherinfo.subcategories.push(subcategorydetails);
 
                     $modalInstance.close(entereddetails);
