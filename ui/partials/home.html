@@ -5,17 +5,17 @@
     <tabset>
         <tab class="cursor" heading="Asset Types" popover="Group by Asset types" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">
             <div ng-init="groupingtype='categories'">
-                <categories ng-controller="categoriesController"></categories>
+                <categories ng-controller="groupingsController"></categories>
             </div>
         </tab>
         <tab class="cursor" heading="Sub Asset Types" popover="Group by Sub Asset types" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">
             <div ng-init="groupingtype='subcategories'">
-                <subcategories ng-controller="subcategoriesController"></subcategories>
+                <subcategories ng-controller="groupingsController"></subcategories>
             </div>
         </tab>
         <tab class="cursor" heading="Risk" popover="Group by Risk types" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">
             <div ng-init="groupingtype='riskcategories'">
-                <riskbasedassets ng-controller="riskbasedassetsController"></riskbasedassets>
+                <riskbasedassets ng-controller="groupingsController"></riskbasedassets>
             </div>
         </tab>
         <tab class="cursor" heading="Groups" popover="Group by custom grouping" popover-trigger="mouseenter" popover-placement="bottom" select="tabselected()">

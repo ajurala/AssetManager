@@ -10,15 +10,8 @@ function transformURIRequest(obj) {
     return result;
 }
 
-function checkStatus($q, $location, $http, Session) {
-    return Session.defferred.promise
-                .then(function(response){return Session.assetsotherinfodefferred.promise})
-                .then(function(response){return Session.assetsinfodefferred.promise})
-                .then(function(response){return check_login($q, $location, $http, Session)});
-}
-
-function check_login($q, $location, $http, Session) {
-    var deferred = $q.defer();
+function check_login(q, location, http, Session) {
+    var deferred = q.defer();
     /*
      *  If login details not present then, get the login details
      *  and then check if need to move to login page or need to configure
@@ -28,20 +21,20 @@ function check_login($q, $location, $http, Session) {
     //console.log(data['configured']);
     if(!data['configured']) {
         //Set the configured state in own session
-        if($location.path() === '/user/firstrun') {
+        if(location.path() === '/user/firstrun') {
             resolve_deferred(deferred);
         } else {
             deferred.reject();
-            $location.path('/user/firstrun');
+            location.path('/user/firstrun');
         }
     } else {
-        if($location.path() === '/user/firstrun'){
+        if(location.path() === '/user/firstrun'){
             deferred.reject();
-            $location.path('/');
-        } else if($location.path() === '/login') {
+            location.path('/');
+        } else if(location.path() === '/login') {
             if(data['loggedin']) {
                 deferred.reject();
-                $location.path('/');
+                location.path('/');
             } else {
                 resolve_deferred(deferred);
             }
@@ -50,13 +43,13 @@ function check_login($q, $location, $http, Session) {
                 resolve_deferred(deferred);
             } else {
                 deferred.reject();
-                $location.path('/login');
+                location.path('/login');
             }
         }
     }
 
     function resolve_deferred(deferred) {
-        if($location.path() !== '/user/update'
+        if(location.path() !== '/user/update'
             && Session.data['userinfo']['username'] != Session.currentuser['username']) {
             //reset the current username displayname
             Session.currentuser['username'] = Session.data['userinfo']['username'];
@@ -68,61 +61,22 @@ function check_login($q, $location, $http, Session) {
     return deferred.promise;
 }
 
-function navbarController($scope, $http, $location, $window, $rootScope, Session) {
 
-    $scope.isCollapsed = true;
+checkStatus = [
+    '$q',
+    '$location',
+    '$http',
+    'Session',
+    function($q, $location, $http, Session) {
+        return Session.defferred.promise
+                    .then(function(response){return Session.assetsotherinfodefferred.promise})
+                    .then(function(response){return Session.assetsinfodefferred.promise})
+                    .then(function(response){return check_login($q, $location, $http, Session)});
+}]
 
-    $scope.$watch( function () { return Session.data; }, function ( data ) {
-        $rootScope.loggedin = data['loggedin']
-        $rootScope.username = data['userinfo']['username'];
-        $rootScope.displayname = data['userinfo']['displayname'];
-        $rootScope.admin = data['userinfo']['admin'];
-    });
-
-    $scope.logout = function() {
-        $http({
-            method : 'POST',
-            url : 'login/logoutUser'
-        })
-        .success(function() {
-            Session.updateSession();
-            $window.location.href = '';
-        });
-    }
-}
-function userprofileController($scope, $location) {
-    $scope.editUserProfile = function() {
-        $location.path('/user/update');
-    }
-}
-
-function usersController($scope, $http, $location, Session) {
-    $scope.getUsersInfo = function() {
-        $http({
-            method : 'POST',
-            url : 'user/users/all'
-        })
-        .success(function(data) {
-            //console.log(data);
-            if(data) {
-                $scope.users = data;
-            }
-        });
-    }
-
-    $scope.editUserProfile = function(username, displayname, admin) {
-        //console.log(username);
-        Session.currentuser['username'] = username;
-        Session.currentuser['displayname'] = displayname;
-        Session.currentuser['admin'] = admin;
-
-        $location.path('/user/update');
-    }
-
-    $scope.getUsersInfo();
-}
-
-function categoryModelController($scope, $rootScope, $modalInstance, $http, categorydetails, Session){
+categoryModelController = [
+    '$scope', '$rootScope', '$modalInstance', '$http', 'categorydetails', 'Session', 
+    function($scope, $rootScope, $modalInstance, $http, categorydetails, Session){
     $scope.categorydetails = categorydetails;
     $scope.assetsOtherInfo = categorydetails.assetsOtherInfo;
     $scope.categorydetails.entereddetails.categorycolor = '#'+Math.floor(Math.random()*16777215).toString(16)
@@ -246,9 +200,11 @@ function categoryModelController($scope, $rootScope, $modalInstance, $http, cate
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-};
+}]
 
-function groupModelController($scope, $rootScope, $modalInstance, $http, groupdetails, Session){
+groupModelController = [
+    '$scope', '$rootScope', '$modalInstance', '$http', 'groupdetails', 'Session',
+    function($scope, $rootScope, $modalInstance, $http, groupdetails, Session){
     $scope.groupdetails = groupdetails;
     $scope.assetsOtherInfo = groupdetails.assetsOtherInfo;
     $scope.groupdetails.color = '#'+Math.floor(Math.random()*16777215).toString(16)
@@ -305,2030 +261,75 @@ function groupModelController($scope, $rootScope, $modalInstance, $http, groupde
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-};
+}]
 
-app.controller("categoriesController", function($scope, $rootScope, $http, $filter, $modal, Session) {
+app.controller("navbarController", function($scope, $http, $location, $window, $rootScope, Session) {
 
-    /*Session.assetsotherinfodefferred.promise
-        .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});*/
+    $scope.isCollapsed = true;
 
-    $scope.$on('assetsupdated', function(event, from) {
-        // Even if categoriesController has sent it, update internal data again
-        // TODO - Improve this later where, on submit, modify internal structure
-        if(from == "assetsControllerFirstLoad") {
-            $scope.updateAssetsData(true);
-        } else {
-            $scope.updateAssetsData(false);
-        }
+    $scope.$watch( function () { return Session.data; }, function ( data ) {
+        $rootScope.loggedin = data['loggedin']
+        $rootScope.username = data['userinfo']['username'];
+        $rootScope.displayname = data['userinfo']['displayname'];
+        $rootScope.admin = data['userinfo']['admin'];
     });
 
-    $scope.updateAssetsData = function(firstload) {
-        $scope.assetsInfo = Session.assetsinfo;
-        $scope.assetsOtherInfo = Session.assetsotherinfo;
-
-        console.log($scope.assetsOtherInfo);
-
-        $scope.assetsdata = $scope.assetsInfo.assets;
-        $scope.chartdata = [];
-        $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.categories;
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.data.length; ++index) {
-            if($scope.data[index].extra == null) {
-                $scope.data[index].extra = {};
-                $scope.data[index].extra.showassets = false;
-                $scope.data[index].extra.chartinclude = true;
-            }
-
-            $scope.data[index].extra.dval = null;
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.assets = [];
-
-        }
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.assetsdata.length; ++index) {
-            categoryid = -1;
-            categoryname = '';
-
-            if(categoryid == -1) {
-                subcategories = $scope.assetsOtherInfo.subcategories;
-                categoryid = 0;
-                for(i = 0; i < subcategories.length; ++i) {
-                    if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
-                        categoryid = subcategories[i].categoryid;
-                        break;
-                    }
-                }
-            }
-
-            categories = $scope.data;
-            for(i = 0; i < categories.length; ++i) {
-                if(categories[i].categoryid == categoryid) {
-                    categoryname = categories[i].categoryname;
-                    categories[i].extra.assets.push($scope.assetsdata[index]);
-                    break;
-                }
-            }
-
-            $scope.assetsdata[index].extra.categoryid = categoryid;
-            $scope.assetsdata[index].extra.categoryname = categoryname;
-
-
-        }
-
-        $scope.nameFunction = function(){
-            return function(d) {
-                return d.categoryname;
-            };
-        }
-
-        $scope.getppu = function(d, forchart){
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                //       or when category ppu changes
-                if(d.ppu != null) {
-                    d.extra.dval = d.ppu;
-                } else {
-                    d.extra.dval = 0; //TODO - Should get value from the subcategory
-                }
-
-                d.extra.dval = d.extra.dval * d.units;
-                d.extra.dval = d.extra.dval.toFixed(2);
-            }
-
-            /* If asset should not be included, then return 0 value */
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.ppuFunction = function(){
-            return function(d){
-                return $scope.getppu(d, true);
-            };
-        }
-
-        $scope.getcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                //       or when category cppu changes
-                if(d.cppu != null) {
-                    d.extra.dcval = d.cppu;
-                } else {
-                    d.extra.dcval = 0 //Should get value from the subcategory
-                }
-
-                d.extra.dcval = d.extra.dcval * d.units;
-                d.extra.dcval = d.extra.dcval.toFixed(2);
-            }
-
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.cppuFunction = function(){
-            return function(d){
-                return $scope.getcppu(d, true);
-            };
-        }
-
-        $scope.getcatppu = function(d, forchart) {
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dval = 0;
-                d.extra.dval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.catppuFunction = function(){
-            return function(d){
-                return $scope.getcatppu(d, true);
-            };
-        }
-
-        $scope.getcatcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dcval = 0;
-                d.extra.dcval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dcval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-        $scope.catcppuFunction = function(){
-            return function(d){
-                return $scope.getcatcppu(d, true);
-            };
-        }
-
-        $scope.colorFunction = function(){
-            return function(dp, index){
-                d = dp.data;
-
-                if(d == null) {
-                    d = dp;
-                }
-
-                if(d.extra.color == null) {
-                    if(d.color == '' || d.color == null) {
-                        // Get a random color and save it
-                        d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
-                    } else {
-                        d.extra.color = d.color;
-                    }
-                }
-
-                return d.extra.color;
-            }
-        }
-
-        $scope.getcolor = $scope.colorFunction();
-
-        $scope.getdefaultasset = function() {
-            d = {
-                    assetid: "0",
-                    subcategoryid: "",
-                    assetname: "",
-                    assetdescription: "",
-                    units: "",
-                    ppu: "",
-                    cppu: "",
-                    unitform: "",
-                    date: new Date().toISOString().slice(0, 10),
-                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
-                    extra: {
-                        chartinclude: true,
-                    },
-                }
-
-            return d;
-        }
-
-        $scope.getcagr = function(d) {
-            cppu = parseFloat($scope.getcppu(d, false));
-            ppu = parseFloat($scope.getppu(d, false));
-
-            investeddate = new Date(d.date);
-            currentdate =  new Date();
-
-            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
-            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
-
-            return cagr.toFixed(2);
-        }
-
-        $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
-        }
-
-        $scope.selectedchildassets = function(index) {
-            /* Recalculate the total values of categories */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallcategories = function(firstload) {
-            for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
-
-                if(firstload) {
-                    assets = $scope.data[index].extra.assets;
-                    $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;
-
-                    for(i = 0; i < assets.length; ++i) {
-                        assets[i].extra.chartinclude = $scope.assetchartincludeall
-                    }
-                }
-            }
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallassets = function(index) {
-            assets = $scope.data[index].extra.assets;
-
-            for(i = 0; i < assets.length; ++i) {
-                assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
-            }
-
-            /* Recalculate the total values of categories */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-
-         $scope.datepickopen = function($event, parentindex, index) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.data[parentindex].extra.assets[index].extra.opened = true;
-        };
-
-
-        $scope.addrow = function(parentindex, index) {
-            //console.log('got a call to add row');
-
-            d = $scope.getdefaultasset();
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.newrow = true;
-            if(index == -1) {
-                $scope.data[parentindex].extra.assets.push(d);
-                index = $scope.data[parentindex].extra.assets.length - 1;
-            }
-            else {
-                $scope.data[parentindex].extra.assets.splice(index, 0, d)
-            }
-
-            $scope.entereditmode(parentindex, index);
-        }
-
-        $scope.removerow = function(parentindex, index) {
-            //console.log('got a call to remove row')
-            assetid = $scope.data[parentindex].extra.assets[index].assetid;
-            var d = $scope.data[parentindex].extra.assets.splice(index, 1);
-
-            //  Find the index of the object in assetsdata, if exists, delete from there too
-            i = $scope.assetsdata.indexOf(d[0]);
-
-            if(i >= 0) {
-                $scope.assetsdata.splice(i, 1);
-            }
-
-            $scope.selectedchildassets(parentindex);
-
-            //update database
-            if(assetid != "0") {
-                data = {
-                    'assetid': assetid
-                }
-                $scope.removasset(data);
-            }
-        }
-
-        $scope.removasset = function(d) {
-            $http({
-                method : 'POST',
-                url : 'home/removeeasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'categoriesController');
-            });
-        }
-
-        $scope.addupdateasset = function(d, parentindex, index) {
-            console.log(d);
-            $http({
-                method : 'POST',
-                url : 'home/addupdateasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully sent data to server");
-                if(data && d.assetid == "0") {
-                    $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
-                    // new asset, push the asset to assetsInfo
-                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
-
-                }
-
-                $rootScope.$broadcast('assetsupdated', 'categoriesController');
-            });
-        }
-
-        $scope.entereditmode = function(parentindex, index) {
-            $scope.data[parentindex].extra.assets[index].extra.editMode = true;
-
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-            //d.extra.copy = null;
-            $scope.data[parentindex].extra.assets[index].extra.copy = d
-        }
-
-        $scope.submitdefferredchanges = function(d, parentindex, index) {
-            if(typeof d.date != 'string' && !(d.date instanceof String)) {
-                d.date = d.date.toISOString().slice(0, 10);
-            }
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.color = null;
-            d.extra.newrow = false;
-            d.extra.editMode = false;
-
-            // Copy all the key value pairs, such that the source is affected and not just the reference
-            currentd = $scope.data[parentindex].extra.assets[index];
-            for(k in d)
-                currentd[k] = d[k];
-
-            $scope.selectedassets();
-
-            //Submit the changes to the backend for this row
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-
-            //Delete the extra information that is populated into the data
-            delete d.extra;
-            delete d.disabled;
-
-            $scope.addupdateasset(d, parentindex, index);
-            console.log('submitting now');
-        }
-
-        $scope.submitchanges = function(parentindex, index) {
-            d = $scope.data[parentindex].extra.assets[index].extra.copy;
-
-            entereddetails = {
-                'categoryname': d.extra.categoryname,
-                'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
-            };
-
-            if(d.extra.categoryname != $scope.data[index].extra.categoryname
-                || d.extra.subcategoryname != $scope.data[index].extra.subcategoryname) {
-                // Check if id exists, else create one
-
-                categoryid = null;
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(entereddetails.categoryname == categories[i].categoryname) {
-                        categoryid = categories[i].categoryid;
-                        break;
-                    }
-                }
-                if(categoryid == null) {
-                    $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                } else {
-                    // If id is available, check if provided subcategory exists for the category
-                    // If yes then continue with the rest
-
-                    subcategoryid = null;
-                    subcategories = $scope.assetsOtherInfo.subcategories;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(categoryid == subcategories[i].categoryid
-                            && entereddetails.subcategoryname == subcategories[i].subcategoryname) {
-                            subcategoryid = subcategories[i].subcategoryid;
-                            break;
-                        }
-                    }
-
-                    if(subcategoryid == null) {
-                        $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                    } else {
-                        d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, parentindex, index);
-                    }
-                }
-            } else {
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }
-        }
-
-        $scope.cancelchanges = function(parentindex, index) {
-            if($scope.data[parentindex].extra.assets[index].extra.newrow == true) {
-                $scope.removerow(parentindex, index);
-            } else {
-                delete $scope.data[parentindex].extra.assets[index].extra.copy
-                $scope.data[parentindex].extra.assets[index].extra.editMode = false;
-
-                $scope.selectedchildassets(parentindex);
-            }
-
-            console.log('cancelling now');
-
-        }
-
-        $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
-
-            modalInstance = $modal.open({
-                    template: categoryhtml,
-                    controller: categoryModelController,
-                    size: size,
-                    resolve: {
-                        categorydetails: function () {
-                            categoryInfo = {
-                                'entereddetails': entereddetails,
-                                'assetsOtherInfo': $scope.assetsOtherInfo,
-                            };
-
-                            return categoryInfo; // information to be passed to model
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (saveddetails) {
-                // Save the details
-                d.subcategoryid = saveddetails.subcategoryid;
-                d.extra.subcategoryname = saveddetails.subcategoryname;
-                d.extra.categoryname = saveddetails.categoryname;
-
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }, function () {
-                // cancelled, so nothing to do now
-            });
-        };
-
-
-        /* All the function calls are here */
-
-        if(firstload) {
-            /* Call the selectallassets */
-            $scope.selectallcategories(firstload);
-        } else {
-            $scope.selectedassets();
-        }
-
+    $scope.logout = function() {
+        $http({
+            method : 'POST',
+            url : 'login/logoutUser'
+        })
+        .success(function() {
+            Session.updateSession();
+            $window.location.href = '';
+        });
     }
 })
 
-app.controller("subcategoriesController", function($scope, $rootScope, $http, $filter, $modal, Session) {
-
-    /*Session.assetsotherinfodefferred.promise
-        .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});*/
-
-    $scope.$on('assetsupdated', function(event, from) {
-        // Even if subcategoriesController has sent it, update internal data again
-        // TODO - Improve this later where, on submit, modify internal structure
-        if(from == "assetsControllerFirstLoad") {
-            $scope.updateAssetsData(true);
-        } else {
-            $scope.updateAssetsData(false);
-        }
-    });
-
-    $scope.updateAssetsData = function(firstload) {
-        $scope.assetsInfo = Session.assetsinfo;
-        $scope.assetsOtherInfo = Session.assetsotherinfo;
-
-        console.log($scope.assetsOtherInfo);
-
-        $scope.assetsdata = $scope.assetsInfo.assets;
-        $scope.chartdata = [];
-        $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.subcategories;
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.data.length; ++index) {
-            if($scope.data[index].extra == null) {
-                $scope.data[index].extra = {};
-                $scope.data[index].extra.showassets = false;
-                $scope.data[index].extra.chartinclude = true;
-            }
-
-            $scope.data[index].extra.dval = null;
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.assets = [];
-
-        }
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.assetsdata.length; ++index) {
-            dataAdded = false;
-            if(!dataAdded) {
-                subcategories = $scope.data;
-                subcategoryid = $scope.assetsdata[index].subcategoryid;
-                for(i = 0; i < subcategories.length; ++i) {
-                    if(subcategories[i].subcategoryid == subcategoryid) {
-                        subcategories[i].extra.assets.push($scope.assetsdata[index]);
-                        break;
-                    }
-                }
-            }
-        }
-
-        $scope.nameFunction = function(){
-            return function(d) {
-                return d.subcategoryname;
-            };
-        }
-
-        $scope.getppu = function(d, forchart){
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                //       or when category ppu changes
-                if(d.ppu != null) {
-                    d.extra.dval = d.ppu;
-                } else {
-                    d.extra.dval = 0; //TODO - Should get value from the subcategory
-                }
-
-                d.extra.dval = d.extra.dval * d.units;
-                d.extra.dval = d.extra.dval.toFixed(2);
-            }
-
-            /* If asset should not be included, then return 0 value */
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.ppuFunction = function(){
-            return function(d){
-                return $scope.getppu(d, true);
-            };
-        }
-
-        $scope.getcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                //       or when category cppu changes
-                if(d.cppu != null) {
-                    d.extra.dcval = d.cppu;
-                } else {
-                    d.extra.dcval = 0 //Should get value from the subcategory
-                }
-
-                d.extra.dcval = d.extra.dcval * d.units;
-                d.extra.dcval = d.extra.dcval.toFixed(2);
-            }
-
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.cppuFunction = function(){
-            return function(d){
-                return $scope.getcppu(d, true);
-            };
-        }
-
-        $scope.getsppu = function(d, forchart) {
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dval = 0;
-                d.extra.dval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.sppuFunction = function(){
-            return function(d){
-                return $scope.getsppu(d, true);
-            };
-        }
-
-        $scope.getscppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dcval = 0;
-                d.extra.dcval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dcval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-        $scope.scppuFunction = function(){
-            return function(d){
-                return $scope.getscppu(d, true);
-            };
-        }
-
-        $scope.colorFunction = function(){
-            return function(dp, index){
-                d = dp.data;
-
-                if(d == null) {
-                    d = dp;
-                }
-
-                if(d.extra.color == null) {
-                    if(d.color == '' || d.color == null) {
-                        // Get a random color and save it
-                        d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
-                    } else {
-                        d.extra.color = d.color;
-                    }
-                }
-
-                return d.extra.color;
-            }
-        }
-
-        $scope.getcolor = $scope.colorFunction();
-
-        $scope.getdefaultasset = function() {
-            d = {
-                    assetid: "0",
-                    subcategoryid: "",
-                    assetname: "",
-                    assetdescription: "",
-                    units: "",
-                    ppu: "",
-                    cppu: "",
-                    unitform: "",
-                    date: new Date().toISOString().slice(0, 10),
-                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
-                    extra: {
-                        chartinclude: true,
-                    },
-                }
-
-            return d;
-        }
-
-        $scope.getcagr = function(d) {
-            cppu = parseFloat($scope.getcppu(d, false));
-            ppu = parseFloat($scope.getppu(d, false));
-
-            investeddate = new Date(d.date);
-            currentdate =  new Date();
-
-            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
-            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
-
-            return cagr.toFixed(2);
-        }
-
-        $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
-        }
-
-        $scope.selectedchildassets = function (index) {
-            /* Recalculate the total values of subcategories */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallsubcategories = function(firstload) {
-            for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
-
-                if(firstload) {
-                    assets = $scope.data[index].extra.assets;
-                    $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;
-
-                    for(i = 0; i < assets.length; ++i) {
-                        assets[i].extra.chartinclude = $scope.assetchartincludeall
-                    }
-                }
-            }
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallassets = function(index) {
-            assets = $scope.data[index].extra.assets;
-
-            for(i = 0; i < assets.length; ++i) {
-                assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
-            }
-
-            /* Recalculate the total values of subcategories */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-
-         $scope.datepickopen = function($event, parentindex, index) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.data[parentindex].extra.assets[index].extra.opened = true;
-        };
-
-
-        $scope.addrow = function(parentindex, index) {
-            //console.log('got a call to add row');
-
-            d = $scope.getdefaultasset();
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.newrow = true;
-            if(index == -1) {
-                $scope.data[parentindex].extra.assets.push(d);
-                index = $scope.data[parentindex].extra.assets.length - 1;
-            }
-            else {
-                $scope.data[parentindex].extra.assets.splice(index, 0, d)
-            }
-
-            $scope.entereditmode(parentindex, index);
-        }
-
-        $scope.removerow = function(parentindex, index) {
-            //console.log('got a call to remove row')
-            assetid = $scope.data[parentindex].extra.assets[index].assetid;
-            var d = $scope.data[parentindex].extra.assets.splice(index, 1);
-
-            //  Find the index of the object in assetsdata, if exists, delete from there too
-            i = $scope.assetsdata.indexOf(d[0]);
-
-            if(i >= 0) {
-                $scope.assetsdata.splice(i, 1);
-            }
-
-            $scope.selectedchildassets(parentindex);
-
-            //update database
-            if(assetid != "0") {
-                data = {
-                    'assetid': assetid
-                }
-                $scope.removasset(data);
-            }
-        }
-
-        $scope.removasset = function(d) {
-            $http({
-                method : 'POST',
-                url : 'home/removeeasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'subcategoriesController');
-            });
-        }
-
-        $scope.addupdateasset = function(d, parentindex, index) {
-            console.log(d);
-            $http({
-                method : 'POST',
-                url : 'home/addupdateasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully sent data to server");
-                if(data && d.assetid == "0") {
-                    $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
-                    // new asset, push the asset to assetsInfo
-                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
-
-                }
-
-                $rootScope.$broadcast('assetsupdated', 'subcategoriesController');
-            });
-        }
-
-        $scope.entereditmode = function(parentindex, index) {
-            $scope.data[parentindex].extra.assets[index].extra.editMode = true;
-
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-            //d.extra.copy = null;
-            $scope.data[parentindex].extra.assets[index].extra.copy = d
-        }
-
-        $scope.submitdefferredchanges = function(d, parentindex, index) {
-            if(typeof d.date != 'string' && !(d.date instanceof String)) {
-                d.date = d.date.toISOString().slice(0, 10);
-            }
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.color = null;
-            d.extra.newrow = false;
-            d.extra.editMode = false;
-
-            // Copy all the key value pairs, such that the source is affected and not just the reference
-            currentd = $scope.data[parentindex].extra.assets[index];
-            for(k in d)
-                currentd[k] = d[k];
-
-            $scope.selectedassets();
-
-            //Submit the changes to the backend for this row
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-
-            //Delete the extra information that is populated into the data
-            delete d.extra;
-            delete d.disabled;
-
-            $scope.addupdateasset(d, parentindex, index);
-            console.log('submitting now');
-        }
-
-        $scope.submitchanges = function(parentindex, index) {
-            d = $scope.data[parentindex].extra.assets[index].extra.copy;
-
-            entereddetails = {
-                'categoryname': d.extra.categoryname,
-                'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
-            };
-
-            if(d.extra.categoryname != $scope.data[index].extra.categoryname
-                || d.extra.subcategoryname != $scope.data[index].extra.subcategoryname) {
-                // Check if id exists, else create one
-
-                categoryid = null;
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(entereddetails.categoryname == categories[i].categoryname) {
-                        categoryid = categories[i].categoryid;
-                        break;
-                    }
-                }
-                if(categoryid == null) {
-                    $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                } else {
-                    // If id is available, check if provided subcategory exists for the category
-                    // If yes then continue with the rest
-
-                    subcategoryid = null;
-                    subcategories = $scope.assetsOtherInfo.subcategories;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(categoryid == subcategories[i].categoryid
-                            && entereddetails.subcategoryname == subcategories[i].subcategoryname) {
-                            subcategoryid = subcategories[i].subcategoryid;
-                            break;
-                        }
-                    }
-
-                    if(subcategoryid == null) {
-                        $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                    } else {
-                        d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, parentindex, index);
-                    }
-                }
-            } else {
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }
-        }
-
-        $scope.cancelchanges = function(parentindex, index) {
-            if($scope.data[parentindex].extra.assets[index].extra.newrow == true) {
-                $scope.removerow(parentindex, index);
-            } else {
-                delete $scope.data[parentindex].extra.assets[index].extra.copy
-                $scope.data[parentindex].extra.assets[index].extra.editMode = false;
-
-                $scope.selectedchildassets(parentindex);
-            }
-
-            console.log('cancelling now');
-
-        }
-
-        $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
-
-            modalInstance = $modal.open({
-                    template: categoryhtml,
-                    controller: categoryModelController,
-                    size: size,
-                    resolve: {
-                        categorydetails: function () {
-                            categoryInfo = {
-                                'entereddetails': entereddetails,
-                                'assetsOtherInfo': $scope.assetsOtherInfo,
-                            };
-
-                            return categoryInfo; // information to be passed to model
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (saveddetails) {
-                // Save the details
-                d.subcategoryid = saveddetails.subcategoryid;
-                d.extra.subcategoryname = saveddetails.subcategoryname;
-                d.extra.categoryname = saveddetails.categoryname;
-
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }, function () {
-                // cancelled, so nothing to do now
-            });
-        };
-
-
-        /* All the function calls are here */
-
-        if(firstload) {
-            /* Call the selectallassets */
-            $scope.selectallsubcategories(firstload);
-        } else {
-            $scope.selectedassets();
-        }
-
+app.controller("userprofileController", function($scope, $location) {
+    $scope.editUserProfile = function() {
+        $location.path('/user/update');
     }
 })
 
-app.controller("riskbasedassetsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
-
-    /*Session.assetsotherinfodefferred.promise
-        .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});*/
-
-    $scope.$on('assetsupdated', function(event, from) {
-        // Even if riskbasedassetsController has sent it, update internal data again
-        // TODO - Improve this later where, on submit, modify internal structure
-        if(from == "assetsControllerFirstLoad") {
-            $scope.updateAssetsData(true);
-        } else {
-            $scope.updateAssetsData(false);
-        }
-    });
-
-    $scope.updateAssetsData = function(firstload) {
-        $scope.assetsInfo = Session.assetsinfo;
-        $scope.assetsOtherInfo = Session.assetsotherinfo;
-
-        console.log($scope.assetsOtherInfo);
-
-        $scope.assetsdata = $scope.assetsInfo.assets;
-        $scope.chartdata = [];
-        $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.riskcategories;
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.data.length; ++index) {
-            if($scope.data[index].extra == null) {
-                $scope.data[index].extra = {};
-                $scope.data[index].extra.showassets = false;
+app.controller("usersController", function ($scope, $http, $location, Session) {
+    $scope.getUsersInfo = function() {
+        $http({
+            method : 'POST',
+            url : 'user/users/all'
+        })
+        .success(function(data) {
+            //console.log(data);
+            if(data) {
+                $scope.users = data;
             }
-
-            $scope.data[index].extra.dval = null;
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.assets = [];
-        }
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.assetsdata.length; ++index) {
-            riskid = -1;
-            if(riskid == -1) {
-                subcategories = $scope.assetsOtherInfo.subcategories;
-                for(i = 0; i < subcategories.length; ++i) {
-                    if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
-                        riskid = subcategories[i].riskid
-                        break;
-                    }
-                }
-            }
-            // We are saving risk details in data, reuse it
-            riskcategories = $scope.data;
-            for(i = 0; i < riskcategories.length; ++i) {
-                if(riskcategories[i].riskid == riskid) {
-                    riskname = riskcategories[i].riskname;
-                    riskcategories[i].extra.assets.push($scope.assetsdata[index]);
-                    break;
-                }
-            }
-
-            $scope.assetsdata[index].extra.riskname = riskname;
-        }
-
-        $scope.nameFunction = function(){
-            return function(d) {
-                return d.riskname + " Risk";
-            };
-        }
-
-        $scope.getppu = function(d, forchart){
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                //       or when category ppu changes
-                if(d.ppu != null) {
-                    d.extra.dval = d.ppu;
-                } else {
-                    d.extra.dval = 0; //TODO - Should get value from the subcategory
-                }
-
-                d.extra.dval = d.extra.dval * d.units;
-                d.extra.dval = d.extra.dval.toFixed(2);
-            }
-
-            /* If asset should not be included, then return 0 value */
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.ppuFunction = function(){
-            return function(d){
-                return $scope.getppu(d, true);
-            };
-        }
-
-        $scope.getcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                //       or when category cppu changes
-                if(d.cppu != null) {
-                    d.extra.dcval = d.cppu;
-                } else {
-                    d.extra.dcval = 0 //Should get value from the subcategory
-                }
-
-                d.extra.dcval = d.extra.dcval * d.units;
-                d.extra.dcval = d.extra.dcval.toFixed(2);
-            }
-
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.cppuFunction = function(){
-            return function(d){
-                return $scope.getcppu(d, true);
-            };
-        }
-
-        $scope.getrppu = function(d, forchart) {
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dval = 0;
-                d.extra.dval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.rppuFunction = function(){
-            return function(d){
-                return $scope.getrppu(d, true);
-            };
-        }
-
-        $scope.getrcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dcval = 0;
-                d.extra.dcval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dcval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.rcppuFunction = function(){
-            return function(d){
-                return $scope.getrcppu(d, true);
-            };
-        }
-
-        $scope.colorFunction = function(){
-            return function(dp, index){
-                d = dp.data;
-
-                if(d == null) {
-                    d = dp;
-                }
-
-                if(d.extra.color == null) {
-                    if(d.color == '' || d.color == null) {
-                        // Get a random color and save it
-                        d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
-                    } else {
-                        d.extra.color = d.color;
-                    }
-                }
-
-                return d.extra.color;
-            }
-        }
-
-        $scope.getcolor = $scope.colorFunction();
-
-        $scope.getdefaultasset = function() {
-            d = {
-                    assetid: "0",
-                    subcategoryid: "",
-                    assetname: "",
-                    assetdescription: "",
-                    units: "",
-                    ppu: "",
-                    cppu: "",
-                    unitform: "",
-                    date: new Date().toISOString().slice(0, 10),
-                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
-                    extra: {
-                        chartinclude: true,
-                    },
-                }
-
-            return d;
-        }
-
-        $scope.getcagr = function(d) {
-            cppu = parseFloat($scope.getcppu(d, false));
-            ppu = parseFloat($scope.getppu(d, false));
-
-            investeddate = new Date(d.date);
-            currentdate =  new Date();
-
-            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
-            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
-
-            return cagr.toFixed(2);
-        }
-
-        $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
-        }
-
-        $scope.selectedchildassets = function(index) {
-            /* Recalculate the total values of risks */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallrisks = function(firstload) {
-            for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
-
-                if(firstload) {
-                    assets = $scope.data[index].extra.assets;
-                    $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;
-
-                    for(i = 0; i < assets.length; ++i) {
-                        assets[i].extra.chartinclude = $scope.assetchartincludeall
-                    }
-                }
-            }
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallassets = function(index) {
-            assets = $scope.data[index].extra.assets;
-
-            for(i = 0; i < assets.length; ++i) {
-                assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
-            }
-
-            /* Recalculate the total values of risks */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-         $scope.datepickopen = function($event, parentindex, index) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.data[parentindex].extra.assets[index].extra.opened = true;
-        };
-
-
-        $scope.addrow = function(parentindex, index) {
-            //console.log('got a call to add row');
-
-            d = $scope.getdefaultasset();
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.newrow = true;
-            if(index == -1) {
-                $scope.data[parentindex].extra.assets.push(d);
-                index = $scope.data[parentindex].extra.assets.length - 1;
-            }
-            else {
-                $scope.data[parentindex].extra.assets.splice(index, 0, d)
-            }
-
-            $scope.entereditmode(parentindex, index);
-        }
-
-        $scope.removerow = function(parentindex, index) {
-            //console.log('got a call to remove row')
-            assetid = $scope.data[parentindex].extra.assets[index].assetid;
-            var d = $scope.data[parentindex].extra.assets.splice(index, 1);
-
-            //  Find the index of the object in assetsdata, if exists, delete from there too
-            i = $scope.assetsdata.indexOf(d[0]);
-
-            if(i >= 0) {
-                $scope.assetsdata.splice(i, 1);
-            }
-
-            $scope.selectedchildassets(parentindex);
-
-            //update database
-            if(assetid != "0") {
-                data = {
-                    'assetid': assetid
-                }
-                $scope.removasset(data);
-            }
-        }
-
-        $scope.removasset = function(d) {
-            $http({
-                method : 'POST',
-                url : 'home/removeeasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'riskbasedassetsController');
-            });
-        }
-
-        $scope.addupdateasset = function(d, parentindex, index) {
-            console.log(d);
-            $http({
-                method : 'POST',
-                url : 'home/addupdateasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully sent data to server");
-                if(data && d.assetid == "0") {
-                    $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
-                    // new asset, push the asset to assetsInfo
-                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
-                }
-
-                $rootScope.$broadcast('assetsupdated', 'riskbasedassetsController');
-            });
-        }
-
-        $scope.entereditmode = function(parentindex, index) {
-            $scope.data[parentindex].extra.assets[index].extra.editMode = true;
-
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-            //d.extra.copy = null;
-            $scope.data[parentindex].extra.assets[index].extra.copy = d
-        }
-
-        $scope.submitdefferredchanges = function(d, parentindex, index) {
-            if(typeof d.date != 'string' && !(d.date instanceof String)) {
-                d.date = d.date.toISOString().slice(0, 10);
-            }
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.color = null;
-            d.extra.newrow = false;
-            d.extra.editMode = false;
-
-            // Copy all the key value pairs, such that the source is affected and not just the reference
-            currentd = $scope.data[parentindex].extra.assets[index];
-            for(k in d)
-                currentd[k] = d[k];
-
-            $scope.selectedassets();
-
-            //Submit the changes to the backend for this row
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-
-            //Delete the extra information that is populated into the data
-            delete d.extra;
-            delete d.disabled;
-
-            $scope.addupdateasset(d, parentindex, index);
-            console.log('submitting now');
-        }
-
-        $scope.submitchanges = function(parentindex, index) {
-            d = $scope.data[parentindex].extra.assets[index].extra.copy;
-
-            entereddetails = {
-                'categoryname': d.extra.categoryname,
-                'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.data[parentindex].riskname,
-            };
-
-            if(d.extra.categoryname != $scope.data[index].extra.categoryname
-                || d.extra.subcategoryname != $scope.data[index].extra.subcategoryname) {
-                // Check if id exists, else create one
-
-                categoryid = null;
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(entereddetails.categoryname == categories[i].categoryname) {
-                        categoryid = categories[i].categoryid;
-                        break;
-                    }
-                }
-                if(categoryid == null) {
-                    $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                } else {
-                    // If id is available, check if provided subcategory exists for the category
-                    // If yes then continue with the rest
-
-                    subcategoryid = null;
-                    subcategories = $scope.assetsOtherInfo.subcategories;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(categoryid == subcategories[i].categoryid
-                            && entereddetails.subcategoryname == subcategories[i].subcategoryname) {
-                            subcategoryid = subcategories[i].subcategoryid;
-                            break;
-                        }
-                    }
-
-                    if(subcategoryid == null) {
-                        $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                    } else {
-                        d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, parentindex, index);
-                    }
-                }
-            } else {
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }
-        }
-
-        $scope.cancelchanges = function(parentindex, index) {
-            if($scope.data[parentindex].extra.assets[index].extra.newrow == true) {
-                $scope.removerow(parentindex, index);
-            } else {
-                delete $scope.data[parentindex].extra.assets[index].extra.copy
-                $scope.data[parentindex].extra.assets[index].extra.editMode = false;
-
-                $scope.selectedchildassets(parentindex);
-            }
-
-            console.log('cancelling now');
-
-        }
-
-        $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
-
-            modalInstance = $modal.open({
-                    template: categoryhtml,
-                    controller: categoryModelController,
-                    size: size,
-                    resolve: {
-                        categorydetails: function () {
-                            categoryInfo = {
-                                'entereddetails': entereddetails,
-                                'assetsOtherInfo': $scope.assetsOtherInfo,
-                            };
-
-                            return categoryInfo; // information to be passed to model
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (saveddetails) {
-                // Save the details
-                d.subcategoryid = saveddetails.subcategoryid;
-                d.extra.subcategoryname = saveddetails.subcategoryname;
-                d.extra.categoryname = saveddetails.categoryname;
-
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }, function () {
-                // cancelled, so nothing to do now
-            });
-        };
-
-
-        /* All the function calls are here */
-
-        if(firstload) {
-            /* Call the selectallassets */
-            $scope.selectallrisks(firstload);
-        } else {
-            $scope.selectedassets();
-        }
+        });
     }
-})
 
-app.controller("customgroupsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
+    $scope.editUserProfile = function(username, displayname, admin) {
+        //console.log(username);
+        Session.currentuser['username'] = username;
+        Session.currentuser['displayname'] = displayname;
+        Session.currentuser['admin'] = admin;
 
-    /*Session.assetsotherinfodefferred.promise
-        .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});*/
-
-    console.log("how ya doing " + $scope.groupingtype);
-    $scope.$on('assetsupdated', function(event, from) {
-        // Even if categoriesController has sent it, update internal data again
-        // TODO - Improve this later where, on submit, modify internal structure
-        if(from == "assetsControllerFirstLoad") {
-            $scope.updateAssetsData(true);
-        } else {
-            $scope.updateAssetsData(false);
-        }
-    });
-
-    $scope.updateAssetsData = function(firstload) {
-        $scope.assetsInfo = Session.assetsinfo;
-        $scope.assetsOtherInfo = Session.assetsotherinfo;
-
-        console.log($scope.assetsOtherInfo);
-
-        $scope.assetsdata = $scope.assetsInfo.assets;
-        $scope.chartdata = [];
-        $scope.assetchartincludeall = true;
-        $scope.data = $scope.assetsOtherInfo.customgroups;
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.data.length; ++index) {
-            if($scope.data[index].extra == null) {
-                $scope.data[index].extra = {};
-                $scope.data[index].extra.showassets = false;
-                $scope.data[index].extra.chartinclude = true;
-            }
-
-            $scope.data[index].extra.dval = null;
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.assets = [];
-
-        }
-
-        // Add extra data to the assets information
-        for (index = 0; index < $scope.assetsdata.length; ++index) {
-            customgroups = $scope.data;
-            for(i = 0; i < customgroups.length; ++i) {
-                if(customgroups[i].groupid == $scope.assetsdata[index].customgroupid) {
-                    customgroups[i].extra.assets.push($scope.assetsdata[index]);
-                    break;
-                }
-            }
-        }
-
-        $scope.nameFunction = function(){
-            return function(d) {
-                return d.groupname;
-            };
-        }
-
-        $scope.getppu = function(d, forchart){
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dval as null or recalculate it when d.ppu or d.units changes
-                //       or when group ppu changes
-                if(d.ppu != null) {
-                    d.extra.dval = d.ppu;
-                } else {
-                    d.extra.dval = 0; //TODO - Should get value from the subcategory
-                }
-
-                d.extra.dval = d.extra.dval * d.units;
-                d.extra.dval = d.extra.dval.toFixed(2);
-            }
-
-            /* If asset should not be included, then return 0 value */
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.ppuFunction = function(){
-            return function(d){
-                return $scope.getppu(d, true);
-            };
-        }
-
-        $scope.getcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                // Note: set d.dcval as null or recalculate it when d.cppu or d.units changes
-                //       or when group cppu changes
-                if(d.cppu != null) {
-                    d.extra.dcval = d.cppu;
-                } else {
-                    d.extra.dcval = 0 //Should get value from the subcategory
-                }
-
-                d.extra.dcval = d.extra.dcval * d.units;
-                d.extra.dcval = d.extra.dcval.toFixed(2);
-            }
-
-            if(!forchart || d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.cppuFunction = function(){
-            return function(d){
-                return $scope.getcppu(d, true);
-            };
-        }
-
-        $scope.getgppu = function(d, forchart) {
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dval = 0;
-                d.extra.dval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dval
-            } else {
-                return 0;
-            }
-        }
-
-        $scope.gppuFunction = function(){
-            return function(d){
-                return $scope.getgppu(d, true);
-            };
-        }
-
-        $scope.getgcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dcval = 0;
-                d.extra.dcval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dcval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dcval
-            } else {
-                return 0;
-            }
-        }
-        $scope.gcppuFunction = function(){
-            return function(d){
-                return $scope.getgcppu(d, true);
-            };
-        }
-
-        $scope.colorFunction = function(){
-            return function(dp, index){
-                d = dp.data;
-
-                if(d == null) {
-                    d = dp;
-                }
-
-                if(d.extra.color == null) {
-                    if(d.color == '' || d.color == null) {
-                        // Get a random color and save it
-                        d.extra.color = '#'+Math.floor(Math.random()*16777215).toString(16);
-                    } else {
-                        d.extra.color = d.color;
-                    }
-                }
-
-                return d.extra.color;
-            }
-        }
-
-        $scope.getcolor = $scope.colorFunction();
-
-        $scope.getdefaultasset = function() {
-            d = {
-                    assetid: "0",
-                    subcategoryid: "",
-                    assetname: "",
-                    assetdescription: "",
-                    units: "",
-                    ppu: "",
-                    cppu: "",
-                    unitform: "",
-                    date: new Date().toISOString().slice(0, 10),
-                    color: '#'+Math.floor(Math.random()*16777215).toString(16),
-                    extra: {
-                        chartinclude: true,
-                    },
-                }
-
-            return d;
-        }
-
-        $scope.getcagr = function(d) {
-            cppu = parseFloat($scope.getcppu(d, false));
-            ppu = parseFloat($scope.getppu(d, false));
-
-            investeddate = new Date(d.date);
-            currentdate =  new Date();
-
-            years = ((currentdate - investeddate)/ _MS_PER_DAY)/ 365;
-            cagr = (Math.pow((cppu/ppu), 1/(years)) - 1) * 100;
-
-            return cagr.toFixed(2);
-        }
-
-        $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
-        }
-
-        $scope.selectedchildassets = function (index) {
-            /* Recalculate the total values of groups */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallgroups = function(firstload) {
-            for (index = 0; index < $scope.data.length; ++index) {
-                $scope.data[index].extra.chartinclude = $scope.assetchartincludeall;
-
-                if(firstload) {
-                    assets = $scope.data[index].extra.assets;
-                    $scope.data[index].extra.assetchartincludeall = $scope.assetchartincludeall;
-
-                    for(i = 0; i < assets.length; ++i) {
-                        assets[i].extra.chartinclude = $scope.assetchartincludeall
-                    }
-                }
-            }
-
-            $scope.selectedassets();
-        }
-
-        $scope.selectallassets = function(index) {
-            assets = $scope.data[index].extra.assets;
-
-            for(i = 0; i < assets.length; ++i) {
-                assets[i].extra.chartinclude = $scope.data[index].extra.assetchartincludeall;
-            }
-
-            /* Recalculate the total values of groups */
-            $scope.data[index].extra.dcval = null;
-            $scope.data[index].extra.dval = null;
-
-            $scope.selectedassets();
-        }
-
-
-         $scope.datepickopen = function($event, parentindex, index) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.data[parentindex].extra.assets[index].extra.opened = true;
-        };
-
-
-        $scope.addrow = function(parentindex, index) {
-            //console.log('got a call to add row');
-
-            d = $scope.getdefaultasset();
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.newrow = true;
-            if(index == -1) {
-                $scope.data[parentindex].extra.assets.push(d);
-                index = $scope.data[parentindex].extra.assets.length - 1;
-            }
-            else {
-                $scope.data[parentindex].extra.assets.splice(index, 0, d)
-            }
-
-            $scope.entereditmode(parentindex, index);
-        }
-
-        $scope.removerow = function(parentindex, index) {
-            //console.log('got a call to remove row')
-            assetid = $scope.data[parentindex].extra.assets[index].assetid;
-            var d = $scope.data[parentindex].extra.assets.splice(index, 1);
-
-            //  Find the index of the object in assetsdata, if exists, delete from there too
-            i = $scope.assetsdata.indexOf(d[0]);
-
-            if(i >= 0) {
-                $scope.assetsdata.splice(i, 1);
-            }
-
-            $scope.selectedchildassets(parentindex);
-
-            //update database
-            if(assetid != "0") {
-                data = {
-                    'assetid': assetid
-                }
-                $scope.removasset(data);
-            }
-        }
-
-        $scope.removasset = function(d) {
-            $http({
-                method : 'POST',
-                url : 'home/removeeasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully removed data from server");
-                $rootScope.$broadcast('assetsupdated', 'customgroupsController');
-            });
-        }
-
-        $scope.addupdateasset = function(d, parentindex, index) {
-            console.log(d);
-            $http({
-                method : 'POST',
-                url : 'home/addupdateasset',
-                data : d, // pass in data as strings
-                headers : { 'Content-Type': 'application/x-www-form-urlencoded' }, // set the headers so angular passing info as form data (not request payload)
-                transformRequest: transformURIRequest,
-            })
-            .success(function(data) {
-                console.log("successfully sent data to server");
-                if(data && d.assetid == "0") {
-                    $scope.data[parentindex].extra.assets[index].assetid = data.assetid;
-                    // new asset, push the asset to assetsInfo
-                    $scope.assetsdata.push($scope.data[parentindex].extra.assets[index]);
-
-                }
-
-                $rootScope.$broadcast('assetsupdated', 'customgroupsController');
-            });
-        }
-
-        $scope.entereditmode = function(parentindex, index) {
-            $scope.data[parentindex].extra.assets[index].extra.editMode = true;
-
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-            //d.extra.copy = null;
-            $scope.data[parentindex].extra.assets[index].extra.copy = d
-        }
-
-        $scope.submitdefferredchanges = function(d, parentindex, index) {
-            if(typeof d.date != 'string' && !(d.date instanceof String)) {
-                d.date = d.date.toISOString().slice(0, 10);
-            }
-            d.extra.dval = null;
-            d.extra.dcval = null;
-            d.extra.color = null;
-            d.extra.newrow = false;
-            d.extra.editMode = false;
-
-            // Copy all the key value pairs, such that the source is affected and not just the reference
-            currentd = $scope.data[parentindex].extra.assets[index];
-            for(k in d)
-                currentd[k] = d[k];
-
-            $scope.selectedassets();
-
-            //Submit the changes to the backend for this row
-            d = angular.copy($scope.data[parentindex].extra.assets[index]);
-
-            //Delete the extra information that is populated into the data
-            delete d.extra;
-            delete d.disabled;
-
-            $scope.addupdateasset(d, parentindex, index);
-            console.log('submitting now');
-        }
-
-        $scope.submitchanges = function(parentindex, index) {
-            d = $scope.data[parentindex].extra.assets[index].extra.copy;
-
-            entereddetails = {
-                'categoryname': d.extra.categoryname,
-                'subcategoryname': d.extra.subcategoryname,
-                'riskname': $scope.assetsOtherInfo.riskcategories[0].riskname,
-            };
-
-            if(d.extra.categoryname != $scope.data[index].extra.categoryname
-                || d.extra.subcategoryname != $scope.data[index].extra.subcategoryname) {
-                // Check if id exists, else create one
-
-                categoryid = null;
-                categories = $scope.assetsOtherInfo.categories;
-                for(i = 0; i < categories.length; ++i) {
-                    if(entereddetails.categoryname == categories[i].categoryname) {
-                        categoryid = categories[i].categoryid;
-                        break;
-                    }
-                }
-                if(categoryid == null) {
-                    $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                } else {
-                    // If id is available, check if provided subcategory exists for the category
-                    // If yes then continue with the rest
-
-                    subcategoryid = null;
-                    subcategories = $scope.assetsOtherInfo.subcategories;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(categoryid == subcategories[i].categoryid
-                            && entereddetails.subcategoryname == subcategories[i].subcategoryname) {
-                            subcategoryid = subcategories[i].subcategoryid;
-                            break;
-                        }
-                    }
-
-                    if(subcategoryid == null) {
-                        $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
-                    } else {
-                        d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, parentindex, index);
-                    }
-                }
-            } else {
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }
-        }
-
-        $scope.cancelchanges = function(parentindex, index) {
-            if($scope.data[parentindex].extra.assets[index].extra.newrow == true) {
-                $scope.removerow(parentindex, index);
-            } else {
-                delete $scope.data[parentindex].extra.assets[index].extra.copy
-                $scope.data[parentindex].extra.assets[index].extra.editMode = false;
-
-                $scope.selectedchildassets(parentindex);
-            }
-
-            console.log('cancelling now');
-
-        }
-
-        $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
-
-            modalInstance = $modal.open({
-                    template: categoryhtml,
-                    controller: categoryModelController,
-                    size: size,
-                    resolve: {
-                        categorydetails: function () {
-                            categoryInfo = {
-                                'entereddetails': entereddetails,
-                                'assetsOtherInfo': $scope.assetsOtherInfo,
-                            };
-
-                            return categoryInfo; // information to be passed to model
-                    }
-                }
-            });
-
-            modalInstance.result.then(function (saveddetails) {
-                // Save the details
-                d.subcategoryid = saveddetails.subcategoryid;
-                d.extra.subcategoryname = saveddetails.subcategoryname;
-                d.extra.categoryname = saveddetails.categoryname;
-
-                $scope.submitdefferredchanges(d, parentindex, index);
-            }, function () {
-                // cancelled, so nothing to do now
-            });
-        };
-
-
-        /* All the function calls are here */
-
-        if(firstload) {
-            /* Call the selectallassets */
-            $scope.selectallgroups(firstload);
-        } else {
-            $scope.selectedassets();
-        }
-
+        $location.path('/user/update');
     }
+
+    $scope.getUsersInfo();
 })
 
 app.controller("groupingsController", function($scope, $rootScope, $http, $filter, $modal, Session) {
 
-    /*Session.assetsotherinfodefferred.promise
+    Session.assetsotherinfodefferred.promise
         .then(function(response){return Session.assetsinfodefferred.promise})
-        .then(function(response){$scope.updateAssetsData(true)});*/
+        .then(function(response){return Session.initialassstsupdate.promise})
+        .then(function(response){$scope.updateAssetsData(true)});
 
     console.log("how ya doing " + $scope.groupingtype);
     $scope.$on('assetsupdated', function(event, from) {
         // Even if categoriesController has sent it, update internal data again
         // TODO - Improve this later where, on submit, modify internal structure
-        if(from == "assetsControllerFirstLoad") {
-            $scope.updateAssetsData(true);
-        } else {
             $scope.updateAssetsData(false);
-        }
     });
 
     $scope.updateAssetsData = function(firstload) {
@@ -2379,9 +380,9 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
                     groupingid = groupingdata[i].riskid;
 
                     subcategories = $scope.assetsOtherInfo.subcategories;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
-                            assetsgroupingid = subcategories[i].riskid
+                    for(j = 0; j < subcategories.length; ++j) {
+                        if(subcategories[j].subcategoryid == $scope.assetsdata[index].subcategoryid) {
+                            assetsgroupingid = subcategories[j].riskid
                             break;
                         }
                     }
@@ -2392,10 +393,9 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
                     groupingid = groupingdata[i].categoryid;
 
                     subcategories = $scope.assetsOtherInfo.subcategories;
-                    categoryid = 0;
-                    for(i = 0; i < subcategories.length; ++i) {
-                        if(subcategories[i].subcategoryid == $scope.assetsdata[index].subcategoryid) {
-                            assetsgroupingid = subcategories[i].categoryid;
+                    for(j = 0; j < subcategories.length; ++j) {
+                        if(subcategories[j].subcategoryid == $scope.assetsdata[index].subcategoryid) {
+                            assetsgroupingid = subcategories[j].categoryid;
                             break;
                         }
                     }
@@ -2757,6 +757,31 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
             console.log('submitting now');
         }
 
+        $scope.checkgroupname = function(d, parentindex, index) {
+            // check if it is same group name else update to server and submitdefferredchanges
+            if(d.extra.groupname != $scope.data[parentindex].extra.assets[index].extra.groupname) {
+                groupid = null;
+                customgroups = $scope.assetsOtherInfo.customgroups;
+                for(i = 0; i < customgroups.length; ++i) {
+                    if(d.extra.groupname == customgroups[i].groupname) {
+                        groupid = customgroups[i].groupid;
+                        break;
+                    }
+                }
+
+                if(groupid == null) {
+                    // Save the name to the server via a dialog
+                    $scope.opengroupmodel(null, d.extra.groupname, d, parentindex, index);
+                } else {
+                    d.customgroupid = groupid;
+                    $scope.submitdefferredchanges(d, parentindex, index);
+                }
+
+            } else {
+                $scope.submitdefferredchanges(d, parentindex, index)
+            }
+        }
+
         $scope.submitchanges = function(parentindex, index) {
             d = $scope.data[parentindex].extra.assets[index].extra.copy;
 
@@ -2798,11 +823,11 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
                         $scope.opencategorymodel(null, entereddetails, d, parentindex, index);
                     } else {
                         d.subcategoryid = subcategoryid;
-                        $scope.submitdefferredchanges(d, parentindex, index);
+                        $scope.checkgroupname(d, parentindex, index);
                     }
                 }
             } else {
-                $scope.submitdefferredchanges(d, parentindex, index);
+                $scope.checkgroupname(d, parentindex, index);
             }
         }
 
@@ -2823,7 +848,7 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
         $scope.opencategorymodel = function (size, entereddetails, d, parentindex, index) {
 
             modalInstance = $modal.open({
-                    template: categoryhtml,
+                    templateUrl: 'ui/partials/categorymodel.html',
                     controller: categoryModelController,
                     size: size,
                     resolve: {
@@ -2843,6 +868,35 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
                 d.subcategoryid = saveddetails.subcategoryid;
                 d.extra.subcategoryname = saveddetails.subcategoryname;
                 d.extra.categoryname = saveddetails.categoryname;
+
+                $scope.checkgroupname(d, parentindex, index);
+            }, function () {
+                // cancelled, so nothing to do now
+            });
+        };
+
+        $scope.opengroupmodel = function (size, groupname, d, parentindex, index) {
+
+            modalInstance = $modal.open({
+                    templateUrl: 'ui/partials/groupmodel.html',
+                    controller: groupModelController,
+                    size: size,
+                    resolve: {
+                        groupdetails: function () {
+                            groupInfo = {
+                                'groupname': groupname,
+                                'assetsOtherInfo': $scope.assetsOtherInfo,
+                            };
+
+                            return groupInfo; // information to be passed to model
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (saveddetails) {
+                // Save the details
+                d.customgroupid = saveddetails.groupid;
+                d.extra.groupname = saveddetails.groupname;
 
                 $scope.submitdefferredchanges(d, parentindex, index);
             }, function () {
@@ -2870,7 +924,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
         .then(function(response){$scope.updateAssetsData(true)});
 
     $scope.$on('assetsupdated', function(event, from) {
-        if(from != 'assetsController') {
+        if(from != 'assetsController' && from != 'assetsControllerFirstLoad') {
             $scope.updateAssetsData(false);
         }
     });
@@ -3263,7 +1317,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
         $scope.opencategorymodel = function (size, entereddetails, d, index) {
 
             modalInstance = $modal.open({
-                    template: categoryhtml,
+                    templateUrl: 'ui/partials/categorymodel.html',
                     controller: categoryModelController,
                     size: size,
                     resolve: {
@@ -3293,7 +1347,7 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
         $scope.opengroupmodel = function (size, groupname, d, index) {
 
             modalInstance = $modal.open({
-                    template: grouphtml,
+                    templateUrl: 'ui/partials/groupmodel.html',
                     controller: groupModelController,
                     size: size,
                     resolve: {
@@ -3326,7 +1380,8 @@ app.controller("assetsController", function($scope, $rootScope, $http, $filter, 
         $scope.selectallassets();
 
         if(firstload) {
-            $rootScope.$broadcast('assetsupdated', 'assetsControllerFirstLoad');
+            //$rootScope.$broadcast('assetsupdated', 'assetsControllerFirstLoad');
+            Session.initialassstsupdate.resolve();
         }
     }
 })

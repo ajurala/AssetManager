@@ -1,6 +1,6 @@
 <div class="col-md-6">
     <nvd3-pie-chart id="assetssubcategoriesinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="sppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        x="nameFunction()" y="gppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -10,7 +10,7 @@
 
 <div class="col-md-6">
     <nvd3-pie-chart id="assetssubcategoriescurrent" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
-        x="nameFunction()" y="scppuFunction()" tooltips="true" labelType="percent" showLegend="true"
+        x="nameFunction()" y="gcppuFunction()" tooltips="true" labelType="percent" showLegend="true"
         objectEquality="true" color="colorFunction()" legendcolor="colorFunction()">
         <svg></svg>
     </nvd3-pie-chart>
@@ -24,7 +24,7 @@
     <div class="collexp">
         &nbsp;
     </div>
-    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallsubcategories(false)">
+    <input class="cursor collexp grouptitle" type="checkbox" name="admin" ng-model="assetchartincludeall" ng-change="selectallgroupings(false)">
     <label class="col-md-3 grouptitle">
         Sub-Asset Type
     </label>
@@ -52,10 +52,10 @@
             {{subcategory.color}}
         </span>
         <label class="col-md-3 col-md-offset-1">
-            {{getsppu(subcategory, false)}}
+            {{getgppu(subcategory, false)}}
         </label>
         <label class="col-md-3">
-            {{getscppu(subcategory, false)}}
+            {{getgcppu(subcategory, false)}}
         </label>
     </div>
     <div class="table-responsive groupassets" ng-show="subcategory.extra.showassets">
