@@ -75,7 +75,7 @@ checkStatus = [
 }]
 
 categoryModelController = [
-    '$scope', '$rootScope', '$modalInstance', '$http', 'categorydetails', 'Session', 
+    '$scope', '$rootScope', '$modalInstance', '$http', 'categorydetails', 'Session',
     function($scope, $rootScope, $modalInstance, $http, categorydetails, Session){
     $scope.categorydetails = categorydetails;
     $scope.assetsOtherInfo = categorydetails.assetsOtherInfo;
@@ -100,7 +100,7 @@ categoryModelController = [
             }
         } else {
             // If such a combination already exists, then do not close
-            
+
             subcategories = $scope.assetsOtherInfo.subcategories;
             for(i = 0; i < subcategories.length; ++i) {
                 if($scope.categorydetails.entereddetails.subcategoryname == subcategories[i].subcategoryname) {
@@ -460,6 +460,8 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
             $scope.updateAssetsData(false);
     });
 
+    $scope.showAssetsCharts = false;
+
     $scope.updateAssetsData = function(firstload) {
         $scope.assetsInfo = Session.assetsinfo;
         $scope.assetsOtherInfo = Session.assetsotherinfo;
@@ -538,7 +540,9 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
 
         $scope.nameFunction = function(){
             return function(d) {
-                if($scope.groupingtype == 'customgroups')
+                if($scope.showAssetsCharts)
+                    return d.assetname;
+                else if($scope.groupingtype == 'customgroups')
                     return d.groupname;
                 else if($scope.groupingtype == 'riskcategories')
                     return d.riskname;
@@ -607,22 +611,26 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
         }
 
         $scope.getgppu = function(d, forchart) {
-            if(d.extra.dval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dval = 0;
-                d.extra.dval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
-                    d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dval
+            if($scope.showAssetsCharts && forchart) {
+                return $scope.getppu(d, true);
             } else {
-                return 0;
+                if(d.extra.dval == null) {
+                    // Calculate the values now and save it for later use
+                    d.extra.dval = 0;
+                    d.extra.dval2 = 0;
+                    for(index = 0; index < d.extra.assets.length; ++index) {
+                        d.extra.dval += parseFloat($scope.getppu(d.extra.assets[index], true));
+                        d.extra.dval2 += parseFloat($scope.getppu(d.extra.assets[index], false));
+                    }
+                }
+
+                if(!forchart) {
+                    return d.extra.dval2;
+                } else if(d.extra.chartinclude) {
+                    return d.extra.dval
+                } else {
+                    return 0;
+                }
             }
         }
 
@@ -633,22 +641,26 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
         }
 
         $scope.getgcppu = function(d, forchart) {
-            if(d.extra.dcval == null) {
-                // Calculate the values now and save it for later use
-                d.extra.dcval = 0;
-                d.extra.dcval2 = 0;
-                for(index = 0; index < d.extra.assets.length; ++index) {
-                    d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
-                    d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
-                }
-            }
-
-            if(!forchart) {
-                return d.extra.dcval2;
-            } else if(d.extra.chartinclude) {
-                return d.extra.dcval
+            if($scope.showAssetsCharts && forchart) {
+                return $scope.getcppu(d, true);
             } else {
-                return 0;
+                if(d.extra.dcval == null) {
+                    // Calculate the values now and save it for later use
+                    d.extra.dcval = 0;
+                    d.extra.dcval2 = 0;
+                    for(index = 0; index < d.extra.assets.length; ++index) {
+                        d.extra.dcval += parseFloat($scope.getcppu(d.extra.assets[index], true));
+                        d.extra.dcval2 += parseFloat($scope.getcppu(d.extra.assets[index], false));
+                    }
+                }
+
+                if(!forchart) {
+                    return d.extra.dcval2;
+                } else if(d.extra.chartinclude) {
+                    return d.extra.dcval
+                } else {
+                    return 0;
+                }
             }
         }
         $scope.gcppuFunction = function(){
@@ -721,7 +733,16 @@ app.controller("groupingsController", function($scope, $rootScope, $http, $filte
         }
 
         $scope.selectedassets = function () {
-            $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+            if($scope.showAssetsCharts) {
+                chartdata = [];
+                for(i = 0; i < $scope.data.length; ++i) {
+                    chartdata = chartdata.concat($filter('filter')($scope.data[i].extra.assets, {extra: {chartinclude: true}}));
+                }
+
+                $scope.chartdata = chartdata;
+            } else {
+                $scope.chartdata = $filter('filter')($scope.data, {extra: {chartinclude: true}});
+            }
         }
 
         $scope.selectedchildassets = function (index) {

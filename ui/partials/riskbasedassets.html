@@ -1,3 +1,16 @@
+<div class="col-md-2"></div>
+<div class="col-md-8 text-center">
+    <h1>
+        <strong>
+            <span ng-hide='showAssetsCharts'>Risk</span>
+            <span ng-show='showAssetsCharts'>Assets in selected Risk</span>
+        </strong>
+    </h1>
+</div>
+<div class="col-md-2 changemode text-right cursor"><a ng-click='showAssetsCharts = !showAssetsCharts; selectedassets();'>Change Chart Mode</a></div>
+
+<div class="clearfix visible-* vertspacer"></div>
+
 <div class="col-md-6">
     <nvd3-pie-chart id="assetsrisksinvested" data="chartdata" height="450" showLabels="true" noData="Nothing to show"
         x="nameFunction()" y="gppuFunction()" tooltips="true" labelType="percent" showLegend="true"

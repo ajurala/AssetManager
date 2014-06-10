@@ -41,10 +41,16 @@ body {
 .group-color-control {
     width: 150px;
 }
+.vertspacer {
+    padding-bottom: 5px;
+}
 .colorrect {
     height: 17px;
     border-radius: 5px;
     cursor: pointer;
+}
+.changemode {
+    padding: 0px;
 }
 .cursor {
     cursor: pointer;
