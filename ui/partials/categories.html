@@ -59,7 +59,10 @@
         </div>
         <input class="cursor collexp" type="checkbox" name="admin" ng-model="category.extra.chartinclude" ng-change="selectedassets()">
         <label class="col-md-3">
-            {{category.categoryname}}
+            <span ng-hide="category.extra.editMode" ng-click="category.extra.editMode=true">
+                {{category.categoryname}}
+            </span>
+            <input type="text" ng-show="category.extra.editMode" ng-model="category.extra.copy.categoryname" placeholder="Category name" size="20"/>
         </label>
         <span class="col-md-1 colorrect" ng-style="{'color': category.color, 'background-color': category.color}">
             {{category.color}}
