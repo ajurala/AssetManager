@@ -64,14 +64,27 @@
             </span>
             <input type="text" ng-show="category.extra.editMode" ng-model="category.extra.copy.categoryname" placeholder="Category name" size="20"/>
         </label>
-        <span class="col-md-1 colorrect" ng-style="{'color': category.color, 'background-color': category.color}">
-            {{category.color}}
-        </span>
-        <label class="col-md-3 col-md-offset-1">
-            {{getgppu(category, false)}}
+        <label class="col-md-2">
+            <span class="colorrect" ng-hide="category.extra.editMode" ng-click="category.extra.editMode=true" ng-style="{'color': category.color, 'background-color': category.color}">
+                {{category.color}}
+            </span>
+            <span class="colorrect">
+                <input class="colorrect" colorpicker ng-show="category.extra.editMode" type="text" ng-model="category.extra.copy.color" ng-style="{'color': category.extra.copy.color, 'background-color': category.extra.copy.color}"/>
+            </span>
         </label>
         <label class="col-md-3">
-            {{getgcppu(category, false)}}
+            <span ng-hide="category.extra.editMode" ng-click="category.extra.editMode=true">
+                {{getgppu(category, false)}}
+            </span>
+            <span ng-show="category.extra.editMode">
+                <div class="glyphicon glyphicon-ok btn-link ok" ng-click="submitchanges($parent.$parent.$index, $index)" popover="Submit the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+                <div class="glyphicon glyphicon-remove btn-link cancel" ng-click="cancelchanges($parent.$parent.$index, $index)" popover="Cancel the changes" popover-trigger="mouseenter" popover-placement="top"></div>
+            </span>
+        </label>
+        <label class="col-md-3">
+            <span ng-hide="category.extra.editMode" ng-click="category.extra.editMode=true">
+                {{getgcppu(category, false)}}
+            </span>
         </label>
     </div>
     <div class="table-responsive groupassets" ng-show="category.extra.showassets">

@@ -24,6 +24,9 @@ body {
 .ok {
     padding-left: 5px;
 }
+.cancel {
+    padding-left: 10px;
+}
 .piecolor {
     padding-top: 5px;
     float: right !important;
@@ -48,6 +51,7 @@ body {
     height: 17px;
     border-radius: 5px;
     cursor: pointer;
+    width: 70px;
 }
 .changemode {
     padding: 0px;
